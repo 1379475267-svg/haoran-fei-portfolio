@@ -25,6 +25,10 @@ body {
   background: #050816;
 }
 
+body.intro-locked {
+  overflow: hidden;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -169,6 +173,253 @@ body::before {
   transform-origin: 0 50%;
   background: linear-gradient(90deg, #22d3ee, #818cf8, #a78bfa);
   box-shadow: 0 0 14px rgba(34, 211, 238, 0.55);
+}
+
+.intro-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  display: grid;
+  min-width: 320px;
+  place-items: center;
+  overflow: hidden;
+  color: #e2e8f0;
+  background:
+    radial-gradient(circle at 62% 45%, rgba(34, 211, 238, 0.13), transparent 28%),
+    radial-gradient(circle at 32% 55%, rgba(129, 140, 248, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.98), rgba(6, 8, 24, 0.96) 54%, rgba(4, 8, 18, 0.98));
+}
+
+.intro-boot::before,
+.intro-boot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.intro-boot::before {
+  opacity: 0.09;
+  background-image:
+    linear-gradient(rgba(103, 232, 249, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.22) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(circle at 50% 50%, black, transparent 78%);
+}
+
+.intro-boot::after {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.025)),
+    radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.54) 100%);
+}
+
+.intro-boot-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.25;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 7px, rgba(255, 255, 255, 0.018) 8px),
+    linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.09), transparent);
+  mix-blend-mode: screen;
+}
+
+.intro-boot-orbit {
+  position: absolute;
+  width: min(62vw, 760px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(103, 232, 249, 0.18);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 70px rgba(34, 211, 238, 0.08),
+    0 0 90px rgba(129, 140, 248, 0.12);
+}
+
+.intro-boot-orbit::before,
+.intro-boot-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: inherit;
+}
+
+.intro-boot-orbit::after {
+  inset: 28%;
+  border-color: rgba(167, 139, 250, 0.15);
+}
+
+.intro-boot-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28%;
+  transform: skewX(-14deg);
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.09), transparent);
+  filter: blur(10px);
+}
+
+.intro-boot-shell {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: min(100% - 2.5rem, 980px);
+  min-height: min(720px, calc(100vh - 3rem));
+  grid-template-rows: auto 1fr auto auto;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  background: rgba(3, 7, 18, 0.42);
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.intro-boot-shell::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(103, 232, 249, 0.1);
+  border-radius: 0.8rem;
+  pointer-events: none;
+}
+
+.intro-boot-meta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgba(148, 163, 184, 0.82);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.intro-boot-meta span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.intro-boot-meta span:first-child::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #67e8f9;
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.9);
+  animation: pulse-soft 1.7s ease-in-out infinite;
+}
+
+.intro-boot-core {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  max-width: 780px;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+.intro-boot-kicker {
+  margin: 0 0 1rem;
+  color: #67e8f9;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.intro-boot-core h1 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(3.6rem, 12vw, 9.4rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: 0;
+  text-shadow: 0 0 34px rgba(103, 232, 249, 0.12);
+}
+
+.intro-boot-core h1 span {
+  display: block;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(100deg, #67e8f9, #818cf8 48%, #c084fc);
+}
+
+.intro-boot-subtitle {
+  max-width: 520px;
+  margin: 1.25rem 0 0;
+  color: rgba(203, 213, 225, 0.74);
+  font-size: clamp(0.86rem, 2vw, 1.05rem);
+  line-height: 1.8;
+}
+
+.intro-boot-terminal {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0.48rem;
+  max-width: 460px;
+  color: rgba(148, 163, 184, 0.78);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+.intro-boot-terminal p {
+  display: flex;
+  gap: 0.7rem;
+  margin: 0;
+  min-width: 0;
+}
+
+.intro-boot-terminal span {
+  color: rgba(103, 232, 249, 0.78);
+}
+
+.intro-boot-progress {
+  position: relative;
+  z-index: 2;
+  height: 3px;
+  margin-top: 1.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.intro-boot-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+}
+
+.intro-boot-skip {
+  position: absolute;
+  right: clamp(1.1rem, 3vw, 2rem);
+  bottom: clamp(1.1rem, 3vw, 2rem);
+  z-index: 3;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+  color: rgba(226, 232, 240, 0.78);
+  background: rgba(15, 23, 42, 0.42);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+.intro-boot-skip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(103, 232, 249, 0.36);
+  color: #ecfeff;
 }
 
 .section-shell {
@@ -2749,6 +3000,22 @@ body::before {
 }
 
 @media (max-width: 900px) {
+  .intro-boot-shell {
+    min-height: calc(100vh - 2rem);
+  }
+
+  .intro-boot-orbit {
+    width: 110vw;
+  }
+
+  .intro-boot-core {
+    padding-block: 4rem 3rem;
+  }
+
+  .intro-boot-terminal {
+    max-width: calc(100% - 5.5rem);
+  }
+
   .spline-background {
     inset: 0;
   }
@@ -2826,6 +3093,49 @@ body::before {
 }
 
 @media (max-width: 680px) {
+  .intro-boot-shell {
+    width: min(100% - 1.25rem, 980px);
+    border-radius: 0.95rem;
+    padding: 1rem;
+  }
+
+  .intro-boot-shell::before {
+    inset: 8px;
+  }
+
+  .intro-boot-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.42rem;
+    font-size: 0.54rem;
+  }
+
+  .intro-boot-kicker {
+    max-width: 220px;
+    font-size: 0.56rem;
+    line-height: 1.7;
+  }
+
+  .intro-boot-core h1 {
+    font-size: clamp(3.35rem, 18vw, 5.8rem);
+  }
+
+  .intro-boot-subtitle {
+    max-width: 280px;
+    font-size: 0.78rem;
+  }
+
+  .intro-boot-terminal {
+    max-width: 100%;
+    padding-right: 4.5rem;
+    font-size: 0.58rem;
+  }
+
+  .intro-boot-skip {
+    padding: 0.48rem 0.7rem;
+    font-size: 0.58rem;
+  }
+
   .section-shell {
     width: min(100% - 2rem, 1380px);
   }
@@ -2967,6 +3277,10 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .intro-boot {
+    display: none;
   }
 
   *,
