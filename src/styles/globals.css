@@ -244,6 +244,53 @@ body::before {
     linear-gradient(180deg, rgba(5, 8, 22, 0.25), transparent 25%, rgba(5, 8, 22, 0.62) 100%);
 }
 
+.about-spline-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.about-spline-motion {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  width: 100%;
+  transform-origin: 65% 40%;
+}
+
+.about-spline-frame,
+.about-spline-fallback,
+.about-spline-scrim {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+}
+
+.about-spline-frame {
+  border: 0;
+  opacity: 0.34;
+  transform: scale(1.08);
+  filter: saturate(1.12) contrast(1.08);
+}
+
+.about-spline-fallback {
+  object-fit: cover;
+  opacity: 0.34;
+  filter: saturate(1.12) blur(1px);
+}
+
+.about-spline-scrim {
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 24%, rgba(103, 232, 249, 0.14), transparent 32%),
+    radial-gradient(circle at 82% 42%, rgba(167, 139, 250, 0.16), transparent 34%),
+    linear-gradient(90deg, rgba(5, 8, 22, 0.9), rgba(5, 8, 22, 0.7) 50%, rgba(5, 8, 22, 0.88)),
+    linear-gradient(180deg, rgba(5, 8, 22, 0.92), rgba(5, 8, 22, 0.54) 48%, rgba(5, 8, 22, 0.92));
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -2712,6 +2759,15 @@ body::before {
 
   .spline-background-fallback {
     opacity: 0.26;
+    filter: saturate(1.05) blur(2px);
+  }
+
+  .about-spline-frame {
+    display: none;
+  }
+
+  .about-spline-fallback {
+    opacity: 0.28;
     filter: saturate(1.05) blur(2px);
   }
 

@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
+import { useRef } from "react";
 import { Cpu, Gauge, Music2, Sparkles } from "lucide-react";
 import { profile } from "../data/profile";
 import BentoCard from "./BentoCard";
 import SectionHeader from "./SectionHeader";
 import ChromaOrb from "./ChromaOrb";
+import AboutSplineBackground from "./AboutSplineBackground";
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -11,9 +13,12 @@ const reveal = {
 };
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section id="about" className="section-space section-divider relative">
-      <div className="section-shell">
+    <section id="about" ref={sectionRef} className="section-space section-divider relative overflow-hidden">
+      <AboutSplineBackground targetRef={sectionRef} />
+      <div className="section-shell relative z-10">
         <SectionHeader
           eyebrow="01 / PROFILE"
           title="More than a list of tools."
