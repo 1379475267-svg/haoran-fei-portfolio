@@ -199,6 +199,45 @@ body::before {
   background-size: 56px 56px;
 }
 
+.spline-background {
+  position: absolute;
+  inset: -6rem -4rem -3rem;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #050816;
+}
+
+.spline-background-frame,
+.spline-background-fallback,
+.spline-background-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.spline-background-frame {
+  border: 0;
+  opacity: 0.34;
+  transform: scale(1.12);
+  filter: saturate(1.18) contrast(1.08);
+}
+
+.spline-background-fallback {
+  object-fit: cover;
+  opacity: 0.3;
+  transform: scale(1.04);
+  filter: saturate(1.15) blur(1px);
+}
+
+.spline-background-scrim {
+  background:
+    radial-gradient(circle at 68% 38%, rgba(34, 211, 238, 0.12), transparent 36%),
+    linear-gradient(90deg, rgba(5, 8, 22, 0.94) 0%, rgba(5, 8, 22, 0.74) 46%, rgba(5, 8, 22, 0.42) 100%),
+    linear-gradient(180deg, rgba(5, 8, 22, 0.1), rgba(5, 8, 22, 0.72) 100%);
+}
+
 .hero-vignette {
   background:
     linear-gradient(90deg, rgba(5, 8, 22, 0.93) 0%, rgba(5, 8, 22, 0.72) 45%, rgba(5, 8, 22, 0.35) 100%),
@@ -2663,6 +2702,19 @@ body::before {
 }
 
 @media (max-width: 900px) {
+  .spline-background {
+    inset: 0;
+  }
+
+  .spline-background-frame {
+    display: none;
+  }
+
+  .spline-background-fallback {
+    opacity: 0.26;
+    filter: saturate(1.05) blur(2px);
+  }
+
   .section-space {
     padding-block: 6rem;
   }

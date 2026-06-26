@@ -4,6 +4,7 @@ import { profile, stats } from "../data/profile";
 import HeroDashboard from "./HeroDashboard";
 import StatRibbon from "./StatRibbon";
 import ChromaOrb from "./ChromaOrb";
+import SplineBackground from "./SplineBackground";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -14,6 +15,7 @@ export default function Hero() {
   return (
     <>
       <section id="home" className="hero-grid relative flex min-h-[940px] items-center overflow-hidden pt-24">
+        <SplineBackground />
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
           autoPlay
