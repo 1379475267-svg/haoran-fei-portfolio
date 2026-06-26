@@ -8,7 +8,7 @@ import {
   Users,
 } from "lucide-react";
 
-export type ProjectCategory = "Web" | "Embedded" | "AI" | "Music" | "Visualization";
+export type ProjectCategory = "Web" | "Embedded" | "AI" | "Data" | "Music" | "Tool" | "Visualization";
 export type ProjectCoverType = "game" | "music" | "saturn" | "embedded" | "ai" | "cosmos";
 
 export interface NavItem {
@@ -81,7 +81,7 @@ export const navItems: NavItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "10+", label: "Projects" },
+  { value: "7", label: "Projects" },
   { value: "2016", label: "Music Started" },
   { value: "STM32", label: "Learning" },
   { value: "AI", label: "Coding Workflow" },
@@ -104,41 +104,83 @@ export const ribbonItems = [
 
 export const projects: Project[] = [
   {
+    id: "chordpilot",
+    title: "ChordPilot",
+    category: "Music",
+    tagline: "Automatic chord timeline analysis for local music files.",
+    description: "A local music-tech app for automatic chord timeline analysis.",
+    longDescription:
+      "ChordPilot is a local music-tech app for automatic chord timeline analysis, connecting music learning with practical listening and review tools.",
+    tech: ["Music Tech", "Audio Analysis", "Local App"],
+    coverType: "music",
+    featured: true,
+    github: "https://github.com/1379475267-svg/ChordPilot",
+    demo: "https://github.com/1379475267-svg/ChordPilot",
+  },
+  {
+    id: "python-data-analysis-quiz",
+    title: "python-data-analysis-quiz",
+    category: "Data",
+    tagline: "A Python quiz project for data analysis practice.",
+    description: "A compact Python project for reviewing data-analysis concepts through quiz-style practice.",
+    longDescription:
+      "python-data-analysis-quiz is a focused learning repository for Python data-analysis review, practice questions and small technical exercises.",
+    tech: ["Python", "Data Analysis", "Quiz"],
+    coverType: "ai",
+    featured: false,
+    github: "https://github.com/1379475267-svg/python-data-analysis-quiz",
+    demo: "https://github.com/1379475267-svg/python-data-analysis-quiz",
+  },
+  {
     id: "gamememory",
     title: "GameMemory",
     category: "Web",
     tagline: "A personal archive for every game worth remembering.",
-    description: "个人游戏记录与评价系统，用于记录游玩经历、评分、评价和游戏资料。",
+    description: "A JavaScript project for recording game memories, ratings and play history.",
     longDescription:
-      "从游戏资料检索到个人评分与游玩记录，把分散的体验整理成一套可持续维护的数字档案。",
-    tech: ["Vue 3", "Django", "SQLite", "RAWG API", "SteamGridDB"],
+      "GameMemory keeps game records, ratings and personal notes in one maintainable archive for long-term play history.",
+    tech: ["JavaScript", "Game Archive", "Ratings"],
     coverType: "game",
-    featured: true,
+    featured: false,
     github: "https://github.com/1379475267-svg/GameMemory",
     demo: "https://github.com/1379475267-svg/GameMemory",
   },
   {
-    id: "music-theory",
-    title: "Music Theory Tutorial",
-    category: "Music",
-    tagline: "Music theory explained from the fretboard outward.",
-    description: "面向零基础学习者的音乐乐理入门教程，从吉他 CAGED 系统扩展到完整乐理上手教程。",
+    id: "string-blade",
+    title: "String-Blade",
+    category: "Tool",
+    tagline: "A TypeScript project with a small, sharp tool-building focus.",
+    description: "A public TypeScript project with MIT licensing, built as part of my tooling practice.",
     longDescription:
-      "用更直观的吉他指板、和弦结构和练习路径，让抽象乐理变成可听、可弹、可理解的知识。",
-    tech: ["HTML", "CSS", "JavaScript", "GitHub Pages"],
+      "String-Blade is a TypeScript project from my public GitHub workspace, focused on concise implementation and reusable tool-building practice.",
+    tech: ["TypeScript", "MIT License", "Tooling"],
+    coverType: "cosmos",
+    featured: false,
+    github: "https://github.com/1379475267-svg/String-Blade",
+    demo: "https://github.com/1379475267-svg/String-Blade",
+  },
+  {
+    id: "fretboard-caged-lab",
+    title: "fretboard-caged-lab",
+    category: "Music",
+    tagline: "Interactive CAGED system visualizer for guitar learners.",
+    description: "An interactive CAGED system visualizer for guitar learners.",
+    longDescription:
+      "fretboard-caged-lab turns guitar theory into an interactive visual system for learning shapes, positions and fretboard relationships.",
+    tech: ["JavaScript", "Guitar", "CAGED"],
     coverType: "music",
     featured: false,
     github: "https://github.com/1379475267-svg/fretboard-caged-lab",
     demo: "https://github.com/1379475267-svg/fretboard-caged-lab",
   },
   {
-    id: "particle-saturn",
-    title: "Interactive Particle Saturn",
+    id: "interactive-particle-saturn",
+    title: "interactive-particle-saturn",
     category: "Visualization",
-    tagline: "A particle experiment orbiting between code and space.",
-    description: "基于 Three.js 的交互式粒子土星项目，结合视觉动画与交互体验。",
+    tagline: "A cinematic particle Saturn with orbital dynamics.",
+    description: "A cinematic interactive particle Saturn built with Three.js and real-time chaos transitions.",
     longDescription:
-      "通过粒子、轨道和空间层次练习实时视觉表达，探索代码如何形成具有呼吸感的数字场景。",
+      "interactive-particle-saturn explores particle motion, orbital dynamics and real-time visual transitions through a cinematic Three.js scene.",
     tech: ["Three.js", "JavaScript", "WebGL"],
     coverType: "saturn",
     featured: false,
@@ -146,50 +188,22 @@ export const projects: Project[] = [
     demo: "https://github.com/1379475267-svg/interactive-particle-saturn",
   },
   {
-    id: "fishing-alert",
-    title: "Smart Fishing Alert",
+    id: "smart-fishing-alert",
+    title: "smart-fishing-alert",
     category: "Embedded",
-    tagline: "Sensors, signals and a practical embedded response.",
-    description: "基于 STM32 与传感器的智能钓鱼提醒项目，探索嵌入式系统在生活场景中的应用。",
+    tagline: "STM32-based fishing bite detection and alert system.",
+    description: "An embedded STM32 project for fishing bite detection and alerting.",
     longDescription:
-      "将姿态传感、信号判断和硬件提醒组合成一个小型工程原型，练习从电路到交互的完整思考。",
-    tech: ["STM32", "MPU6050", "C", "Embedded"],
+      "smart-fishing-alert combines sensors, signal judgment and embedded hardware feedback into a practical STM32 prototype.",
+    tech: ["STM32", "Sensors", "C"],
     coverType: "embedded",
     featured: false,
     github: "https://github.com/1379475267-svg/smart-fishing-alert",
     demo: "https://github.com/1379475267-svg/smart-fishing-alert",
   },
-  {
-    id: "aigc-trainer",
-    title: "AIGC 智训师",
-    category: "AI",
-    tagline: "AI recognition meets structured training workflow.",
-    description: "结合 AI 识别、训练管理和数据处理的综合平台项目。",
-    longDescription:
-      "将目标识别能力嵌入训练管理界面，关注模型输出、业务流程与可读数据展示之间的连接。",
-    tech: ["Vue", "Django", "YOLOv7", "OSS"],
-    coverType: "ai",
-    featured: false,
-    github: "https://github.com/1379475267-svg?tab=repositories&q=aigc",
-    demo: "https://github.com/1379475267-svg?tab=repositories&q=aigc",
-  },
-  {
-    id: "neural-cosmos",
-    title: "Neural Cosmos",
-    category: "Visualization",
-    tagline: "A visual system of nodes, signals and imagined space.",
-    description: "偏视觉表达和交互体验的 Web 可视化项目，探索粒子、空间和科技感界面设计。",
-    longDescription:
-      "以神经网络节点和宇宙空间为视觉隐喻，练习 Canvas 动效、信息层级与沉浸式界面氛围。",
-    tech: ["JavaScript", "Canvas", "Creative Coding"],
-    coverType: "cosmos",
-    featured: false,
-    github: "https://github.com/1379475267-svg/Neural-Cosmos",
-    demo: "https://github.com/1379475267-svg/Neural-Cosmos",
-  },
 ];
 
-export const projectCategories = ["All", "Web", "Embedded", "AI", "Music", "Visualization"] as const;
+export const projectCategories = ["All", "Web", "Music", "Data", "Tool", "Embedded", "Visualization"] as const;
 
 export const techStack = [
   "React",
