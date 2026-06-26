@@ -10,7 +10,6 @@ import CursorGlow from "./components/CursorGlow";
 import ScrollProgress from "./components/ScrollProgress";
 import TechMarquee from "./components/TechMarquee";
 import NowFocus from "./components/NowFocus";
-import ProgressiveVector from "./components/ProgressiveVector";
 import IntroBoot from "./components/IntroBoot";
 
 export default function App() {
@@ -24,7 +23,6 @@ export default function App() {
       <main>
         <Hero />
         <About />
-        <ProgressiveVector />
         <Projects />
         <TechMarquee />
         <Skills />

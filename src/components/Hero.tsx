@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Mail } from "lucide-react";
 import { profile, stats } from "../data/profile";
-import HeroDashboard from "./HeroDashboard";
-import StatRibbon from "./StatRibbon";
-import ChromaOrb from "./ChromaOrb";
+import ProgressiveVector from "./ProgressiveVector";
 import SplineBackground from "./SplineBackground";
+import StatRibbon from "./StatRibbon";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -14,7 +13,7 @@ const fadeUp = {
 export default function Hero() {
   return (
     <>
-      <section id="home" className="hero-grid relative flex min-h-[940px] items-center overflow-hidden pt-24">
+      <section id="home" className="hero-grid relative flex min-h-[920px] items-center overflow-hidden pt-24">
         <SplineBackground />
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
@@ -23,25 +22,25 @@ export default function Hero() {
           loop
           playsInline
           onCanPlay={(event) => {
-            event.currentTarget.style.opacity = "0.1";
+            event.currentTarget.style.opacity = "0.08";
           }}
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
         <div className="hero-vignette absolute inset-0" />
 
-        <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[1.02fr_.98fr] xl:gap-16">
+        <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[0.82fr_1.18fr] xl:gap-16">
           <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.1 }}>
             <motion.div variants={fadeUp} transition={{ duration: 0.6 }} className="status-badge">
               <span />
-              OPEN TO IDEAS · COLLABORATION · BUILDING IN PUBLIC
+              OPEN TO IDEAS / COLLABORATION / BUILDING IN PUBLIC
             </motion.div>
 
             <motion.p
               variants={fadeUp}
               className="mb-4 mt-8 text-xs font-medium tracking-[0.3em] text-slate-500"
             >
-              HELLO / 你好 — 2026
+              HELLO / NI HAO - 2026
             </motion.p>
             <motion.h1
               variants={fadeUp}
@@ -91,21 +90,8 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          <motion.div
-            className="mobile-chroma lg:hidden"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35 }}
-          >
-            <ChromaOrb />
-            <div className="mobile-chroma-footer">
-              <span>CHROMA PROFILE</span>
-              <span>HF / 2026</span>
-            </div>
-          </motion.div>
-
-          <div className="hidden lg:block">
-            <HeroDashboard />
+          <div className="hero-vector-wrap">
+            <ProgressiveVector mode="hero" />
           </div>
         </div>
       </section>

@@ -28,7 +28,7 @@ export default function IntroBoot() {
 
   const shouldAnimate = !prefersReducedMotion;
 
-  const lineDelay = useMemo(() => (shouldAnimate ? 0.42 : 0), [shouldAnimate]);
+  const lineDelay = useMemo(() => (shouldAnimate ? 0.22 : 0), [shouldAnimate]);
   const exitIntro = () => {
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(sessionKey, "true");
@@ -49,7 +49,7 @@ export default function IntroBoot() {
       return () => document.body.classList.remove("intro-locked");
     }
 
-    const timer = window.setTimeout(exitIntro, 6500);
+    const timer = window.setTimeout(exitIntro, 3800);
 
     return () => {
       window.clearTimeout(timer);
@@ -79,13 +79,13 @@ export default function IntroBoot() {
             className="intro-boot-orbit"
             initial={{ scale: 1.12, opacity: 0.16 }}
             animate={{ scale: [1.12, 1.24, 1.06], opacity: [0.16, 0.34, 0.2] }}
-            transition={{ duration: 5.4, ease: "easeInOut" }}
+            transition={{ duration: 3.2, ease: "easeInOut" }}
           />
           <motion.div
             className="intro-boot-scan"
             initial={{ x: "-120%" }}
             animate={{ x: "120%" }}
-            transition={{ duration: 3.1, repeat: 1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.75, repeat: 1, ease: [0.22, 1, 0.36, 1] }}
           />
 
           <div className="intro-boot-shell">
@@ -93,7 +93,7 @@ export default function IntroBoot() {
               className="intro-boot-meta"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
+              transition={{ duration: 0.42, delay: 0.08 }}
             >
               <span>SYS / ONLINE</span>
               <span>PORTFOLIO.v02</span>
@@ -103,7 +103,7 @@ export default function IntroBoot() {
               className="intro-boot-core"
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.58, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="intro-boot-kicker">INITIALIZING CREATIVE SYSTEM</p>
               <h1>
@@ -119,7 +119,7 @@ export default function IntroBoot() {
                   key={line}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.42, delay: 1 + index * lineDelay }}
+                  transition={{ duration: 0.28, delay: 0.62 + index * lineDelay }}
                 >
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   {line}
@@ -131,13 +131,13 @@ export default function IntroBoot() {
               className="intro-boot-progress"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.1 }}
+              transition={{ duration: 0.32, delay: 0.65 }}
               aria-hidden="true"
             >
               <motion.i
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 5.05, delay: 1.15, ease: [0.65, 0, 0.35, 1] }}
+                transition={{ duration: 2.8, delay: 0.7, ease: [0.65, 0, 0.35, 1] }}
               />
             </motion.div>
 
@@ -147,7 +147,7 @@ export default function IntroBoot() {
               onClick={exitIntro}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 1.4 }}
+              transition={{ duration: 0.28, delay: 0.8 }}
             >
               Skip
             </motion.button>
