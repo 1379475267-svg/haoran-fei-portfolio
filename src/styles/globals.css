@@ -548,11 +548,94 @@ body::before {
 .about-spline-scrim {
   inset: 0;
   background:
-    radial-gradient(circle at 22% 24%, rgba(103, 232, 249, 0.14), transparent 32%),
-    radial-gradient(circle at 82% 42%, rgba(167, 139, 250, 0.16), transparent 34%),
-    linear-gradient(90deg, rgba(5, 8, 22, 0.9), rgba(5, 8, 22, 0.7) 50%, rgba(5, 8, 22, 0.88)),
-    linear-gradient(180deg, rgba(5, 8, 22, 0.92), rgba(5, 8, 22, 0.54) 48%, rgba(5, 8, 22, 0.92));
+    radial-gradient(circle at 22% 24%, rgba(255, 47, 109, 0.13), transparent 32%),
+    radial-gradient(circle at 82% 42%, rgba(236, 95, 211, 0.14), transparent 34%),
+    linear-gradient(90deg, rgba(5, 6, 18, 0.9), rgba(19, 8, 24, 0.7) 50%, rgba(5, 6, 18, 0.88)),
+    linear-gradient(180deg, rgba(5, 6, 18, 0.92), rgba(19, 8, 24, 0.56) 48%, rgba(5, 6, 18, 0.92));
 }
+
+.about-intro-spline {
+  position: relative;
+  min-height: clamp(360px, 46vw, 620px);
+  margin-bottom: clamp(3.2rem, 7vw, 5.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 216, 206, 0.2);
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(circle at 42% 28%, rgba(255, 216, 206, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(44, 12, 31, 0.58), rgba(5, 6, 18, 0.82));
+  box-shadow:
+    0 34px 95px rgba(0, 0, 0, 0.34),
+    0 0 70px rgba(255, 47, 109, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  isolation: isolate;
+}
+
+.about-intro-spline-frame,
+.about-intro-spline-fallback,
+.about-intro-spline-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.about-intro-spline-frame {
+  z-index: 1;
+  border: 0;
+  opacity: 0.74;
+  transform: scale(1.04);
+  filter: saturate(1.08) contrast(1.04);
+}
+
+.about-intro-spline-fallback {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0.52;
+  transform: scale(1.02);
+  filter: saturate(1.08) blur(1px);
+}
+
+.about-intro-spline-scrim {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 216, 206, 0.13), transparent 26%),
+    radial-gradient(circle at 58% 66%, rgba(255, 47, 109, 0.18), transparent 34%),
+    linear-gradient(90deg, rgba(5, 6, 18, 0.7), rgba(37, 10, 27, 0.22) 52%, rgba(5, 6, 18, 0.72)),
+    linear-gradient(180deg, rgba(5, 6, 18, 0.42), transparent 32%, rgba(5, 6, 18, 0.74));
+}
+
+.about-intro-spline-meta {
+  position: absolute;
+  z-index: 3;
+  left: 1.35rem;
+  right: 1.35rem;
+  top: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgba(255, 241, 233, 0.74);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.about-intro-corner {
+  position: absolute;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  border-color: rgba(255, 241, 233, 0.52);
+  pointer-events: none;
+}
+
+.about-intro-corner-tl { left: 0.8rem; top: 0.8rem; border-left: 1px solid; border-top: 1px solid; }
+.about-intro-corner-tr { right: 0.8rem; top: 0.8rem; border-right: 1px solid; border-top: 1px solid; }
+.about-intro-corner-bl { left: 0.8rem; bottom: 0.8rem; border-left: 1px solid; border-bottom: 1px solid; }
+.about-intro-corner-br { right: 0.8rem; bottom: 0.8rem; border-right: 1px solid; border-bottom: 1px solid; }
 
 .status-badge {
   display: inline-flex;
@@ -3079,6 +3162,19 @@ body::before {
     filter: saturate(1.05) blur(2px);
   }
 
+  .about-intro-spline {
+    min-height: 440px;
+  }
+
+  .about-intro-spline-frame {
+    display: none;
+  }
+
+  .about-intro-spline-fallback {
+    opacity: 0.66;
+    filter: saturate(1.08) blur(1px);
+  }
+
   .section-space {
     padding-block: 6rem;
   }
@@ -3237,6 +3333,19 @@ body::before {
       "music"
       "engineering"
       "values";
+  }
+
+  .about-intro-spline {
+    min-height: 360px;
+    margin-bottom: 3rem;
+    border-radius: 1.05rem;
+  }
+
+  .about-intro-spline-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.46rem;
   }
 
   .profile-portrait {

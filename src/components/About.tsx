@@ -6,6 +6,7 @@ import BentoCard from "./BentoCard";
 import SectionHeader from "./SectionHeader";
 import ChromaOrb from "./ChromaOrb";
 import AboutSplineBackground from "./AboutSplineBackground";
+import AboutIntroSpline from "./AboutIntroSpline";
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -19,6 +20,15 @@ export default function About() {
     <section id="about" ref={sectionRef} className="section-space section-divider relative overflow-hidden">
       <AboutSplineBackground targetRef={sectionRef} />
       <div className="section-shell relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <AboutIntroSpline />
+        </motion.div>
+
         <SectionHeader
           eyebrow="01 / PROFILE"
           title="More than a list of tools."
@@ -43,7 +53,7 @@ export default function About() {
                   }}
                 />
                 <ChromaOrb compact className="profile-chroma" />
-                <span className="portrait-coordinate">23.1° N / BUILDING</span>
+                <span className="portrait-coordinate">23.1? N / BUILDING</span>
               </div>
               <div className="px-2 pb-2 pt-6">
                 <div className="flex items-center justify-between gap-4">
@@ -54,7 +64,7 @@ export default function About() {
                   <span className="online-pulse" />
                 </div>
                 <p className="mt-5 border-t border-white/8 pt-5 text-sm italic text-slate-400">
-                  “{profile.signature}”
+                  ?{profile.signature}?
                 </p>
               </div>
             </BentoCard>
@@ -70,7 +80,7 @@ export default function About() {
               <p className="mt-6 max-w-2xl text-[15px] leading-8 text-slate-400">{profile.about}</p>
               <div className="mt-8 flex items-center gap-3 text-xs text-slate-500">
                 <Sparkles size={15} className="text-cyan-300" />
-                Engineering · Expression · Iteration
+                Engineering ? Expression ? Iteration
               </div>
             </BentoCard>
           </motion.div>
@@ -82,7 +92,7 @@ export default function About() {
                 <span className="eyebrow-mini">SINCE 2016</span>
               </div>
               <h3 className="mt-8 text-xl font-semibold text-slate-100">Music Since 2016</h3>
-              <p className="mt-2 text-sm text-slate-400">Guitar · Piano · Fingerstyle · Arrangement</p>
+              <p className="mt-2 text-sm text-slate-400">Guitar ? Piano ? Fingerstyle ? Arrangement</p>
               <div className="audio-wave mt-8">
                 {Array.from({ length: 28 }).map((_, index) => (
                   <i key={index} style={{ height: `${18 + ((index * 31) % 76)}%` }} />
@@ -98,7 +108,7 @@ export default function About() {
                 <Gauge size={17} className="text-slate-600" />
               </div>
               <h3 className="mt-8 text-xl font-semibold text-slate-100">Engineering Practice</h3>
-              <p className="mt-2 text-sm text-slate-400">STM32 · Sensors · Web · AI Tools</p>
+              <p className="mt-2 text-sm text-slate-400">STM32 ? Sensors ? Web ? AI Tools</p>
               <div className="circuit-decoration" aria-hidden="true">
                 <span /><span /><span /><span />
               </div>
