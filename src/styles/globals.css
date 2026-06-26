@@ -588,6 +588,7 @@ body::before {
   transform: scale(1.06);
   transform-origin: 54% 50%;
   filter: saturate(0.88) contrast(1.12) brightness(0.8) sepia(0.08) hue-rotate(305deg);
+  pointer-events: none;
 }
 
 .about-intro-spline-fallback {
@@ -598,6 +599,17 @@ body::before {
   transform-origin: 56% 48%;
   filter: saturate(0.92) contrast(1.12) brightness(0.82) sepia(0.08) hue-rotate(305deg) blur(0.8px);
   animation: about-preview-drift 12s ease-in-out infinite alternate;
+  transition: opacity 420ms ease;
+  pointer-events: none;
+}
+
+.about-intro-spline.is-loaded .about-intro-spline-fallback {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+.about-intro-spline.is-interactive .about-intro-spline-frame {
+  pointer-events: auto;
 }
 
 .about-intro-spline-scrim {
@@ -613,6 +625,7 @@ body::before {
 .about-intro-orbit {
   position: absolute;
   z-index: 2;
+  display: none;
   pointer-events: none;
   border: 1px solid rgba(255, 216, 206, 0.12);
   border-radius: 50%;
@@ -687,6 +700,31 @@ body::before {
   color: rgba(255, 241, 233, 0.8);
   font-size: clamp(0.82rem, 1.6vw, 0.94rem);
   line-height: 1.8;
+}
+
+.about-intro-interaction-hint {
+  position: absolute;
+  z-index: 5;
+  right: 1.35rem;
+  bottom: 1.2rem;
+  padding: 0.58rem 0.78rem;
+  border: 1px solid rgba(255, 241, 233, 0.16);
+  border-radius: 999px;
+  background: rgba(5, 6, 18, 0.54);
+  color: rgba(255, 241, 233, 0.62);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  pointer-events: none;
+}
+
+.about-intro-spline.is-interactive .about-intro-interaction-hint {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
 .about-intro-spline-meta {
@@ -3292,8 +3330,12 @@ body::before {
   }
 
   .about-intro-spline-fallback {
-    opacity: 0.5;
+    opacity: 0.48;
     filter: saturate(1.08) blur(1.5px);
+  }
+
+  .about-intro-spline.is-loaded .about-intro-spline-fallback {
+    opacity: 0;
   }
 
   .about-intro-spline-frame {
@@ -3495,6 +3537,13 @@ body::before {
   .about-intro-spline-copy p {
     max-width: 300px;
     font-size: 0.76rem;
+  }
+
+  .about-intro-interaction-hint {
+    right: 1rem;
+    bottom: 1rem;
+    padding: 0.48rem 0.62rem;
+    font-size: 0.48rem;
   }
 
   .about-intro-orbit-a {
