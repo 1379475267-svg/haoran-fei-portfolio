@@ -1,4 +1,4 @@
-const splinePreviewUrl = "https://filespreview.spline.design/1fcc3fe6-6538-40d6-9b06-f554da7873bb.jpg";
+const splinePreviewUrl = "https://filespreview.spline.design/297fb66c-aaae-4f45-8767-4bcd8c1339aa.jpg";
 
 export default function AboutIntroSpline() {
   return (
@@ -10,8 +10,8 @@ export default function AboutIntroSpline() {
       <div className="about-intro-spline-scrim" />
       <div className="about-intro-spline-copy">
         <span>PROFILE FIELD / INTRO</span>
-        <h2>Personal Profile System</h2>
-        <p>Engineering practice, music learning and visual experiments shaped into one long-term creative direction.</p>
+        <h2>Creative Systems in Motion</h2>
+        <p>Engineering practice, music learning and visual experiments shaped into one connected direction.</p>
       </div>
       <div className="about-intro-spline-meta" aria-hidden="true">
         <span>PROFILE SYSTEM / 01</span>
