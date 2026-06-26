@@ -4,11 +4,14 @@ export default function AboutIntroSpline() {
   return (
     <div className="about-intro-spline" aria-label="Profile Spline visual">
       <img className="about-intro-spline-fallback" src={splinePreviewUrl} alt="" />
+      <div className="about-intro-orbit about-intro-orbit-a" aria-hidden="true" />
+      <div className="about-intro-orbit about-intro-orbit-b" aria-hidden="true" />
+      <div className="about-intro-scan" aria-hidden="true" />
       <div className="about-intro-spline-scrim" />
       <div className="about-intro-spline-copy">
         <span>PROFILE FIELD / INTRO</span>
-        <h2>Clarity. Focus. Impact.</h2>
-        <p>A calm visual entry point for the personal profile section.</p>
+        <h2>Personal Profile System</h2>
+        <p>Engineering practice, music learning and visual experiments shaped into one long-term creative direction.</p>
       </div>
       <div className="about-intro-spline-meta" aria-hidden="true">
         <span>PROFILE SYSTEM / 01</span>
