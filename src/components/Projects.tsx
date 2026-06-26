@@ -12,13 +12,27 @@ import SectionHeader from "./SectionHeader";
 type Filter = (typeof projectCategories)[number];
 
 function ProjectCard({ project }: { project: Project }) {
+  const openProject = () => {
+    window.open(project.demo, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <motion.article
+      role="link"
+      tabIndex={0}
+      aria-label={`Open ${project.title} project`}
       layout
       initial={{ opacity: 0, scale: 0.97, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96, y: 12 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      onClick={openProject}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openProject();
+        }
+      }}
       className={`project-card-v2 group ${project.featured ? "project-featured" : ""}`}
     >
       <ProjectCover type={project.coverType} featured={project.featured} />
@@ -38,7 +52,13 @@ function ProjectCard({ project }: { project: Project }) {
           ))}
         </div>
         <div className="mt-7 flex items-center gap-3 border-t border-white/8 pt-5">
-          <a href={project.demo} className="project-link">
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noreferrer"
+            className="project-link"
+            onClick={(event) => event.stopPropagation()}
+          >
             View Details <ArrowUpRight size={14} />
           </a>
           <a
@@ -47,6 +67,7 @@ function ProjectCard({ project }: { project: Project }) {
             rel="noreferrer"
             className="project-link subtle"
             aria-label={`${project.title} GitHub`}
+            onClick={(event) => event.stopPropagation()}
           >
             <Github size={15} /> GitHub
           </a>

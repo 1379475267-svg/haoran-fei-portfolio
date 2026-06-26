@@ -62,7 +62,7 @@ export const profile = {
   chineseName: "费浩然",
   role: "Electronic Information Student · Developer · Music Creator",
   email: "1379475267@qq.com",
-  github: "https://github.com/1379475267",
+  github: "https://github.com/1379475267-svg",
   heroIntro:
     "我是费浩然，电子信息科学与技术专业本科生。正在探索嵌入式系统、AI Coding、Web 可视化与开源项目实践，也长期学习吉他和钢琴。我希望把技术能力、表达能力和创造力结合起来，做出真正有个人风格的作品。",
   about:
@@ -94,7 +94,7 @@ export const ribbonItems = [
   },
   {
     label: "Building",
-    value: "Portfolio · GameLog · Music Theory Tutorial",
+    value: "Portfolio · GameMemory · Music Theory Tutorial",
   },
   {
     label: "Direction",
@@ -104,8 +104,8 @@ export const ribbonItems = [
 
 export const projects: Project[] = [
   {
-    id: "gamelog",
-    title: "GameLog",
+    id: "gamememory",
+    title: "GameMemory",
     category: "Web",
     tagline: "A personal archive for every game worth remembering.",
     description: "个人游戏记录与评价系统，用于记录游玩经历、评分、评价和游戏资料。",
@@ -114,8 +114,8 @@ export const projects: Project[] = [
     tech: ["Vue 3", "Django", "SQLite", "RAWG API", "SteamGridDB"],
     coverType: "game",
     featured: true,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg/GameMemory",
+    demo: "https://github.com/1379475267-svg/GameMemory",
   },
   {
     id: "music-theory",
@@ -128,8 +128,8 @@ export const projects: Project[] = [
     tech: ["HTML", "CSS", "JavaScript", "GitHub Pages"],
     coverType: "music",
     featured: false,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg/fretboard-caged-lab",
+    demo: "https://github.com/1379475267-svg/fretboard-caged-lab",
   },
   {
     id: "particle-saturn",
@@ -142,8 +142,8 @@ export const projects: Project[] = [
     tech: ["Three.js", "JavaScript", "WebGL"],
     coverType: "saturn",
     featured: false,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg/interactive-particle-saturn",
+    demo: "https://github.com/1379475267-svg/interactive-particle-saturn",
   },
   {
     id: "fishing-alert",
@@ -156,8 +156,8 @@ export const projects: Project[] = [
     tech: ["STM32", "MPU6050", "C", "Embedded"],
     coverType: "embedded",
     featured: false,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg/smart-fishing-alert",
+    demo: "https://github.com/1379475267-svg/smart-fishing-alert",
   },
   {
     id: "aigc-trainer",
@@ -170,8 +170,8 @@ export const projects: Project[] = [
     tech: ["Vue", "Django", "YOLOv7", "OSS"],
     coverType: "ai",
     featured: false,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg?tab=repositories&q=aigc",
+    demo: "https://github.com/1379475267-svg?tab=repositories&q=aigc",
   },
   {
     id: "neural-cosmos",
@@ -184,8 +184,8 @@ export const projects: Project[] = [
     tech: ["JavaScript", "Canvas", "Creative Coding"],
     coverType: "cosmos",
     featured: false,
-    github: profile.github,
-    demo: "#contact",
+    github: "https://github.com/1379475267-svg/Neural-Cosmos",
+    demo: "https://github.com/1379475267-svg/Neural-Cosmos",
   },
 ];
 

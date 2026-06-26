@@ -1549,6 +1549,7 @@ body::before {
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.72), rgba(7, 11, 20, 0.54));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
   backdrop-filter: blur(16px);
+  cursor: pointer;
   transition: transform 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
 }
 
@@ -1566,6 +1567,11 @@ body::before {
   transform: translateY(-6px);
   border-color: rgba(103, 232, 249, 0.22);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.26), 0 0 46px rgba(34, 211, 238, 0.04);
+}
+
+.project-card-v2:focus-visible {
+  outline: 2px solid rgba(103, 232, 249, 0.75);
+  outline-offset: 4px;
 }
 
 .project-visual {
@@ -2031,6 +2037,8 @@ body::before {
 }
 
 .project-link {
+  position: relative;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
