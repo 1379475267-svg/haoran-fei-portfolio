@@ -11,7 +11,7 @@ export default function Skills() {
         <SectionHeader
           eyebrow="03 / CAPABILITIES"
           title="Skills & Strengths"
-          description="Not a static checklist — a practical system of abilities growing through projects, documentation and long-term practice."
+          description="Not a static checklist, but a practical system of abilities growing through projects, documentation and long-term practice."
         />
 
         <div className="skills-layout mt-14">

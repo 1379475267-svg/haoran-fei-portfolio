@@ -59,14 +59,14 @@ export interface Stat {
 
 export const profile = {
   name: "Haoran Fei",
-  chineseName: "费浩然",
-  role: "Electronic Information Student · Developer · Music Creator",
+  chineseName: "Haoran Fei",
+  role: "Electronic Information Student / Developer / Music Creator",
   email: "1379475267@qq.com",
   github: "https://github.com/1379475267-svg",
   heroIntro:
-    "我是费浩然，电子信息科学与技术专业本科生。正在探索嵌入式系统、AI Coding、Web 可视化与开源项目实践，也长期学习吉他和钢琴。我希望把技术能力、表达能力和创造力结合起来，做出真正有个人风格的作品。",
+    "I am an Electronic Information Science and Technology undergraduate exploring embedded systems, AI-assisted coding, web visualization and open-source project practice. I also study guitar and piano over the long term, and I want my work to connect technical ability, expression and personal style.",
   about:
-    "我是费浩然，电子信息科学与技术专业本科生。现阶段主要学习 C、Python、Linux、嵌入式开发、前端项目构建与 AI Coding 工具使用。我喜欢把学习过程做成可以展示、可以沉淀、可以持续迭代的项目。",
+    "I am currently focused on C, Python, Linux, embedded development, frontend project building and AI coding tools. I like turning the learning process into projects that can be shown, reviewed and improved over time.",
   signature: "Quiet, focused, and always building.",
 };
 
@@ -90,15 +90,15 @@ export const stats: Stat[] = [
 export const ribbonItems = [
   {
     label: "Currently Learning",
-    value: "C · Python · Linux · STM32 · Frontend",
+    value: "C / Python / Linux / STM32 / Frontend",
   },
   {
     label: "Building",
-    value: "Portfolio · GameMemory · Music Theory Tutorial",
+    value: "Portfolio / GameMemory / Music Theory Tutorial",
   },
   {
     label: "Direction",
-    value: "Embedded Systems · AI-assisted Development · Creative Coding",
+    value: "Embedded Systems / AI-assisted Development / Creative Coding",
   },
 ];
 
@@ -227,42 +227,42 @@ export const techStack = [
 export const skills: Skill[] = [
   {
     title: "Embedded Development",
-    description: "STM32、传感器、串口通信与硬件控制，持续积累软硬件结合的工程实践。",
+    description: "STM32, sensors, serial communication and hardware control, with steady practice across software and hardware.",
     level: "Learning",
     progress: 58,
     icon: Cpu,
   },
   {
     title: "AI-assisted Coding",
-    description: "使用 AI Coding 工具辅助原型、重构、文档整理和复杂任务拆解。",
+    description: "Using AI coding tools to support prototypes, refactoring, documentation and complex task breakdowns.",
     level: "Building",
     progress: 76,
     icon: Bot,
   },
   {
     title: "Web Visualization",
-    description: "关注 Three.js、Canvas、交互动效与现代界面的视觉表达。",
+    description: "Exploring Three.js, Canvas, interaction motion and modern interface expression.",
     level: "Exploring",
     progress: 68,
     icon: Code2,
   },
   {
     title: "Project Documentation",
-    description: "重视 README、复盘、技术文档、展示材料和清晰表达。",
+    description: "Practicing clear READMEs, project reviews, technical notes, presentation materials and structured communication.",
     level: "Practicing",
     progress: 72,
     icon: FileText,
   },
   {
     title: "Music Creation",
-    description: "长期学习吉他与钢琴，关注节奏、结构、编配与作品氛围。",
+    description: "Long-term guitar and piano learning, with attention to rhythm, structure, arrangement and atmosphere.",
     level: "Long-term",
     progress: 82,
     icon: Music2,
   },
   {
     title: "Team Collaboration",
-    description: "在实验室与项目中参与组织、推进、协作和成果展示。",
+    description: "Taking part in organizing, coordination, collaboration and project presentation in labs and project work.",
     level: "Active",
     progress: 64,
     icon: Users,

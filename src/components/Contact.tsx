@@ -53,7 +53,7 @@ export default function Contact() {
             <span><Terminal size={12} /> haoran@portfolio</span>
           </div>
           <div className="terminal-body">
-            <p><span className="terminal-prompt">➜</span> contact --haoran</p>
+            <p><span className="terminal-prompt">&gt;</span> contact --haoran</p>
             <p><span>status:</span> <b>{contact.status}</b></p>
             <p><span>email:</span> {contact.email}</p>
             <p><span>interests:</span> engineering, music, ideas</p>
@@ -64,7 +64,7 @@ export default function Contact() {
       </motion.div>
 
       <div className="section-shell flex flex-col items-center justify-between gap-4 py-8 text-xs text-slate-600 sm:flex-row">
-        <span>© 2026 Haoran Fei. All rights reserved.</span>
+        <span>Copyright 2026 Haoran Fei. All rights reserved.</span>
         <span>Designed with code, curiosity & rhythm.</span>
       </div>
     </footer>

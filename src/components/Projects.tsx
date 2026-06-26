@@ -94,7 +94,7 @@ export default function Projects() {
           <SectionHeader
             eyebrow="02 / SELECTED WORK"
             title="Featured Projects"
-            description="Engineering practice, visual experiments and personal interests — shaped into things that can be used, explored and improved."
+            description="Engineering practice, visual experiments and personal interests, shaped into things that can be used, explored and improved."
           />
           <div className="project-filters" aria-label="Filter projects">
             {projectCategories.map((category) => (

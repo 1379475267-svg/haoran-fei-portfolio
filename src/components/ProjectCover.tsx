@@ -34,9 +34,9 @@ function MusicCover() {
     <div className="cover-scene music-cover">
       <div className="music-staff">
         {Array.from({ length: 5 }).map((_, index) => <i key={index} />)}
-        <b className="note note-one">♪</b>
-        <b className="note note-two">●</b>
-        <b className="note note-three">♫</b>
+        <b className="note note-one">N1</b>
+        <b className="note note-two">N2</b>
+        <b className="note note-three">N3</b>
       </div>
       <div className="fretboard">
         {Array.from({ length: 6 }).map((_, index) => <i key={index} />)}
@@ -93,7 +93,7 @@ function AiCover() {
     <div className="cover-scene ai-cover">
       <div className="ai-feed">
         <div className="recognition-box">
-          <span>PERSON · 98%</span>
+          <span>PERSON / 98%</span>
         </div>
       </div>
       <div className="ai-metrics">

@@ -31,7 +31,7 @@ export default function HeroDashboard() {
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         >
           <div className="chroma-note-label"><Code2 size={12} /> CURRENT FOCUS</div>
-          <strong>Embedded · AI Coding</strong>
+          <strong>Embedded / AI Coding</strong>
           <span>Web Visualization</span>
         </motion.div>
 
@@ -51,7 +51,7 @@ export default function HeroDashboard() {
           transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
         >
           <div className="chroma-note-label"><Music2 size={12} /> LONG-TERM PRACTICE</div>
-          <strong>Guitar · Piano</strong>
+          <strong>Guitar / Piano</strong>
         </motion.div>
 
         <div className="chroma-system-line line-one" />
@@ -62,7 +62,7 @@ export default function HeroDashboard() {
 
       <div className="chroma-dashboard-footer">
         <span>REACT / TYPESCRIPT / STM32 / PYTHON</span>
-        <span>QUIETLY BUILDING →</span>
+        <span>QUIETLY BUILDING -&gt;</span>
       </div>
     </motion.div>
   );

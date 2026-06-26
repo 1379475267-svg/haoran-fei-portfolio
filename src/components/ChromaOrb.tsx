@@ -40,7 +40,7 @@ export default function ChromaOrb({ className = "", compact = false }: ChromaOrb
       aria-hidden="true"
     >
       <div className="chroma-coordinate coordinate-top">CHROMA / 01</div>
-      <div className="chroma-coordinate coordinate-side">HF—2026</div>
+      <div className="chroma-coordinate coordinate-side">HF - 2026</div>
       <div className="chroma-frame">
         <span className="frame-corner corner-tl" />
         <span className="frame-corner corner-tr" />
