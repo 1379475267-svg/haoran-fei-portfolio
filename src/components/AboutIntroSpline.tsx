@@ -1,43 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 const splineEmbedUrl = "https://my.spline.design/nexbotrobotcharacterconcept-683ef88c9ba798b61413588b4d67c4d7/";
 const splinePreviewUrl = "https://filespreview.spline.design/297fb66c-aaae-4f45-8767-4bcd8c1339aa.jpg";
 
 export default function AboutIntroSpline() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const releaseTimerRef = useRef<number | undefined>(undefined);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInteractive, setIsInteractive] = useState(false);
-
-  const releaseInteractionSoon = () => {
-    window.clearTimeout(releaseTimerRef.current);
-    releaseTimerRef.current = window.setTimeout(() => setIsInteractive(false), 900);
-  };
-
-  useEffect(() => {
-    return () => window.clearTimeout(releaseTimerRef.current);
-  }, []);
 
   return (
     <div
-      ref={sectionRef}
-      className={`about-intro-spline ${isLoaded ? "is-loaded" : ""} ${isInteractive ? "is-interactive" : ""}`}
+      className={`about-intro-spline is-interactive ${isLoaded ? "is-loaded" : ""}`}
       aria-label="Interactive NEXBOT Spline visual"
-      onPointerDown={() => setIsInteractive(true)}
-      onPointerUp={releaseInteractionSoon}
-      onPointerLeave={() => setIsInteractive(false)}
-      onWheelCapture={(event) => {
-        if (!isInteractive) {
-          return;
-        }
-
-        setIsInteractive(false);
-        window.scrollBy({
-          top: event.deltaY,
-          left: event.deltaX,
-          behavior: "auto",
-        });
-      }}
     >
       <img className="about-intro-spline-fallback" src={splinePreviewUrl} alt="" />
       <iframe
@@ -56,10 +28,7 @@ export default function AboutIntroSpline() {
       <div className="about-intro-spline-copy">
         <span>INTERACTIVE PROFILE / NEXBOT</span>
         <h2>Creative Systems</h2>
-        <p>Press and hold inside the scene to interact. Scroll normally to continue.</p>
-      </div>
-      <div className="about-intro-interaction-hint" aria-hidden="true">
-        Hold to interact
+        <p>Engineering practice, music learning and visual experiments in one personal system.</p>
       </div>
       <div className="about-intro-spline-meta" aria-hidden="true">
         <span>PROFILE SYSTEM / 01</span>

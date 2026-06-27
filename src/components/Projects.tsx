@@ -93,8 +93,8 @@ export default function Projects() {
         <div className="flex flex-col justify-between gap-8 xl:flex-row xl:items-end">
           <SectionHeader
             eyebrow="02 / SELECTED WORK"
-            title="Featured Projects"
-            description="Engineering practice, visual experiments and personal interests, shaped into things that can be used, explored and improved."
+            title="Work with shape, not noise."
+            description="A tighter view of projects across music tools, embedded practice, data learning and visual experiments."
           />
           <div className="project-filters" aria-label="Filter projects">
             {projectCategories.map((category) => (

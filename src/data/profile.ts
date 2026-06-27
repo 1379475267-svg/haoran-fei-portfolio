@@ -82,7 +82,7 @@ export const navItems: NavItem[] = [
 
 export const stats: Stat[] = [
   { value: "7", label: "Projects" },
-  { value: "2016", label: "Music Started" },
+  { value: "2012", label: "Music Started" },
   { value: "STM32", label: "Learning" },
   { value: "AI", label: "Coding Workflow" },
 ];
@@ -292,7 +292,7 @@ export const focusItems: FocusItem[] = [
 
 export const timeline: TimelineItem[] = [
   {
-    year: "2016",
+    year: "2012",
     title: "A beginning in music",
     description: "Started learning guitar and music.",
   },

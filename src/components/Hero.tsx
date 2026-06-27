@@ -13,7 +13,7 @@ const fadeUp = {
 export default function Hero() {
   return (
     <>
-      <section id="home" className="hero-grid relative flex min-h-[920px] items-center overflow-hidden pt-24">
+      <section id="home" className="hero-grid hero-refined relative flex min-h-[920px] items-center overflow-hidden pt-24">
         <SplineBackground />
         <video
           className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
@@ -29,31 +29,28 @@ export default function Hero() {
         </video>
         <div className="hero-vignette absolute inset-0" />
 
-        <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[0.82fr_1.18fr] xl:gap-16">
+        <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[0.92fr_1.08fr] xl:gap-16">
           <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.1 }}>
-            <motion.div variants={fadeUp} transition={{ duration: 0.6 }} className="status-badge">
+            <motion.div variants={fadeUp} transition={{ duration: 0.6 }} className="status-badge hero-status-minimal">
               <span />
-              OPEN TO IDEAS / COLLABORATION / BUILDING IN PUBLIC
+              BUILDING IN PUBLIC / ENGINEERING / MUSIC
             </motion.div>
 
             <motion.p
               variants={fadeUp}
-              className="mb-4 mt-8 text-xs font-medium tracking-[0.3em] text-slate-500"
+              className="hero-kicker mb-4 mt-8 text-xs font-medium tracking-[0.3em] text-slate-500"
             >
-              HELLO / NI HAO - 2026
+              HAORAN FEI - PORTFOLIO
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="max-w-4xl text-[3.6rem] font-semibold leading-[0.94] tracking-[-0.065em] text-slate-100 sm:text-7xl lg:text-[4.9rem] xl:text-[6.15rem]"
+              className="hero-title-refined max-w-4xl text-[3.6rem] font-semibold leading-[0.94] tracking-[-0.065em] text-slate-100 sm:text-7xl lg:text-[4.9rem] xl:text-[6.15rem]"
             >
-              Hi, I'm
-              <span className="mt-2 block">
-                <span className="gradient-haoran">Haoran</span>{" "}
-                <span className="gradient-fei">Fei.</span>
-              </span>
+              Build quietly.
+              <span className="mt-2 block">Ship clearly.</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-7 text-base font-medium text-slate-300 sm:text-lg">
-              {profile.role}
+              {profile.name} / {profile.role}
             </motion.p>
             <motion.p
               variants={fadeUp}

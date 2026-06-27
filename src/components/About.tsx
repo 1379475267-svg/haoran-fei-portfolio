@@ -71,8 +71,7 @@ export default function About() {
           </motion.div>
 
           <motion.div variants={reveal} className="about-story">
-            <BentoCard className="relative h-full overflow-hidden p-8 sm:p-10" accent="blue">
-              <span className="bento-number">01</span>
+            <article className="about-story-open">
               <p className="eyebrow-mini">STORY / ABOUT ME</p>
               <h3 className="mt-7 max-w-xl text-2xl font-semibold leading-tight text-slate-100 sm:text-3xl">
                 Building is how I turn learning into something real.
@@ -82,16 +81,16 @@ export default function About() {
                 <Sparkles size={15} className="text-cyan-300" />
                 Engineering / Expression / Iteration
               </div>
-            </BentoCard>
+            </article>
           </motion.div>
 
           <motion.div variants={reveal} className="about-music">
             <BentoCard className="h-full p-7" accent="violet">
               <div className="flex items-center justify-between">
                 <div className="icon-shell violet-icon"><Music2 size={20} /></div>
-                <span className="eyebrow-mini">SINCE 2016</span>
+                <span className="eyebrow-mini">SINCE 2012</span>
               </div>
-              <h3 className="mt-8 text-xl font-semibold text-slate-100">Music Since 2016</h3>
+              <h3 className="mt-8 text-xl font-semibold text-slate-100">Music Since 2012</h3>
               <p className="mt-2 text-sm text-slate-400">Guitar / Piano / Fingerstyle / Arrangement</p>
               <div className="audio-wave mt-8">
                 {Array.from({ length: 28 }).map((_, index) => (
