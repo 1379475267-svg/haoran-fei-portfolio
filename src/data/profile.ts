@@ -28,6 +28,8 @@ export interface Project {
   featured: boolean;
   github: string;
   demo: string;
+  coverImage?: string;
+  demoLabel?: string;
 }
 
 export interface Skill {
@@ -116,6 +118,8 @@ export const projects: Project[] = [
     featured: true,
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
+    coverImage: "/projects/chordpilot.png",
+    demoLabel: "View Repository",
   },
   {
     id: "python-data-analysis-quiz",
@@ -130,6 +134,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/python-data-analysis-quiz",
     demo: "https://github.com/1379475267-svg/python-data-analysis-quiz",
+    coverImage: "/projects/python-data-analysis-quiz.png",
+    demoLabel: "View Repository",
   },
   {
     id: "gamememory",
@@ -144,6 +150,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/GameMemory",
     demo: "https://github.com/1379475267-svg/GameMemory",
+    coverImage: "/projects/gamememory.png",
+    demoLabel: "View Repository",
   },
   {
     id: "string-blade",
@@ -158,6 +166,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/String-Blade",
     demo: "https://github.com/1379475267-svg/String-Blade",
+    coverImage: "/projects/string-blade.png",
+    demoLabel: "View Repository",
   },
   {
     id: "fretboard-caged-lab",
@@ -172,6 +182,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/fretboard-caged-lab",
     demo: "https://github.com/1379475267-svg/fretboard-caged-lab",
+    coverImage: "/projects/fretboard-caged-lab.png",
+    demoLabel: "View Repository",
   },
   {
     id: "interactive-particle-saturn",
@@ -186,6 +198,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/interactive-particle-saturn",
     demo: "https://github.com/1379475267-svg/interactive-particle-saturn",
+    coverImage: "/projects/interactive-particle-saturn.png",
+    demoLabel: "View Repository",
   },
   {
     id: "smart-fishing-alert",
@@ -200,6 +214,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/smart-fishing-alert",
     demo: "https://github.com/1379475267-svg/smart-fishing-alert",
+    coverImage: "/projects/smart-fishing-alert.png",
+    demoLabel: "View Repository",
   },
 ];
 

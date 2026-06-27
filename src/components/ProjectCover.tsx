@@ -3,6 +3,8 @@ import type { ProjectCoverType } from "../data/profile";
 interface ProjectCoverProps {
   type: ProjectCoverType;
   featured?: boolean;
+  image?: string;
+  title?: string;
 }
 
 function GameCover() {
@@ -125,7 +127,7 @@ function CosmosCover() {
   );
 }
 
-export default function ProjectCover({ type, featured = false }: ProjectCoverProps) {
+export default function ProjectCover({ type, featured = false, image, title }: ProjectCoverProps) {
   const scenes = {
     game: <GameCover />,
     music: <MusicCover />,
@@ -136,10 +138,25 @@ export default function ProjectCover({ type, featured = false }: ProjectCoverPro
   };
 
   return (
-    <div className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""}`}>
+    <div className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""} ${image ? "has-cover-image" : ""}`}>
+      {image ? (
+        <>
+          <img
+            className="project-cover-image"
+            src={image}
+            alt={`${title ?? type} preview`}
+            loading="lazy"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+              event.currentTarget.parentElement?.classList.add("is-cover-image-missing");
+            }}
+          />
+          <div className="project-cover-scrim" />
+        </>
+      ) : null}
       <div className="cover-grid" />
-      <span className="project-cover-label">{type.toUpperCase()} / SYSTEM</span>
-      {scenes[type]}
+      <span className="project-cover-label">{type.toUpperCase()} / PROJECT</span>
+      <div className="project-cover-fallback">{scenes[type]}</div>
     </div>
   );
 }

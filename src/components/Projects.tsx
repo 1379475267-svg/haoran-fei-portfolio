@@ -35,14 +35,19 @@ function ProjectCard({ project }: { project: Project }) {
       }}
       className={`project-card-v2 group ${project.featured ? "project-featured" : ""}`}
     >
-      <ProjectCover type={project.coverType} featured={project.featured} />
+      <ProjectCover
+        type={project.coverType}
+        featured={project.featured}
+        image={project.coverImage}
+        title={project.title}
+      />
       <div className="project-copy">
         <div className="flex items-center justify-between gap-3">
           <span className="project-category">{project.category}</span>
           <span className="text-[10px] tracking-[0.18em] text-slate-600">{project.id.toUpperCase()}</span>
         </div>
         <h3 className="mt-5 text-2xl font-semibold tracking-tight text-slate-100">{project.title}</h3>
-        <p className="mt-2 text-sm font-medium leading-6 text-cyan-100/70">{project.tagline}</p>
+        <p className="mt-2 text-sm font-medium leading-6 text-slate-300/80">{project.tagline}</p>
         <p className="mt-4 flex-1 text-sm leading-7 text-slate-400">
           {project.featured ? project.longDescription : project.description}
         </p>
@@ -59,7 +64,7 @@ function ProjectCard({ project }: { project: Project }) {
             className="project-link"
             onClick={(event) => event.stopPropagation()}
           >
-            View Details <ArrowUpRight size={14} />
+            {project.demoLabel ?? "View Project"} <ArrowUpRight size={14} />
           </a>
           <a
             href={project.github}

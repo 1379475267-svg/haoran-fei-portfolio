@@ -3641,6 +3641,196 @@ body::before {
   color: rgba(215, 226, 234, 0.6) !important;
 }
 
+/* Quiet project cards: real screenshots first, warm dark fallback visuals. */
+.project-card-v2 {
+  border-color: rgba(255, 216, 206, 0.1);
+  background:
+    linear-gradient(145deg, rgba(255, 241, 233, 0.045), rgba(10, 10, 13, 0.72)),
+    rgba(12, 12, 12, 0.82);
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms ease,
+    box-shadow 320ms ease,
+    background 320ms ease;
+}
+
+.project-card-v2:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 216, 206, 0.18);
+  background:
+    linear-gradient(145deg, rgba(255, 241, 233, 0.058), rgba(10, 10, 13, 0.76)),
+    rgba(12, 12, 12, 0.86);
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.24),
+    0 0 42px rgba(255, 47, 109, 0.035);
+}
+
+.project-card-v2:focus-visible {
+  outline-color: rgba(255, 216, 206, 0.58);
+}
+
+.project-visual {
+  background: #111;
+  border-color: rgba(255, 216, 206, 0.09);
+}
+
+.project-visual::before {
+  opacity: 0.28;
+  filter: saturate(0.58) sepia(0.12);
+}
+
+.project-card-v2:hover .project-visual::before {
+  transform: scale(1.025);
+}
+
+.project-visual-game::before {
+  background:
+    radial-gradient(circle at 70% 20%, rgba(255, 216, 206, 0.12), transparent 35%),
+    linear-gradient(145deg, #121015, #18121a);
+}
+
+.project-visual-music::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 216, 206, 0.14), transparent 38%),
+    linear-gradient(145deg, #191118, #101015);
+}
+
+.project-visual-saturn::before {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 216, 206, 0.1), transparent 40%),
+    linear-gradient(145deg, #111118, #15121d);
+}
+
+.project-visual-embedded::before {
+  background:
+    radial-gradient(circle at 25% 75%, rgba(255, 216, 206, 0.11), transparent 40%),
+    linear-gradient(145deg, #111514, #111218);
+}
+
+.project-visual-ai::before {
+  background:
+    radial-gradient(circle at 75% 25%, rgba(255, 216, 206, 0.12), transparent 38%),
+    linear-gradient(145deg, #151219, #101319);
+}
+
+.project-visual-cosmos::before {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 216, 206, 0.1), transparent 35%),
+    linear-gradient(145deg, #13111b, #101317);
+}
+
+.project-cover-image {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.01);
+  filter: saturate(0.88) contrast(1.04) brightness(0.78);
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms ease;
+}
+
+.project-card-v2:hover .project-cover-image {
+  transform: scale(1.045);
+  filter: saturate(0.96) contrast(1.06) brightness(0.86);
+}
+
+.project-cover-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(4, 6, 19, 0.08), rgba(4, 6, 19, 0.52)),
+    radial-gradient(circle at 28% 12%, rgba(255, 216, 206, 0.16), transparent 36%);
+}
+
+.cover-grid {
+  z-index: 4;
+  background-image:
+    linear-gradient(rgba(255, 241, 233, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 241, 233, 0.035) 1px, transparent 1px);
+}
+
+.project-cover-label {
+  z-index: 5;
+  color: rgba(255, 241, 233, 0.46);
+}
+
+.project-cover-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 260ms ease;
+}
+
+.project-visual.has-cover-image:not(.is-cover-image-missing) .project-cover-fallback {
+  opacity: 0;
+}
+
+.project-visual.has-cover-image:not(.is-cover-image-missing)::before {
+  opacity: 0;
+}
+
+.project-visual.is-cover-image-missing .project-cover-scrim {
+  display: none;
+}
+
+.project-card-v2:hover .cover-scene {
+  transform: scale(1.015) translateY(-2px);
+}
+
+.project-category {
+  border-color: rgba(255, 216, 206, 0.14);
+  color: rgba(255, 241, 233, 0.76);
+  background: rgba(255, 241, 233, 0.035);
+}
+
+.project-tech {
+  border-color: rgba(255, 216, 206, 0.12);
+  color: rgba(255, 241, 233, 0.62);
+  background: rgba(255, 241, 233, 0.035);
+}
+
+.project-card-v2:hover .project-tech {
+  border-color: rgba(255, 216, 206, 0.18);
+  color: rgba(255, 241, 233, 0.78);
+  background: rgba(255, 241, 233, 0.052);
+}
+
+.project-link {
+  color: rgba(255, 241, 233, 0.76);
+}
+
+.project-link:hover {
+  color: rgba(255, 241, 233, 0.94);
+}
+
+.project-link.subtle {
+  color: rgba(255, 241, 233, 0.42);
+}
+
+.project-filters {
+  border-color: rgba(255, 216, 206, 0.1);
+  background: rgba(255, 241, 233, 0.026);
+}
+
+.filter-active-bg {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 216, 206, 0.16);
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 47, 109, 0.12),
+    rgba(255, 216, 206, 0.07)
+  );
+}
+
 @media (max-width: 1180px) {
   .about-bento {
     grid-template-columns: 0.9fr 1.1fr;
