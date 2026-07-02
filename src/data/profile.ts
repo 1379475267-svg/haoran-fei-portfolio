@@ -62,11 +62,11 @@ export interface Stat {
 export const profile = {
   name: "Haoran Fei",
   chineseName: "Haoran Fei",
-  role: "Electronic Information Student / Developer / Music Creator",
+  role: "Electronic Information Student / Developer",
   email: "1379475267@qq.com",
   github: "https://github.com/1379475267-svg",
   heroIntro:
-    "I am an Electronic Information Science and Technology undergraduate exploring embedded systems, AI-assisted coding, web visualization and open-source project practice. I also study guitar and piano over the long term, and I want my work to connect technical ability, expression and personal style.",
+    "I build projects across embedded systems, creative coding, and music technology. I turn learning into tangible work - quietly, clearly, and with personal style.",
   about:
     "I am currently focused on C, Python, Linux, embedded development, frontend project building and AI coding tools. I like turning the learning process into projects that can be shown, reviewed and improved over time.",
   signature: "Quiet, focused, and always building.",
@@ -118,7 +118,6 @@ export const projects: Project[] = [
     featured: true,
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
-    coverImage: "/projects/chordpilot.png",
     demoLabel: "View Repository",
   },
   {
@@ -134,7 +133,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/python-data-analysis-quiz",
     demo: "https://github.com/1379475267-svg/python-data-analysis-quiz",
-    coverImage: "/projects/python-data-analysis-quiz.png",
     demoLabel: "View Repository",
   },
   {
@@ -150,7 +148,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/GameMemory",
     demo: "https://github.com/1379475267-svg/GameMemory",
-    coverImage: "/projects/gamememory.png",
     demoLabel: "View Repository",
   },
   {
@@ -166,7 +163,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/String-Blade",
     demo: "https://github.com/1379475267-svg/String-Blade",
-    coverImage: "/projects/string-blade.png",
     demoLabel: "View Repository",
   },
   {
@@ -182,7 +178,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/fretboard-caged-lab",
     demo: "https://github.com/1379475267-svg/fretboard-caged-lab",
-    coverImage: "/projects/fretboard-caged-lab.png",
     demoLabel: "View Repository",
   },
   {
@@ -198,7 +193,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/interactive-particle-saturn",
     demo: "https://github.com/1379475267-svg/interactive-particle-saturn",
-    coverImage: "/projects/interactive-particle-saturn.png",
     demoLabel: "View Repository",
   },
   {
@@ -214,7 +208,6 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/smart-fishing-alert",
     demo: "https://github.com/1379475267-svg/smart-fishing-alert",
-    coverImage: "/projects/smart-fishing-alert.png",
     demoLabel: "View Repository",
   },
 ];

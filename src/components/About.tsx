@@ -45,13 +45,7 @@ export default function About() {
           <motion.div variants={reveal} className="about-profile">
             <BentoCard className="h-full overflow-hidden p-5" accent="cyan">
               <div className="profile-portrait">
-                <img
-                  src="/src/assets/avatar.jpg"
-                  alt="Haoran Fei"
-                  onError={(event) => {
-                    event.currentTarget.style.display = "none";
-                  }}
-                />
+                <span className="portrait-monogram">HF</span>
                 <ChromaOrb compact className="profile-chroma" />
                 <span className="portrait-coordinate">23.1 N / BUILDING</span>
               </div>

@@ -15,18 +15,6 @@ export default function Hero() {
     <>
       <section id="home" className="hero-grid hero-refined relative flex min-h-[920px] items-center overflow-hidden pt-24">
         <SplineBackground />
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
-          autoPlay
-          muted
-          loop
-          playsInline
-          onCanPlay={(event) => {
-            event.currentTarget.style.opacity = "0.08";
-          }}
-        >
-          <source src="/videos/hero.mp4" type="video/mp4" />
-        </video>
         <div className="hero-vignette absolute inset-0" />
 
         <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[0.92fr_1.08fr] xl:gap-16">
@@ -49,13 +37,10 @@ export default function Hero() {
               Build quietly.
               <span className="mt-2 block">Ship clearly.</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-7 text-base font-medium text-slate-300 sm:text-lg">
+            <motion.p variants={fadeUp} className="hero-identity-line">
               {profile.name} / {profile.role}
             </motion.p>
-            <motion.p
-              variants={fadeUp}
-              className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-400 sm:text-base"
-            >
+            <motion.p variants={fadeUp} className="hero-intro-refined">
               {profile.heroIntro}
             </motion.p>
 
