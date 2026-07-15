@@ -110,7 +110,7 @@ export default function IntroBoot() {
                 HAORAN
                 <span>FEI</span>
               </h1>
-              <p className="intro-boot-subtitle">Game memory / music tech / creative code</p>
+              <p className="intro-boot-subtitle">Autonomous robotics / music tech / creative code</p>
             </motion.div>
 
             <div className="intro-boot-terminal" aria-hidden="true">

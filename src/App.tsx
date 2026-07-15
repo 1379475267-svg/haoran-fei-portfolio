@@ -5,26 +5,18 @@ import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Timeline from "./components/Timeline";
 import Contact from "./components/Contact";
-import BackgroundEffects from "./components/BackgroundEffects";
-import CursorGlow from "./components/CursorGlow";
 import ScrollProgress from "./components/ScrollProgress";
-import TechMarquee from "./components/TechMarquee";
 import NowFocus from "./components/NowFocus";
-import IntroBoot from "./components/IntroBoot";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-ink text-slate-100">
-      <IntroBoot />
-      <BackgroundEffects />
-      <CursorGlow />
+    <div className="soft-site">
       <ScrollProgress />
       <Navbar />
       <main>
         <Hero />
         <About />
         <Projects />
-        <TechMarquee />
         <Skills />
         <NowFocus />
         <Timeline />
