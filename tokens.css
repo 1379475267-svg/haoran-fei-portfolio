@@ -1,28 +1,38 @@
 :root {
-  --color-paper: oklch(97.2% 0.009 285);
-  --color-paper-raised: oklch(99.1% 0.005 285);
-  --color-paper-soft: oklch(94.7% 0.014 285);
-  --color-paper-deep: oklch(91.8% 0.017 285);
-  --color-ink: oklch(19.5% 0.022 276);
-  --color-ink-soft: oklch(28% 0.021 276);
-  --color-body: oklch(35% 0.019 276);
-  --color-muted: oklch(49% 0.018 276);
-  --color-faint: oklch(65% 0.015 276);
-  --color-rule: oklch(85.5% 0.016 282);
-  --color-rule-soft: oklch(90.5% 0.012 282);
-  --color-accent: oklch(59% 0.19 292);
-  --color-accent-soft: oklch(86% 0.065 292);
-  --color-accent-faint: oklch(94% 0.029 292);
-  --color-accent-ink: oklch(98% 0.006 285);
-  --color-focus: oklch(52% 0.23 292);
-  --color-positive: oklch(52% 0.12 157);
-  --color-error: oklch(55% 0.19 25);
-  --color-shadow: oklch(22% 0.02 276 / 0.08);
-  --color-overlay: oklch(97.2% 0.009 285 / 0.88);
-  --color-ink-overlay: oklch(19.5% 0.022 276 / 0.08);
+  --color-paper: oklch(13.5% 0.014 315);
+  --color-paper-deep: oklch(10.5% 0.015 315);
+  --color-paper-soft: oklch(17.5% 0.022 315);
+  --color-paper-raised: oklch(20.5% 0.025 315);
+  --color-panel: oklch(16.5% 0.022 315 / 0.88);
+  --color-panel-solid: oklch(17% 0.023 315);
+  --color-ink: oklch(92% 0.018 250);
+  --color-ink-strong: oklch(97% 0.012 250);
+  --color-body: oklch(78% 0.022 260);
+  --color-muted: oklch(64% 0.022 270);
+  --color-faint: oklch(58% 0.022 285);
+  --color-rule: oklch(87% 0.02 270 / 0.18);
+  --color-rule-soft: oklch(87% 0.02 270 / 0.09);
+  --color-grid: oklch(87% 0.02 270 / 0.045);
+  --color-accent: oklch(66% 0.245 333);
+  --color-accent-strong: oklch(72% 0.25 333);
+  --color-accent-soft: oklch(66% 0.245 333 / 0.18);
+  --color-accent-faint: oklch(66% 0.245 333 / 0.08);
+  --color-accent-glow: oklch(66% 0.245 333 / 0.28);
+  --color-accent-ink: oklch(16% 0.02 315);
+  --color-focus: oklch(76% 0.22 333);
+  --color-positive: oklch(75% 0.15 155);
+  --color-material: oklch(91.5% 0.012 285);
+  --color-material-raised: oklch(95% 0.009 285);
+  --color-material-ink: oklch(17% 0.02 315);
+  --color-material-body: oklch(36% 0.02 305);
+  --color-material-rule: oklch(17% 0.02 315 / 0.16);
+  --color-shadow: oklch(3% 0.01 315 / 0.58);
+  --color-shadow-soft: oklch(3% 0.01 315 / 0.28);
+  --color-overlay: oklch(11% 0.018 315 / 0.78);
+  --color-veil: oklch(94% 0.015 260 / 0.06);
 
-  --font-display: "Bricolage Grotesque", "Arial Narrow", sans-serif;
-  --font-body: "DM Sans", "Trebuchet MS", sans-serif;
+  --font-display: "Kanit", "Arial Narrow", sans-serif;
+  --font-body: "Geist", "Segoe UI", sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -32,7 +42,8 @@
   --text-xl: 1.953rem;
   --text-2xl: 2.441rem;
   --text-3xl: 3.052rem;
-  --text-display: clamp(3.25rem, 8vw + 0.5rem, 6.75rem);
+  --text-section: clamp(3.25rem, 10vw, 9rem);
+  --text-hero: clamp(4.4rem, 13vw, 11.5rem);
 
   --space-3xs: 0.125rem;
   --space-2xs: 0.25rem;
@@ -44,31 +55,36 @@
   --space-2xl: 4rem;
   --space-3xl: 6rem;
   --space-4xl: 9rem;
+  --space-5xl: 12rem;
 
   --radius-sm: 0.75rem;
   --radius-md: 1.25rem;
   --radius-lg: 2rem;
+  --radius-xl: 3rem;
   --radius-pill: 999rem;
   --rule-hair: 1px;
+  --rule-strong: 2px;
 
-  --shadow-whisper: 0 1rem 3rem var(--color-shadow);
-  --gradient-action: linear-gradient(135deg, var(--color-ink), var(--color-ink-soft));
+  --shadow-whisper: 0 1.5rem 4rem var(--color-shadow-soft);
+  --shadow-depth: 0 3rem 8rem var(--color-shadow);
+  --shadow-accent: 0 1.5rem 5rem var(--color-accent-glow);
+  --gradient-atmosphere: radial-gradient(circle at 72% 28%, var(--color-accent-soft), transparent 34%);
+  --gradient-panel: linear-gradient(145deg, var(--color-paper-raised), var(--color-paper-soft));
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-micro: 120ms;
   --dur-short: 220ms;
-  --dur-long: 420ms;
+  --dur-medium: 360ms;
+  --dur-long: 700ms;
 
   --z-base: 1;
   --z-raised: 10;
-  --z-dropdown: 100;
   --z-sticky: 200;
   --z-modal: 400;
-  --z-toast: 500;
-  --z-tooltip: 600;
 
   --page-gutter: clamp(1rem, 4vw, 4rem);
-  --page-max: 78rem;
+  --page-max: 92rem;
+  --nav-height: 4.5rem;
 }

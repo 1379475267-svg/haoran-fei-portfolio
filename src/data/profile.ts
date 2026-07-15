@@ -30,6 +30,8 @@ export interface Project {
   demo: string;
   coverImage?: string;
   coverPoster?: string;
+  coverVideoWebm?: string;
+  coverVideoMp4?: string;
   demoLabel?: string;
   period?: string;
   status?: string;
@@ -71,6 +73,9 @@ export const profile = {
   chineseName: "Haoran Fei",
   role: "Electronic Information Student / Developer",
   email: "1379475267@qq.com",
+  qq: "1379475267",
+  wechat: "Congee",
+  wechatQr: "./projects/wechat-qr.webp",
   github: "https://github.com/1379475267-svg",
   heroIntro:
     "I build hands-on systems across autonomous robotics, embedded development, and music technology. I turn learning into tangible work - quietly, clearly, and with personal style.",
@@ -127,6 +132,8 @@ export const projects: Project[] = [
     demo: "https://github.com/1379475267-svg/nonconvex-alpha-standard",
     coverImage: "./projects/nonconvex-navigation.gif",
     coverPoster: "./projects/nonconvex-navigation.webp",
+    coverVideoWebm: "./projects/nonconvex-navigation.webm",
+    coverVideoMp4: "./projects/nonconvex-navigation.mp4",
     demoLabel: "Open Flight Archive",
     period: "FIELD PROJECT · JUL 2026",
     status: "ACTIVE · TEAM R&D",
@@ -141,14 +148,15 @@ export const projects: Project[] = [
     title: "ChordPilot",
     category: "Music",
     tagline: "Automatic chord timeline analysis for local music files.",
-    description: "A local music-tech app for automatic chord timeline analysis.",
+    description: "A local Vue and FastAPI music-tech app for automatic chord timeline analysis.",
     longDescription:
-      "ChordPilot is a local music-tech app for automatic chord timeline analysis, connecting music learning with practical listening and review tools.",
-    tech: ["Music Tech", "Audio Analysis", "Local App"],
+      "ChordPilot turns uploaded MP3 or WAV files into a synchronized chord timeline, using chroma analysis and lightweight template matching to create a useful draft for listening, practice, and transcription.",
+    tech: ["Vue 3", "FastAPI", "librosa"],
     coverType: "music",
     featured: false,
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
+    coverPoster: "./projects/chordpilot-timeline.webp",
     demoLabel: "View Repository",
   },
   {
@@ -170,16 +178,17 @@ export const projects: Project[] = [
     id: "gamememory",
     title: "GameMemory",
     category: "Web",
-    tagline: "A personal archive for every game worth remembering.",
-    description: "A JavaScript project for recording game memories, ratings and play history.",
+    tagline: "A full-stack personal archive for every game worth remembering.",
+    description: "A Vue-based game archive for importing, rating, reviewing, and organizing a personal library.",
     longDescription:
-      "GameMemory keeps game records, ratings and personal notes in one maintainable archive for long-term play history.",
-    tech: ["JavaScript", "Game Archive", "Ratings"],
+      "GameMemory is a full-stack personal game archive with RAWG search, Steam library import, SteamGridDB artwork, Supabase data, ratings, reviews, statistics, and a public Memory Wall.",
+    tech: ["Vue 3", "Supabase", "Netlify"],
     coverType: "game",
     featured: false,
     github: "https://github.com/1379475267-svg/GameMemory",
-    demo: "https://github.com/1379475267-svg/GameMemory",
-    demoLabel: "View Repository",
+    demo: "https://1gamememory1.netlify.app",
+    coverPoster: "./projects/gamememory-library.webp",
+    demoLabel: "Open Live Site",
   },
   {
     id: "string-blade",
@@ -198,33 +207,37 @@ export const projects: Project[] = [
   },
   {
     id: "fretboard-caged-lab",
-    title: "fretboard-caged-lab",
+    title: "Fret & Key Theory Lab",
     category: "Music",
-    tagline: "Interactive CAGED system visualizer for guitar learners.",
-    description: "An interactive CAGED system visualizer for guitar learners.",
+    tagline: "A bilingual guitar and piano music-theory visualizer.",
+    description: "An interactive theory lab connecting CAGED shapes, fretboard notes, piano keys, and staff notation.",
     longDescription:
-      "fretboard-caged-lab turns guitar theory into an interactive visual system for learning shapes, positions and fretboard relationships.",
-    tech: ["JavaScript", "Guitar", "CAGED"],
+      "Fret & Key Theory Lab is a bilingual visual learning space for guitar and piano, connecting CAGED shapes, chord tones, scale intervals, keyboard layout, and beginner staff notation.",
+    tech: ["JavaScript", "CAGED", "Music Theory"],
     coverType: "music",
     featured: false,
     github: "https://github.com/1379475267-svg/fretboard-caged-lab",
-    demo: "https://github.com/1379475267-svg/fretboard-caged-lab",
-    demoLabel: "View Repository",
+    demo: "https://1379475267-svg.github.io/fretboard-caged-lab/",
+    coverPoster: "./projects/fretboard-guitar-view.webp",
+    demoLabel: "Open Live Demo",
   },
   {
     id: "interactive-particle-saturn",
     title: "interactive-particle-saturn",
     category: "Visualization",
-    tagline: "A cinematic particle Saturn with orbital dynamics.",
-    description: "A cinematic interactive particle Saturn built with Three.js and real-time chaos transitions.",
+    tagline: "A gesture-driven particle Saturn with orbital dynamics.",
+    description: "A cinematic Three.js particle system with hand tracking, orbital motion, and controlled chaos transitions.",
     longDescription:
-      "interactive-particle-saturn explores particle motion, orbital dynamics and real-time visual transitions through a cinematic Three.js scene.",
-    tech: ["Three.js", "JavaScript", "WebGL"],
+      "Interactive Particle Saturn is a browser artwork built from a responsive particle field, combining Three.js, MediaPipe hand tracking, GLSL, drag interaction, and real-time transitions from stable orbit to turbulence.",
+    tech: ["Three.js", "MediaPipe", "GLSL"],
     coverType: "saturn",
     featured: false,
     github: "https://github.com/1379475267-svg/interactive-particle-saturn",
-    demo: "https://github.com/1379475267-svg/interactive-particle-saturn",
-    demoLabel: "View Repository",
+    demo: "https://1379475267-svg.github.io/interactive-particle-saturn/",
+    coverPoster: "./projects/interactive-particle-saturn-live.webp",
+    coverVideoWebm: "./projects/interactive-particle-saturn.webm",
+    coverVideoMp4: "./projects/interactive-particle-saturn.mp4",
+    demoLabel: "Open Live Demo",
   },
   {
     id: "smart-fishing-alert",
