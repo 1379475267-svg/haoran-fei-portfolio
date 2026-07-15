@@ -1,0 +1,74 @@
+:root {
+  --color-paper: oklch(97.2% 0.009 285);
+  --color-paper-raised: oklch(99.1% 0.005 285);
+  --color-paper-soft: oklch(94.7% 0.014 285);
+  --color-paper-deep: oklch(91.8% 0.017 285);
+  --color-ink: oklch(19.5% 0.022 276);
+  --color-ink-soft: oklch(28% 0.021 276);
+  --color-body: oklch(35% 0.019 276);
+  --color-muted: oklch(49% 0.018 276);
+  --color-faint: oklch(65% 0.015 276);
+  --color-rule: oklch(85.5% 0.016 282);
+  --color-rule-soft: oklch(90.5% 0.012 282);
+  --color-accent: oklch(59% 0.19 292);
+  --color-accent-soft: oklch(86% 0.065 292);
+  --color-accent-faint: oklch(94% 0.029 292);
+  --color-accent-ink: oklch(98% 0.006 285);
+  --color-focus: oklch(52% 0.23 292);
+  --color-positive: oklch(52% 0.12 157);
+  --color-error: oklch(55% 0.19 25);
+  --color-shadow: oklch(22% 0.02 276 / 0.08);
+  --color-overlay: oklch(97.2% 0.009 285 / 0.88);
+  --color-ink-overlay: oklch(19.5% 0.022 276 / 0.08);
+
+  --font-display: "Bricolage Grotesque", "Arial Narrow", sans-serif;
+  --font-body: "DM Sans", "Trebuchet MS", sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.953rem;
+  --text-2xl: 2.441rem;
+  --text-3xl: 3.052rem;
+  --text-display: clamp(3.25rem, 8vw + 0.5rem, 6.75rem);
+
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 2rem;
+  --radius-pill: 999rem;
+  --rule-hair: 1px;
+
+  --shadow-whisper: 0 1rem 3rem var(--color-shadow);
+  --gradient-action: linear-gradient(135deg, var(--color-ink), var(--color-ink-soft));
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  --page-gutter: clamp(1rem, 4vw, 4rem);
+  --page-max: 78rem;
+}

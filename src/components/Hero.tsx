@@ -1,83 +1,35 @@
-import { motion } from "framer-motion";
-import { ArrowUpRight, Github, Mail } from "lucide-react";
-import { profile, stats } from "../data/profile";
-import ProgressiveVector from "./ProgressiveVector";
-import SplineBackground from "./SplineBackground";
-import StatRibbon from "./StatRibbon";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
-  visible: { opacity: 1, y: 0 },
-};
+import { ArrowDown, Cloud, Music2 } from "lucide-react";
+import FlightOrbit from "./FlightOrbit";
 
 export default function Hero() {
   return (
-    <>
-      <section id="home" className="hero-grid hero-refined relative flex min-h-[920px] items-center overflow-hidden pt-24">
-        <SplineBackground />
-        <div className="hero-vignette absolute inset-0" />
+    <section id="home" className="soft-hero" aria-labelledby="hero-title">
+      <FlightOrbit />
 
-        <div className="section-shell relative z-10 grid items-center gap-12 py-20 lg:grid-cols-[0.92fr_1.08fr] xl:gap-16">
-          <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.1 }}>
-            <motion.div variants={fadeUp} transition={{ duration: 0.6 }} className="status-badge hero-status-minimal">
-              <span />
-              BUILDING IN PUBLIC / ENGINEERING / MUSIC
-            </motion.div>
+      <div className="soft-hero-signal soft-hero-signal-cloud" aria-hidden="true">
+        <Cloud size={21} />
+      </div>
+      <div className="soft-hero-signal soft-hero-signal-music" aria-hidden="true">
+        <Music2 size={19} />
+      </div>
 
-            <motion.p
-              variants={fadeUp}
-              className="hero-kicker mb-4 mt-8 text-xs font-medium tracking-[0.3em] text-slate-500"
-            >
-              HAORAN FEI - PORTFOLIO
-            </motion.p>
-            <motion.h1
-              variants={fadeUp}
-              className="hero-title-refined max-w-4xl text-[3.6rem] font-semibold leading-[0.94] tracking-[-0.065em] text-slate-100 sm:text-7xl lg:text-[4.9rem] xl:text-[6.15rem]"
-            >
-              Build quietly.
-              <span className="mt-2 block">Ship clearly.</span>
-            </motion.h1>
-            <motion.p variants={fadeUp} className="hero-identity-line">
-              {profile.name} / {profile.role}
-            </motion.p>
-            <motion.p variants={fadeUp} className="hero-intro-refined">
-              {profile.heroIntro}
-            </motion.p>
-
-            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3">
-              <a href="#projects" className="button-primary">
-                View Projects <ArrowUpRight size={17} />
-              </a>
-              <a href="#contact" className="button-secondary">
-                Contact Me <Mail size={16} />
-              </a>
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noreferrer"
-                className="icon-button"
-                aria-label="View GitHub profile"
-              >
-                <Github size={18} />
-              </a>
-            </motion.div>
-
-            <motion.div variants={fadeUp} className="hero-stats">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          <div className="hero-vector-wrap">
-            <ProgressiveVector mode="hero" />
-          </div>
+      <div className="soft-shell soft-hero-inner">
+        <div className="soft-hero-copy">
+          <p className="soft-hero-kicker">Electronic information / Builder</p>
+          <h1 id="hero-title">
+            <span className="soft-hero-line">Build quietly.</span>
+            <span className="soft-hero-line">Make it tangible.</span>
+          </h1>
         </div>
-      </section>
-      <StatRibbon />
-    </>
+
+        <div className="soft-hero-foot">
+          <p>Autonomous robotics · Embedded systems · Music technology</p>
+          <a href="#about" aria-label="Continue to portfolio">
+            Scroll to explore
+            <ArrowDown size={16} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }

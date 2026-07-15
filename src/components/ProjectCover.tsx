@@ -90,6 +90,38 @@ function EmbeddedCover() {
   );
 }
 
+function DroneCover() {
+  const mapPoints = [
+    [12, 24], [22, 18], [31, 32], [42, 20], [54, 37], [66, 24],
+    [76, 41], [86, 29], [18, 58], [33, 68], [48, 55], [61, 72],
+    [74, 61], [88, 76], [25, 84], [48, 86],
+  ];
+
+  return (
+    <div className="cover-scene drone-cover">
+      <svg className="drone-route-map" viewBox="0 0 100 100" aria-hidden="true">
+        <path className="drone-route-line" d="M10 82 C22 70 25 48 41 55 S61 74 70 50 S78 24 92 18" />
+        <circle cx="10" cy="82" r="2.5" />
+        <circle cx="41" cy="55" r="2.5" />
+        <circle cx="70" cy="50" r="2.5" />
+        <circle cx="92" cy="18" r="3.2" />
+      </svg>
+      {mapPoints.map(([x, y], index) => (
+        <i key={index} className="drone-map-point" style={{ left: `${x}%`, top: `${y}%` }} />
+      ))}
+      <div className="drone-glyph" aria-hidden="true">
+        <span className="drone-arm drone-arm-a" />
+        <span className="drone-arm drone-arm-b" />
+        <i className="drone-rotor rotor-a" />
+        <i className="drone-rotor rotor-b" />
+        <i className="drone-rotor rotor-c" />
+        <i className="drone-rotor rotor-d" />
+        <b />
+      </div>
+    </div>
+  );
+}
+
 function AiCover() {
   return (
     <div className="cover-scene ai-cover">
@@ -129,6 +161,7 @@ function CosmosCover() {
 
 export default function ProjectCover({ type, featured = false, image, title }: ProjectCoverProps) {
   const scenes = {
+    drone: <DroneCover />,
     game: <GameCover />,
     music: <MusicCover />,
     saturn: <SaturnCover />,
@@ -155,8 +188,23 @@ export default function ProjectCover({ type, featured = false, image, title }: P
         </>
       ) : null}
       <div className="cover-grid" />
-      <span className="project-cover-label">{type.toUpperCase()} / PROJECT</span>
+      <span className="project-cover-label">
+        {type === "drone" ? "FLIGHT SYSTEM / PROJECT" : `${type.toUpperCase()} / PROJECT`}
+      </span>
       <div className="project-cover-fallback">{scenes[type]}</div>
+      {type === "drone" ? (
+        <div className="drone-flight-overlay" aria-hidden="true">
+          <span className="drone-flight-status"><i /> LIO ONLINE</span>
+          <div>
+            <span>LOCALIZATION</span>
+            <strong>Faster-LIO</strong>
+          </div>
+          <div>
+            <span>PLANNING</span>
+            <strong>Diff-Planner</strong>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -1,127 +1,63 @@
-import { motion } from "framer-motion";
-import { useRef } from "react";
-import { Cpu, Gauge, Music2, Sparkles } from "lucide-react";
-import { profile } from "../data/profile";
-import BentoCard from "./BentoCard";
+import { ArrowDownRight, ArrowUpRight, Radio, UserRound } from "lucide-react";
+import { profile, ribbonItems } from "../data/profile";
+import Reveal from "./Reveal";
 import SectionHeader from "./SectionHeader";
-import ChromaOrb from "./ChromaOrb";
-import AboutSplineBackground from "./AboutSplineBackground";
-import AboutIntroSpline from "./AboutIntroSpline";
-
-const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-};
 
 export default function About() {
-  const sectionRef = useRef<HTMLElement>(null);
-
   return (
-    <section id="about" ref={sectionRef} className="section-space section-divider relative overflow-hidden">
-      <AboutSplineBackground targetRef={sectionRef} />
-      <div className="section-shell relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <AboutIntroSpline />
-        </motion.div>
+    <section id="about" className="soft-section soft-about">
+      <div className="soft-shell">
+        <div className="soft-entry-grid" aria-label="Portfolio shortcuts">
+          <a href="#projects" className="soft-entry-card">
+            <span className="soft-entry-icon" aria-hidden="true">
+              <Radio size={23} />
+            </span>
+            <span>
+              <small>Current field project</small>
+              <strong>Open the Drone Lab</strong>
+            </span>
+            <ArrowDownRight className="soft-entry-arrow" size={21} aria-hidden="true" />
+          </a>
 
-        <SectionHeader
-          eyebrow="01 / PROFILE"
-          title="More than a list of tools."
-          description="A profile shaped by engineering practice, long-term music learning and the habit of turning curiosity into tangible work."
-        />
+          <a href="#about-note" className="soft-entry-card soft-entry-card-secondary">
+            <span className="soft-entry-icon" aria-hidden="true">
+              <UserRound size={22} />
+            </span>
+            <span>
+              <small>Profile note</small>
+              <strong>Meet the builder</strong>
+            </span>
+            <ArrowDownRight className="soft-entry-arrow" size={21} aria-hidden="true" />
+          </a>
+        </div>
 
-        <motion.div
-          className="about-bento mt-14"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ staggerChildren: 0.08 }}
-        >
-          <motion.div variants={reveal} className="about-profile">
-            <BentoCard className="h-full overflow-hidden p-5" accent="cyan">
-              <div className="profile-portrait">
-                <span className="portrait-monogram">HF</span>
-                <ChromaOrb compact className="profile-chroma" />
-                <span className="portrait-coordinate">23.1 N / BUILDING</span>
-              </div>
-              <div className="px-2 pb-2 pt-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-2xl font-semibold tracking-tight text-slate-100">Haoran Fei</h3>
-                    <p className="mt-1 text-sm text-cyan-200/80">Electronic Information Student</p>
-                  </div>
-                  <span className="online-pulse" />
-                </div>
-                <p className="mt-5 border-t border-white/8 pt-5 text-sm italic text-slate-400">
-                  "{profile.signature}"
-                </p>
-              </div>
-            </BentoCard>
-          </motion.div>
+        <Reveal className="soft-about-motion">
+          <div id="about-note" className="soft-about-layout">
+            <SectionHeader
+              label="About"
+              title="I turn learning into things that can be tested."
+              description="Engineering practice, music learning, and a habit of keeping the work visible enough to review and improve."
+            />
 
-          <motion.div variants={reveal} className="about-story">
-            <article className="about-story-open">
-              <p className="eyebrow-mini">STORY / ABOUT ME</p>
-              <h3 className="mt-7 max-w-xl text-2xl font-semibold leading-tight text-slate-100 sm:text-3xl">
-                Building is how I turn learning into something real.
-              </h3>
-              <p className="mt-6 max-w-2xl text-[15px] leading-8 text-slate-400">{profile.about}</p>
-              <div className="mt-8 flex items-center gap-3 text-xs text-slate-500">
-                <Sparkles size={15} className="text-cyan-300" />
-                Engineering / Expression / Iteration
-              </div>
-            </article>
-          </motion.div>
+            <div className="soft-about-note">
+              <p>{profile.about}</p>
+              <blockquote>“{profile.signature}”</blockquote>
+              <a href={`mailto:${profile.email}`} className="soft-text-link">
+                Start a conversation
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
 
-          <motion.div variants={reveal} className="about-music">
-            <BentoCard className="h-full p-7" accent="violet">
-              <div className="flex items-center justify-between">
-                <div className="icon-shell violet-icon"><Music2 size={20} /></div>
-                <span className="eyebrow-mini">SINCE 2012</span>
+          <dl className="soft-direction-list">
+            {ribbonItems.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
               </div>
-              <h3 className="mt-8 text-xl font-semibold text-slate-100">Music Since 2012</h3>
-              <p className="mt-2 text-sm text-slate-400">Guitar / Piano / Fingerstyle / Arrangement</p>
-              <div className="audio-wave mt-8">
-                {Array.from({ length: 28 }).map((_, index) => (
-                  <i key={index} style={{ height: `${18 + ((index * 31) % 76)}%` }} />
-                ))}
-              </div>
-            </BentoCard>
-          </motion.div>
-
-          <motion.div variants={reveal} className="about-engineering">
-            <BentoCard className="engineering-bento h-full overflow-hidden p-7" accent="cyan">
-              <div className="flex items-center justify-between">
-                <div className="icon-shell"><Cpu size={20} /></div>
-                <Gauge size={17} className="text-slate-600" />
-              </div>
-              <h3 className="mt-8 text-xl font-semibold text-slate-100">Engineering Practice</h3>
-              <p className="mt-2 text-sm text-slate-400">STM32 / Sensors / Web / AI Tools</p>
-              <div className="circuit-decoration" aria-hidden="true">
-                <span /><span /><span /><span />
-              </div>
-            </BentoCard>
-          </motion.div>
-
-          <motion.div variants={reveal} className="about-values">
-            <BentoCard className="h-full p-7" accent="blue">
-              <p className="eyebrow-mini">WHAT I CARE ABOUT</p>
-              <div className="mt-7 grid grid-cols-2 gap-3">
-                {["Clarity", "Persistence", "Expression", "Long-term Growth"].map((value, index) => (
-                  <div key={value} className="value-chip">
-                    <span>0{index + 1}</span>
-                    {value}
-                  </div>
-                ))}
-              </div>
-            </BentoCard>
-          </motion.div>
-        </motion.div>
+            ))}
+          </dl>
+        </Reveal>
       </div>
     </section>
   );

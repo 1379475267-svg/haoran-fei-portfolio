@@ -8,8 +8,8 @@ import {
   Users,
 } from "lucide-react";
 
-export type ProjectCategory = "Web" | "Embedded" | "AI" | "Data" | "Music" | "Tool" | "Visualization";
-export type ProjectCoverType = "game" | "music" | "saturn" | "embedded" | "ai" | "cosmos";
+export type ProjectCategory = "Robotics" | "Web" | "Embedded" | "AI" | "Data" | "Music" | "Tool" | "Visualization";
+export type ProjectCoverType = "drone" | "game" | "music" | "saturn" | "embedded" | "ai" | "cosmos";
 
 export interface NavItem {
   label: string;
@@ -29,7 +29,14 @@ export interface Project {
   github: string;
   demo: string;
   coverImage?: string;
+  coverPoster?: string;
   demoLabel?: string;
+  period?: string;
+  status?: string;
+  highlights?: Array<{
+    label: string;
+    value: string;
+  }>;
 }
 
 export interface Skill {
@@ -66,9 +73,9 @@ export const profile = {
   email: "1379475267@qq.com",
   github: "https://github.com/1379475267-svg",
   heroIntro:
-    "I build projects across embedded systems, creative coding, and music technology. I turn learning into tangible work - quietly, clearly, and with personal style.",
+    "I build hands-on systems across autonomous robotics, embedded development, and music technology. I turn learning into tangible work - quietly, clearly, and with personal style.",
   about:
-    "I am currently focused on C, Python, Linux, embedded development, frontend project building and AI coding tools. I like turning the learning process into projects that can be shown, reviewed and improved over time.",
+    "I am currently focused on autonomous robotics, C, Python, Linux, embedded development, frontend project building and AI coding tools. I like turning the learning process into projects that can be shown, reviewed and improved over time.",
   signature: "Quiet, focused, and always building.",
 };
 
@@ -83,28 +90,52 @@ export const navItems: NavItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "7", label: "Projects" },
+  { value: "8", label: "Projects" },
   { value: "2012", label: "Music Started" },
-  { value: "STM32", label: "Learning" },
+  { value: "ROS / PX4", label: "Learning" },
   { value: "AI", label: "Coding Workflow" },
 ];
 
 export const ribbonItems = [
   {
     label: "Currently Learning",
-    value: "C / Python / Linux / STM32 / Frontend",
+    value: "ROS / PX4 / Localization / Planning / Linux",
   },
   {
     label: "Building",
-    value: "Portfolio / GameMemory / Music Theory Tutorial",
+    value: "Nonconvex α Drone / Portfolio / ChordPilot",
   },
   {
     label: "Direction",
-    value: "Embedded Systems / AI-assisted Development / Creative Coding",
+    value: "Autonomous Robotics / Embedded Systems / Creative Technology",
   },
 ];
 
 export const projects: Project[] = [
+  {
+    id: "nonconvex-alpha",
+    title: "Nonconvex α / Drone Lab",
+    category: "Robotics",
+    tagline: "A student-team development archive for a real LiDAR autonomous flight stack.",
+    description: "A traceable workspace for restoring, testing, and extending an education and research drone.",
+    longDescription:
+      "A student team workspace for preserving the factory baseline and extending a real research drone. The current stack combines Livox Mid-360 and Faster-LIO localization and mapping with Diff-Planner local trajectory planning and PX4 control on Jetson Orin NX.",
+    tech: ["ROS 1", "PX4", "Faster-LIO", "Diff-Planner"],
+    coverType: "drone",
+    featured: true,
+    github: "https://github.com/1379475267-svg/nonconvex-alpha-standard",
+    demo: "https://github.com/1379475267-svg/nonconvex-alpha-standard",
+    coverImage: "./projects/nonconvex-navigation.gif",
+    coverPoster: "./projects/nonconvex-navigation.webp",
+    demoLabel: "Open Flight Archive",
+    period: "FIELD PROJECT · JUL 2026",
+    status: "ACTIVE · TEAM R&D",
+    highlights: [
+      { label: "Compute", value: "Jetson Orin NX" },
+      { label: "Sensing", value: "Livox Mid-360" },
+      { label: "Control", value: "PX4 / H743" },
+    ],
+  },
   {
     id: "chordpilot",
     title: "ChordPilot",
@@ -115,7 +146,7 @@ export const projects: Project[] = [
       "ChordPilot is a local music-tech app for automatic chord timeline analysis, connecting music learning with practical listening and review tools.",
     tech: ["Music Tech", "Audio Analysis", "Local App"],
     coverType: "music",
-    featured: true,
+    featured: false,
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
     demoLabel: "View Repository",
@@ -212,7 +243,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const projectCategories = ["All", "Web", "Music", "Data", "Tool", "Embedded", "Visualization"] as const;
+export const projectCategories = ["All", "Robotics", "Embedded", "Web", "Music", "Data", "Tool", "Visualization"] as const;
 
 export const techStack = [
   "React",
@@ -222,6 +253,10 @@ export const techStack = [
   "Python",
   "C",
   "STM32",
+  "ROS 1",
+  "PX4",
+  "Faster-LIO",
+  "Jetson Orin NX",
   "Linux",
   "Git",
   "Three.js",
@@ -235,10 +270,10 @@ export const techStack = [
 
 export const skills: Skill[] = [
   {
-    title: "Embedded Development",
-    description: "STM32, sensors, serial communication and hardware control, with steady practice across software and hardware.",
-    level: "Learning",
-    progress: 58,
+    title: "Robotics & Embedded",
+    description: "Working across ROS, PX4, LiDAR localization, STM32, sensors and hardware control with a safety-first testing workflow.",
+    level: "Building",
+    progress: 62,
     icon: Cpu,
   },
   {
@@ -281,21 +316,21 @@ export const skills: Skill[] = [
 export const focusItems: FocusItem[] = [
   {
     index: "01",
-    title: "Embedded Systems",
-    description: "STM32, sensors, serial communication, hardware control.",
-    tags: ["STM32", "Sensors", "C"],
+    title: "Autonomous Drone Systems",
+    description: "Understanding a real LiDAR flight stack from localization and mapping through planning and PX4 control.",
+    tags: ["ROS 1", "Faster-LIO", "PX4"],
   },
   {
     index: "02",
-    title: "AI Coding Workflow",
-    description: "Using AI tools to prototype, refactor and document projects.",
-    tags: ["Prototype", "Refactor", "Document"],
+    title: "Simulation Before Flight",
+    description: "Testing paths, parameters and recovery steps in simulation before controlled hardware validation.",
+    tags: ["Diff-Planner", "RViz", "Safety"],
   },
   {
     index: "03",
-    title: "Personal Brand",
-    description: "Building a portfolio that connects engineering, music and creativity.",
-    tags: ["Engineering", "Music", "Creative"],
+    title: "Team Engineering Record",
+    description: "Keeping every experiment reviewable through baselines, branches, pull requests and clear technical notes.",
+    tags: ["Git", "Review", "Documentation"],
   },
 ];
 
@@ -313,7 +348,7 @@ export const timeline: TimelineItem[] = [
   {
     year: "2026",
     title: "Projects became a practice",
-    description: "Built multiple personal projects, explored GitHub, AI Coding and engineering practice.",
+    description: "Moved from personal prototypes into a team autonomous-drone project, with GitHub, simulation and engineering documentation as part of the practice.",
   },
   {
     year: "Now",
