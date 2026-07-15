@@ -4,6 +4,12 @@ import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects, type Project } from "../data/profile";
+import {
+  categoryLabel,
+  getProjectLanguage,
+  highlightLabel,
+  useV3Language,
+} from "./V3Language";
 
 const selectedIds = [
   "nonconvex-alpha",
@@ -27,6 +33,7 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) {
+  const { language, t } = useV3Language();
   const wrapRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: wrapRef,
@@ -36,10 +43,16 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
   const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
-  const details = project.highlights ?? project.tech.slice(0, 3).map((value, techIndex) => ({
-    label: ["Focus", "Build", "Stack"][techIndex],
-    value,
-  }));
+  const localized = getProjectLanguage(project, language);
+  const details = project.highlights
+    ? project.highlights.map((detail) => ({
+        ...detail,
+        label: language === "zh" ? (highlightLabel[detail.label] ?? detail.label) : detail.label,
+      }))
+    : project.tech.slice(0, 3).map((value, techIndex) => ({
+        label: t.projects.detailLabels[techIndex],
+        value,
+      }));
 
   return (
     <div
@@ -55,21 +68,21 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
         <div className="v3-project-card-head">
           <span>{String(index + 1).padStart(2, "0")}</span>
           <div>
-            <p>{project.category} / {isDrone ? "Active team R&D" : "Personal project"}</p>
+            <p>{categoryLabel[project.category][language]} / {isDrone ? t.projects.active : t.projects.personal}</p>
             <h3>{title}</h3>
           </div>
           <a
             href={project.github}
             target="_blank"
             rel="noreferrer"
-            aria-label={`Open ${title} on GitHub`}
+            aria-label={`${t.projects.openAria}：${title}`}
           >
-            Open on GitHub <ArrowUpRight aria-hidden="true" />
+            {t.projects.open} <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
         <div className="v3-project-card-body">
           <div className="v3-project-card-notes">
-            <p>{project.longDescription}</p>
+            <p>{localized.longDescription}</p>
             <dl>
               {details.map((detail) => (
                 <div key={`${detail.label}-${detail.value}`}>
@@ -84,7 +97,7 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
             href={project.github}
             target="_blank"
             rel="noreferrer"
-            aria-label={`Open ${title} GitHub repository`}
+            aria-label={`${t.projects.openAria}：${title}`}
           >
             <ProjectCover
               type={project.coverType}
@@ -93,6 +106,8 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
               videoWebm={project.coverVideoWebm}
               videoMp4={project.coverVideoMp4}
               title={title}
+              label={localized.coverLabel}
+              language={language}
             />
           </a>
         </div>
@@ -103,6 +118,7 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
 
 export default function V3Projects() {
   const reduceMotion = useReducedMotion();
+  const { t } = useV3Language();
   const [compact, setCompact] = useState(false);
 
   useEffect(() => {
@@ -116,9 +132,9 @@ export default function V3Projects() {
   return (
     <section className="v3-projects" id="projects" aria-labelledby="projects-title">
       <div className="v3-projects-heading">
-        <p className="v3-section-label">Selected projects / GitHub</p>
-        <h2 id="projects-title">Project</h2>
-        <p>Five projects that show how I move between physical systems, practical tools, music, and visual experiments.</p>
+        <p className="v3-section-label">{t.projects.eyebrow}</p>
+        <h2 id="projects-title">{t.projects.title}</h2>
+        <p>{t.projects.intro}</p>
       </div>
       <div className="v3-project-stack">
         {selectedProjects.map((project, index) => (

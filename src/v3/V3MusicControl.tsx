@@ -1,9 +1,11 @@
 import { Music2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useV3Language } from "./V3Language";
 
 const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
 
 export default function V3MusicControl() {
+  const { t } = useV3Language();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -79,7 +81,7 @@ export default function V3MusicControl() {
         type="button"
         className={`v3-music-toggle ${isPlaying ? "is-playing" : ""} ${isBlocked ? "is-blocked" : ""}`}
         onClick={togglePlayback}
-        aria-label={isPlaying ? `Pause background music: ${TRACK_TITLE}` : `Play background music: ${TRACK_TITLE}`}
+        aria-label={`${isPlaying ? t.music.pause : t.music.play}：${TRACK_TITLE}`}
         aria-pressed={isPlaying}
         title={TRACK_TITLE}
         disabled={hasError}

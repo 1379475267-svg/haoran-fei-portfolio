@@ -8,9 +8,11 @@ interface ProjectCoverProps {
   videoWebm?: string;
   videoMp4?: string;
   title?: string;
+  label?: string;
+  language?: "zh" | "en";
 }
 
-function GameCover() {
+function GameCover({ language }: { language: "zh" | "en" }) {
   return (
     <div className="cover-scene game-cover">
       <div className="game-sidebar">
@@ -27,7 +29,7 @@ function GameCover() {
         ))}
       </div>
       <div className="game-rating">
-        <span>RECENTLY PLAYED</span>
+        <span>{language === "zh" ? "最近游玩" : "RECENTLY PLAYED"}</span>
         <div><i /><i /><i /><i /><i /></div>
       </div>
     </div>
@@ -72,7 +74,7 @@ function SaturnCover() {
   );
 }
 
-function EmbeddedCover() {
+function EmbeddedCover({ language }: { language: "zh" | "en" }) {
   return (
     <div className="cover-scene embedded-cover">
       <div className="chip">
@@ -82,7 +84,7 @@ function EmbeddedCover() {
       <div className="circuit-line circuit-b" />
       <div className="circuit-line circuit-c" />
       <div className="sensor-panel">
-        <span>SENSOR / MPU6050</span>
+        <span>{language === "zh" ? "传感器 / MPU6050" : "SENSOR / MPU6050"}</span>
         <div className="sensor-wave">
           {Array.from({ length: 12 }).map((_, index) => (
             <i key={index} style={{ height: `${20 + ((index * 23) % 68)}%` }} />
@@ -125,16 +127,16 @@ function DroneCover() {
   );
 }
 
-function AiCover() {
+function AiCover({ language }: { language: "zh" | "en" }) {
   return (
     <div className="cover-scene ai-cover">
       <div className="ai-feed">
         <div className="recognition-box">
-          <span>PERSON / 98%</span>
+          <span>{language === "zh" ? "人物 / 98%" : "PERSON / 98%"}</span>
         </div>
       </div>
       <div className="ai-metrics">
-        <span>MODEL STATUS</span>
+        <span>{language === "zh" ? "模型状态" : "MODEL STATUS"}</span>
         <strong>YOLOv7</strong>
         <div><i style={{ width: "82%" }} /></div>
         <div><i style={{ width: "64%" }} /></div>
@@ -169,17 +171,19 @@ export default function ProjectCover({
   videoWebm,
   videoMp4,
   title,
+  label,
+  language = "en",
 }: ProjectCoverProps) {
   const reduceMotion = useReducedMotion();
   const hasVideo = Boolean(videoWebm || videoMp4);
   const hasMedia = Boolean(image || hasVideo);
   const scenes = {
     drone: <DroneCover />,
-    game: <GameCover />,
+    game: <GameCover language={language} />,
     music: <MusicCover />,
     saturn: <SaturnCover />,
-    embedded: <EmbeddedCover />,
-    ai: <AiCover />,
+    embedded: <EmbeddedCover language={language} />,
+    ai: <AiCover language={language} />,
     cosmos: <CosmosCover />,
   };
 
@@ -190,7 +194,7 @@ export default function ProjectCover({
           <img
             className="project-cover-image"
             src={image}
-            alt={`${title ?? type} preview`}
+            alt={`${title ?? type}${language === "zh" ? " 项目预览" : " preview"}`}
             loading="lazy"
             onError={(event) => {
               event.currentTarget.style.display = "none";
@@ -209,7 +213,7 @@ export default function ProjectCover({
           playsInline
           preload="metadata"
           poster={image}
-          aria-label={`${title ?? type} animated preview`}
+          aria-label={`${title ?? type}${language === "zh" ? " 动态项目预览" : " animated preview"}`}
           onError={(event) => {
             event.currentTarget.style.display = "none";
           }}
@@ -220,18 +224,18 @@ export default function ProjectCover({
       ) : null}
       <div className="cover-grid" aria-hidden="true" />
       <span className="project-cover-label" aria-hidden="true">
-        {type === "drone" ? "FLIGHT SYSTEM / PROJECT" : `${type.toUpperCase()} / PROJECT`}
+        {label ?? (type === "drone" ? "FLIGHT SYSTEM / PROJECT" : `${type.toUpperCase()} / PROJECT`)}
       </span>
       <div className="project-cover-fallback" aria-hidden="true">{scenes[type]}</div>
       {type === "drone" ? (
         <div className="drone-flight-overlay" aria-hidden="true">
-          <span className="drone-flight-status"><i /> LIO ONLINE</span>
+          <span className="drone-flight-status"><i /> {language === "zh" ? "LIO 在线" : "LIO ONLINE"}</span>
           <div>
-            <span>LOCALIZATION</span>
+              <span>{language === "zh" ? "定位" : "LOCALIZATION"}</span>
             <strong>Faster-LIO</strong>
           </div>
           <div>
-            <span>PLANNING</span>
+              <span>{language === "zh" ? "规划" : "PLANNING"}</span>
             <strong>Diff-Planner</strong>
           </div>
         </div>
