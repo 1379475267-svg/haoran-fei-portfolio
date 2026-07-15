@@ -1,9 +1,12 @@
+import { useReducedMotion } from "framer-motion";
 import type { ProjectCoverType } from "../data/profile";
 
 interface ProjectCoverProps {
   type: ProjectCoverType;
   featured?: boolean;
   image?: string;
+  videoWebm?: string;
+  videoMp4?: string;
   title?: string;
 }
 
@@ -159,7 +162,17 @@ function CosmosCover() {
   );
 }
 
-export default function ProjectCover({ type, featured = false, image, title }: ProjectCoverProps) {
+export default function ProjectCover({
+  type,
+  featured = false,
+  image,
+  videoWebm,
+  videoMp4,
+  title,
+}: ProjectCoverProps) {
+  const reduceMotion = useReducedMotion();
+  const hasVideo = Boolean(videoWebm || videoMp4);
+  const hasMedia = Boolean(image || hasVideo);
   const scenes = {
     drone: <DroneCover />,
     game: <GameCover />,
@@ -171,7 +184,7 @@ export default function ProjectCover({ type, featured = false, image, title }: P
   };
 
   return (
-    <div className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""} ${image ? "has-cover-image" : ""}`}>
+    <div className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""} ${hasMedia ? "has-cover-image" : ""}`}>
       {image ? (
         <>
           <img
@@ -187,11 +200,29 @@ export default function ProjectCover({ type, featured = false, image, title }: P
           <div className="project-cover-scrim" />
         </>
       ) : null}
-      <div className="cover-grid" />
-      <span className="project-cover-label">
+      {hasVideo && !reduceMotion ? (
+        <video
+          className="project-cover-image project-cover-video"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={image}
+          aria-label={`${title ?? type} animated preview`}
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
+        >
+          {videoWebm ? <source src={videoWebm} type="video/webm" /> : null}
+          {videoMp4 ? <source src={videoMp4} type="video/mp4" /> : null}
+        </video>
+      ) : null}
+      <div className="cover-grid" aria-hidden="true" />
+      <span className="project-cover-label" aria-hidden="true">
         {type === "drone" ? "FLIGHT SYSTEM / PROJECT" : `${type.toUpperCase()} / PROJECT`}
       </span>
-      <div className="project-cover-fallback">{scenes[type]}</div>
+      <div className="project-cover-fallback" aria-hidden="true">{scenes[type]}</div>
       {type === "drone" ? (
         <div className="drone-flight-overlay" aria-hidden="true">
           <span className="drone-flight-status"><i /> LIO ONLINE</span>
