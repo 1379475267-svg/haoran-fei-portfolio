@@ -16,7 +16,7 @@ const copy = {
     switchLanguage: "切换到英文",
     hero: {
       kicker: "电子信息 / 开发者",
-      location: "杭州 · 2026",
+      location: "2026",
       greeting: "你好，我是",
       body: "一名正在构建自主飞行系统、嵌入式工具与创意技术项目的学生开发者。",
       viewProject: "查看无人机项目",
@@ -61,7 +61,7 @@ const copy = {
     switchLanguage: "Switch to Chinese",
     hero: {
       kicker: "Electronic information / developer",
-      location: "Hangzhou · 2026",
+      location: "2026",
       greeting: "Hi, I’m",
       body: "A student developer building autonomous flight systems, embedded tools, and creative technology.",
       viewProject: "View drone project",
