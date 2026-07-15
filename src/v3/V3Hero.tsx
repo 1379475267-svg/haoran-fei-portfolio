@@ -2,6 +2,7 @@ import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { profile } from "../data/profile";
 import V3Magnet from "./V3Magnet";
+import { useV3Language } from "./V3Language";
 
 const container: Variants = {
   hidden: {},
@@ -21,6 +22,7 @@ const item: Variants = {
 
 export default function V3Hero() {
   const reduceMotion = useReducedMotion();
+  const { language, t } = useV3Language();
 
   return (
     <section className="v3-hero" id="home" aria-labelledby="v3-hero-title">
@@ -32,13 +34,13 @@ export default function V3Hero() {
         animate="visible"
       >
         <motion.div className="v3-hero-kicker" variants={item}>
-          <span>Electronic information / developer</span>
-          <span>Hangzhou · 2026</span>
+          <span>{t.hero.kicker}</span>
+          <span>{t.hero.location}</span>
         </motion.div>
 
         <div className="v3-hero-title-wrap">
           <motion.h1 id="v3-hero-title" variants={item}>
-            <span>Hi, I&apos;m</span>
+            <span>{t.hero.greeting}</span>
             <strong>Haoran</strong>
           </motion.h1>
         </div>
@@ -49,7 +51,7 @@ export default function V3Hero() {
               {reduceMotion ? (
                 <img
                   src="./projects/nonconvex-navigation.webp"
-                  alt="Autonomous drone navigating through a tree-lined corridor with mapping views"
+                  alt={t.hero.mediaAlt}
                 />
               ) : (
                 <video
@@ -60,20 +62,20 @@ export default function V3Hero() {
                   playsInline
                   preload="metadata"
                   poster="./projects/nonconvex-navigation.webp"
-                  aria-label="Autonomous drone navigation test footage"
+                  aria-label={t.hero.mediaAria}
                 >
                   <source src="./projects/nonconvex-navigation.webm" type="video/webm" />
                   <source src="./projects/nonconvex-navigation.mp4" type="video/mp4" />
                   <track
                     kind="captions"
                     src="./projects/nonconvex-navigation.vtt"
-                    srcLang="en"
-                    label="English"
+                    srcLang={language === "zh" ? "zh" : "en"}
+                    label={language === "zh" ? "中文字幕" : "English"}
                   />
                 </video>
               )}
               <div className="v3-hero-media-chrome">
-                <span><i /> Live project</span>
+                <span><i /> {t.hero.live}</span>
                 <span>Nonconvex α</span>
               </div>
               <div className="v3-hero-media-corner" aria-hidden="true" />
@@ -82,17 +84,14 @@ export default function V3Hero() {
         </motion.div>
 
         <motion.div className="v3-hero-bottom" variants={item}>
-          <p>
-            A student developer building autonomous flight systems, embedded tools,
-            and creative technology.
-          </p>
+          <p>{t.hero.body}</p>
           <V3Magnet className="v3-hero-cta-magnet" strength={5}>
             <a className="v3-action" href="#projects">
-              View drone project <ArrowUpRight aria-hidden="true" />
+              {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
             </a>
           </V3Magnet>
-          <a className="v3-scroll-cue" href="#project-reel" aria-label="Continue to project reel">
-            Explore the archive <ArrowDownRight aria-hidden="true" />
+          <a className="v3-scroll-cue" href="#project-reel" aria-label={t.hero.exploreAria}>
+            {t.hero.explore} <ArrowDownRight aria-hidden="true" />
           </a>
         </motion.div>
       </motion.div>

@@ -32,6 +32,7 @@ export interface Project {
   coverPoster?: string;
   coverVideoWebm?: string;
   coverVideoMp4?: string;
+  coverLabel?: string;
   demoLabel?: string;
   period?: string;
   status?: string;
@@ -163,16 +164,18 @@ export const projects: Project[] = [
     id: "python-data-analysis-quiz",
     title: "python-data-analysis-quiz",
     category: "Data",
-    tagline: "A Python quiz project for data analysis practice.",
-    description: "A compact Python project for reviewing data-analysis concepts through quiz-style practice.",
+    tagline: "A browser-based final-exam practice space for Python data analysis.",
+    description: "A static study site with 123 questions, answer checking, explanations and mistake review.",
     longDescription:
-      "python-data-analysis-quiz is a focused learning repository for Python data-analysis review, practice questions and small technical exercises.",
-    tech: ["Python", "Data Analysis", "Quiz"],
+      "A focused revision site covering true-or-false, single choice, fill-in, code completion and short programming questions, with automatic marking for objective questions and a dedicated mistake-review flow.",
+    tech: ["JavaScript", "Data Analysis", "Static Web"],
     coverType: "ai",
     featured: false,
     github: "https://github.com/1379475267-svg/python-data-analysis-quiz",
-    demo: "https://github.com/1379475267-svg/python-data-analysis-quiz",
-    demoLabel: "View Repository",
+    demo: "https://1379475267-svg.github.io/python-data-analysis-quiz/",
+    coverPoster: "./projects/python-data-analysis-quiz.webp",
+    coverLabel: "DATA / PROJECT",
+    demoLabel: "Open Live Demo",
   },
   {
     id: "gamememory",
@@ -193,17 +196,19 @@ export const projects: Project[] = [
   {
     id: "string-blade",
     title: "String-Blade",
-    category: "Tool",
-    tagline: "A TypeScript project with a small, sharp tool-building focus.",
-    description: "A public TypeScript project with MIT licensing, built as part of my tooling practice.",
+    category: "Music",
+    tagline: "A browser guitar-chord combat game powered by live musical input.",
+    description: "Play chords to attack, guard, parry and follow rhythm-based progressions.",
     longDescription:
-      "String-Blade is a TypeScript project from my public GitHub workspace, focused on concise implementation and reusable tool-building practice.",
-    tech: ["TypeScript", "MIT License", "Tooling"],
-    coverType: "cosmos",
+      "String Blade turns guitar chords into battle actions across Duel and Progression modes, combining Phaser combat with microphone chord recognition, Web MIDI input, calibration tools and rhythm timing.",
+    tech: ["Phaser", "Web Audio", "Web MIDI"],
+    coverType: "game",
     featured: false,
     github: "https://github.com/1379475267-svg/String-Blade",
-    demo: "https://github.com/1379475267-svg/String-Blade",
-    demoLabel: "View Repository",
+    demo: "https://stringblade.netlify.app",
+    coverPoster: "./projects/string-blade.webp",
+    coverLabel: "CHORD COMBAT / PROJECT",
+    demoLabel: "Open Live Demo",
   },
   {
     id: "fretboard-caged-lab",
