@@ -30,6 +30,8 @@ export interface Project {
   demo: string;
   globalDemo?: string;
   chinaDemo?: string;
+  globalDemoUnavailable?: boolean;
+  chinaDemoUnavailable?: boolean;
   coverImage?: string;
   coverPoster?: string;
   coverVideoWebm?: string;
@@ -160,6 +162,7 @@ export const projects: Project[] = [
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
     chinaDemo: "http://47.109.136.234/projects/chordpilot/",
+    globalDemoUnavailable: true,
     coverPoster: "./projects/chordpilot-timeline.webp",
     demoLabel: "View Repository",
   },
@@ -250,6 +253,7 @@ export const projects: Project[] = [
     github: "https://github.com/1379475267-svg/interactive-particle-saturn",
     demo: "https://1379475267-svg.github.io/interactive-particle-saturn/",
     globalDemo: "https://1379475267-svg.github.io/interactive-particle-saturn/",
+    chinaDemoUnavailable: true,
     coverPoster: "./projects/interactive-particle-saturn-live.webp",
     coverVideoWebm: "./projects/interactive-particle-saturn.webm",
     coverVideoMp4: "./projects/interactive-particle-saturn.mp4",

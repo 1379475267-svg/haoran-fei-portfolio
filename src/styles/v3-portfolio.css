@@ -494,7 +494,7 @@ body {
 }
 
 .v3-action,
-.v3-project-card-links > a {
+.v3-project-card-links > :is(a, span) {
   transition:
     background-color var(--dur-short) var(--ease-out),
     color var(--dur-short) var(--ease-out),
@@ -957,6 +957,13 @@ body {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-xs);
+}
+
+.v3-project-card-link-unavailable {
+  border-style: dashed !important;
+  color: var(--color-muted) !important;
+  cursor: not-allowed;
+  opacity: 0.72;
 }
 
 .v3-project-card-links > a {
@@ -1636,6 +1643,12 @@ body {
   .v3-project-card-links {
     grid-column: 1;
     justify-content: flex-start;
+    width: 100%;
+  }
+
+  .v3-project-card-links > :is(a, span) {
+    justify-content: center;
+    width: 100%;
   }
 
   .v3-project-card-notes dl > div {

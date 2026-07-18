@@ -44,6 +44,27 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
   const localized = getProjectLanguage(project, language);
+  const isChinaSite = typeof window !== "undefined" && window.location.hostname === "47.109.136.234";
+  const primaryUrl = isChinaSite
+    ? (project.chinaDemo ?? project.globalDemo ?? project.github)
+    : (project.globalDemo ?? project.chinaDemo ?? project.github);
+  const labels = language === "zh"
+    ? {
+        globalDemo: "在线体验 · Global",
+        chinaDemo: "在线体验 · 中国大陆",
+        globalUnavailable: "Global 体验 · 暂未部署",
+        chinaUnavailable: "中国大陆体验 · 暂未部署",
+        github: isDrone ? "查看项目档案 · GitHub" : "查看源码 · GitHub",
+        openDemo: "打开在线体验",
+      }
+    : {
+        globalDemo: "Live demo · Global",
+        chinaDemo: "Live demo · China",
+        globalUnavailable: "Global demo · Not deployed",
+        chinaUnavailable: "China demo · Not deployed",
+        github: isDrone ? "Project archive · GitHub" : "View source · GitHub",
+        openDemo: "Open live demo",
+      };
   const details = project.highlights
     ? project.highlights.map((detail) => ({
         ...detail,
@@ -73,14 +94,24 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
           </div>
           <div className="v3-project-card-links">
             {project.globalDemo ? (
-              <a href={project.globalDemo} target="_blank" rel="noreferrer">
-                Global <ArrowUpRight aria-hidden="true" />
+              <a href={project.globalDemo} target="_blank" rel="noreferrer" aria-label={`${labels.globalDemo}: ${title}`}>
+                {labels.globalDemo} <ArrowUpRight aria-hidden="true" />
               </a>
             ) : null}
+            {project.globalDemoUnavailable ? (
+              <span className="v3-project-card-link-unavailable">
+                {labels.globalUnavailable}
+              </span>
+            ) : null}
             {project.chinaDemo ? (
-              <a href={project.chinaDemo} target="_blank" rel="noreferrer">
-                中国大陆 <ArrowUpRight aria-hidden="true" />
+              <a href={project.chinaDemo} target="_blank" rel="noreferrer" aria-label={`${labels.chinaDemo}: ${title}`}>
+                {labels.chinaDemo} <ArrowUpRight aria-hidden="true" />
               </a>
+            ) : null}
+            {project.chinaDemoUnavailable ? (
+              <span className="v3-project-card-link-unavailable">
+                {labels.chinaUnavailable}
+              </span>
             ) : null}
             <a
               href={project.github}
@@ -88,7 +119,7 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
               rel="noreferrer"
               aria-label={`${t.projects.openAria}：${title}`}
             >
-              GitHub <ArrowUpRight aria-hidden="true" />
+              {labels.github} <ArrowUpRight aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -106,10 +137,10 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
           </div>
           <a
             className="v3-project-card-visual"
-            href={project.github}
+            href={primaryUrl}
             target="_blank"
             rel="noreferrer"
-            aria-label={`${t.projects.openAria}：${title}`}
+            aria-label={`${project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria}: ${title}`}
           >
             <ProjectCover
               type={project.coverType}
