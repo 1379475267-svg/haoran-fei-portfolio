@@ -299,7 +299,7 @@ body {
 
 .v3-nav-contact:active,
 .v3-action:active,
-.v3-project-card-head > a:active {
+.v3-project-card-links > a:active {
   transform: translateY(var(--space-3xs));
 }
 
@@ -494,7 +494,7 @@ body {
 }
 
 .v3-action,
-.v3-project-card-head > a {
+.v3-project-card-links > a {
   transition:
     background-color var(--dur-short) var(--ease-out),
     color var(--dur-short) var(--ease-out),
@@ -952,7 +952,14 @@ body {
   text-transform: uppercase;
 }
 
-.v3-project-card-head > a {
+.v3-project-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+}
+
+.v3-project-card-links > a {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
@@ -967,7 +974,7 @@ body {
   text-transform: uppercase;
 }
 
-.v3-project-card-head > a:hover {
+.v3-project-card-links > a:hover {
   border-color: var(--color-accent);
   background: var(--color-accent-faint);
 }
@@ -1233,7 +1240,7 @@ body {
 .v3-action,
 .v3-scroll-cue,
 .v3-about-links a,
-.v3-project-card-head > a,
+.v3-project-card-links > a,
 .v3-footer :is(a, button) {
   white-space: nowrap;
 }
@@ -1362,9 +1369,10 @@ body {
     grid-template-columns: 3.5rem 1fr;
   }
 
-  .v3-project-card-head > a {
+  .v3-project-card-links {
     grid-column: 2;
     justify-self: start;
+    justify-content: flex-start;
   }
 
   .v3-footer-cta {
@@ -1625,8 +1633,9 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .v3-project-card-head > a {
+  .v3-project-card-links {
     grid-column: 1;
+    justify-content: flex-start;
   }
 
   .v3-project-card-notes dl > div {

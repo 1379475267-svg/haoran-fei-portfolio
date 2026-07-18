@@ -71,14 +71,26 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
             <p>{categoryLabel[project.category][language]} / {isDrone ? t.projects.active : t.projects.personal}</p>
             <h3>{title}</h3>
           </div>
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${t.projects.openAria}：${title}`}
-          >
-            {t.projects.open} <ArrowUpRight aria-hidden="true" />
-          </a>
+          <div className="v3-project-card-links">
+            {project.globalDemo ? (
+              <a href={project.globalDemo} target="_blank" rel="noreferrer">
+                Global <ArrowUpRight aria-hidden="true" />
+              </a>
+            ) : null}
+            {project.chinaDemo ? (
+              <a href={project.chinaDemo} target="_blank" rel="noreferrer">
+                中国大陆 <ArrowUpRight aria-hidden="true" />
+              </a>
+            ) : null}
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${t.projects.openAria}：${title}`}
+            >
+              GitHub <ArrowUpRight aria-hidden="true" />
+            </a>
+          </div>
         </div>
         <div className="v3-project-card-body">
           <div className="v3-project-card-notes">

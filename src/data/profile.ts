@@ -28,6 +28,8 @@ export interface Project {
   featured: boolean;
   github: string;
   demo: string;
+  globalDemo?: string;
+  chinaDemo?: string;
   coverImage?: string;
   coverPoster?: string;
   coverVideoWebm?: string;
@@ -157,6 +159,7 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/ChordPilot",
     demo: "https://github.com/1379475267-svg/ChordPilot",
+    chinaDemo: "http://47.109.136.234/projects/chordpilot/",
     coverPoster: "./projects/chordpilot-timeline.webp",
     demoLabel: "View Repository",
   },
@@ -173,6 +176,7 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/python-data-analysis-quiz",
     demo: "https://1379475267-svg.github.io/python-data-analysis-quiz/",
+    globalDemo: "https://1379475267-svg.github.io/python-data-analysis-quiz/",
     coverPoster: "./projects/python-data-analysis-quiz.webp",
     coverLabel: "DATA / PROJECT",
     demoLabel: "Open Live Demo",
@@ -190,6 +194,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/GameMemory",
     demo: "https://1gamememory1.netlify.app",
+    globalDemo: "https://1gamememory1.netlify.app",
+    chinaDemo: "http://47.109.136.234/projects/gamememory/",
     coverPoster: "./projects/gamememory-library.webp",
     demoLabel: "Open Live Site",
   },
@@ -206,6 +212,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/String-Blade",
     demo: "https://stringblade.netlify.app",
+    globalDemo: "https://stringblade.netlify.app",
+    chinaDemo: "http://47.109.136.234/projects/string-blade/",
     coverPoster: "./projects/string-blade.webp",
     coverLabel: "CHORD COMBAT / PROJECT",
     demoLabel: "Open Live Demo",
@@ -223,6 +231,8 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/fretboard-caged-lab",
     demo: "https://1379475267-svg.github.io/fretboard-caged-lab/",
+    globalDemo: "https://1379475267-svg.github.io/fretboard-caged-lab/",
+    chinaDemo: "http://47.109.136.234/projects/fretboard/",
     coverPoster: "./projects/fretboard-guitar-view.webp",
     demoLabel: "Open Live Demo",
   },
@@ -239,6 +249,7 @@ export const projects: Project[] = [
     featured: false,
     github: "https://github.com/1379475267-svg/interactive-particle-saturn",
     demo: "https://1379475267-svg.github.io/interactive-particle-saturn/",
+    globalDemo: "https://1379475267-svg.github.io/interactive-particle-saturn/",
     coverPoster: "./projects/interactive-particle-saturn-live.webp",
     coverVideoWebm: "./projects/interactive-particle-saturn.webm",
     coverVideoMp4: "./projects/interactive-particle-saturn.mp4",
