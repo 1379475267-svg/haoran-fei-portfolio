@@ -21,7 +21,7 @@ export default function V3Nav() {
     >
       <div className="v3-nav">
         <a className="v3-nav-mark" href="#home" aria-label={language === "zh" ? "费浩然，返回顶部" : "Haoran Fei, back to top"}>
-          HF <span>/ 03</span>
+          HF
         </a>
         <nav aria-label={language === "zh" ? "主导航" : "Primary navigation"}>
           {links.map((link) => (
