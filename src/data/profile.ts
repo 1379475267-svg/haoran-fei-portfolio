@@ -163,7 +163,7 @@ export const projects: Project[] = [
     demo: "https://1379475267-svg.github.io/rail-drone-mission-studio/",
     globalDemo: "https://1379475267-svg.github.io/rail-drone-mission-studio/",
     chinaDemo: "https://fhrzz.me/projects/rail-drone-mission-studio/",
-    coverPoster: "./projects/raildrone-coordination.png",
+    coverPoster: "./media/raildrone-coordination.png",
     coverLabel: "CONTACT-LINE HANDOFF / PROJECT",
     demoLabel: "Open Mission Studio",
   },
