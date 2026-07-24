@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export type ProjectCategory = "Robotics" | "Web" | "Embedded" | "AI" | "Data" | "Music" | "Tool" | "Visualization";
-export type ProjectCoverType = "drone" | "game" | "music" | "saturn" | "embedded" | "ai" | "cosmos";
+export type ProjectCoverType = "drone" | "rail" | "game" | "music" | "saturn" | "embedded" | "ai" | "cosmos";
 
 export interface NavItem {
   label: string;
@@ -100,7 +100,7 @@ export const navItems: NavItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "8", label: "Projects" },
+  { value: "9", label: "Projects" },
   { value: "2012", label: "Music Started" },
   { value: "ROS / PX4", label: "Learning" },
   { value: "AI", label: "Coding Workflow" },
@@ -147,6 +147,24 @@ export const projects: Project[] = [
       { label: "Sensing", value: "Livox Mid-360" },
       { label: "Control", value: "PX4 / H743" },
     ],
+  },
+  {
+    id: "rail-drone-mission-studio",
+    title: "RailDrone Mission Studio",
+    category: "Robotics",
+    tagline: "A browser mission studio for contact-line recognition and robot-drone handoff.",
+    description: "A Vue-based prototype for mission planning, contact-line review, and obstacle handoff rehearsals.",
+    longDescription:
+      "RailDrone Mission Studio is a browser-based software prototype for planning drone missions, reviewing contact-line candidates, and rehearsing robot-drone obstacle handoff. Three workspaces share one entry while keeping demo outputs separate from real flight control.",
+    tech: ["Contact-line vision", "Robot-drone handoff", "Vue 3 / TypeScript"],
+    coverType: "rail",
+    featured: false,
+    github: "https://github.com/1379475267-svg/rail-drone-mission-studio",
+    demo: "https://1379475267-svg.github.io/rail-drone-mission-studio/",
+    globalDemo: "https://1379475267-svg.github.io/rail-drone-mission-studio/",
+    chinaDemo: "https://fhrzz.me/projects/rail-drone-mission-studio/",
+    coverLabel: "CONTACT-LINE HANDOFF / PROJECT",
+    demoLabel: "Open Mission Studio",
   },
   {
     id: "chordpilot",

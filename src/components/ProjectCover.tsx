@@ -127,6 +127,33 @@ function DroneCover() {
   );
 }
 
+function RailCover({ language }: { language: "zh" | "en" }) {
+  return (
+    <div className="cover-scene rail-cover">
+      <svg className="rail-system-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path className="rail-messenger-wire" d="M-4 23 C22 16 47 27 104 13" />
+        <path className="rail-contact-wire" d="M-4 38 C28 31 58 39 104 25" />
+        <path className="rail-dropper" d="M12 20 L12 35 M31 20 L31 34 M51 21 L51 34 M72 19 L72 31 M91 16 L91 28" />
+        <path className="rail-flight-path" d="M18 75 C34 69 45 58 57 49 S79 37 88 32" />
+        <circle className="rail-obstacle-node" cx="18" cy="75" r="2.2" />
+        <circle className="rail-wait-node" cx="88" cy="32" r="2.8" />
+      </svg>
+      <div className="rail-robot-node" aria-hidden="true">
+        <i /><i /><span>UGV</span>
+      </div>
+      <div className="rail-drone-node" aria-hidden="true">
+        <i className="rail-drone-arm rail-drone-arm-a" />
+        <i className="rail-drone-arm rail-drone-arm-b" />
+        <span />
+      </div>
+      <div className="rail-cover-status">
+        <span>{language === "zh" ? "接触线锁定" : "CONTACT LINE LOCK"}</span>
+        <strong>{language === "zh" ? "等待下一障碍点" : "WAITING AT NEXT OBSTACLE"}</strong>
+      </div>
+    </div>
+  );
+}
+
 function AiCover({ language }: { language: "zh" | "en" }) {
   return (
     <div className="cover-scene ai-cover">
@@ -179,6 +206,7 @@ export default function ProjectCover({
   const hasMedia = Boolean(image || hasVideo);
   const scenes = {
     drone: <DroneCover />,
+    rail: <RailCover language={language} />,
     game: <GameCover language={language} />,
     music: <MusicCover />,
     saturn: <SaturnCover />,

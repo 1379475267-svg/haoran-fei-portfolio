@@ -14,6 +14,7 @@ A focused portfolio for my work across autonomous systems, embedded development,
 ## Featured Projects
 
 - [Nonconvex-α Standard Drone](https://github.com/1379475267-svg/nonconvex-alpha-standard)
+- [RailDrone Mission Studio](https://github.com/1379475267-svg/rail-drone-mission-studio)
 - [String Blade](https://github.com/1379475267-svg/String-Blade)
 - [GameMemory](https://github.com/1379475267-svg/GameMemory)
 - [Fret & Key Theory Lab](https://github.com/1379475267-svg/fretboard-caged-lab)

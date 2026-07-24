@@ -13,6 +13,7 @@ import {
 
 const selectedIds = [
   "nonconvex-alpha",
+  "rail-drone-mission-studio",
   "chordpilot",
   "interactive-particle-saturn",
   "fretboard-caged-lab",
@@ -44,7 +45,11 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
   const localized = getProjectLanguage(project, language);
-  const isChinaSite = typeof window !== "undefined" && window.location.hostname === "47.109.136.234";
+  const isChinaSite = typeof window !== "undefined" && [
+    "47.109.136.234",
+    "fhrzz.me",
+    "www.fhrzz.me",
+  ].includes(window.location.hostname);
   const primaryUrl = isChinaSite
     ? (project.chinaDemo ?? project.globalDemo ?? project.github)
     : (project.globalDemo ?? project.chinaDemo ?? project.github);

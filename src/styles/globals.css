@@ -3975,6 +3975,187 @@ body::before {
     radial-gradient(circle at 78% 20%, rgba(238, 156, 92, 0.14), transparent 34%);
 }
 
+.project-visual-rail {
+  background: #0b0d0d;
+}
+
+.project-visual-rail::before {
+  background:
+    radial-gradient(circle at 72% 30%, rgba(238, 156, 92, 0.17), transparent 28%),
+    linear-gradient(145deg, #0c1212, #12100f 58%, #080a0a);
+}
+
+.rail-cover {
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(238, 156, 92, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 156, 92, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 72% 34%, rgba(238, 156, 92, 0.1), transparent 24%);
+  background-size: 32px 32px, 32px 32px, auto;
+}
+
+.rail-system-map {
+  position: absolute;
+  inset: 8% 5%;
+  width: 90%;
+  height: 84%;
+  overflow: visible;
+  fill: none;
+}
+
+.rail-messenger-wire,
+.rail-contact-wire,
+.rail-dropper,
+.rail-flight-path {
+  vector-effect: non-scaling-stroke;
+}
+
+.rail-messenger-wire {
+  stroke: rgba(255, 226, 192, 0.28);
+  stroke-width: 1.2;
+}
+
+.rail-contact-wire {
+  stroke: rgba(255, 226, 192, 0.76);
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 6px rgba(238, 156, 92, 0.42));
+}
+
+.rail-dropper {
+  stroke: rgba(255, 226, 192, 0.32);
+  stroke-width: 0.8;
+}
+
+.rail-flight-path {
+  stroke: rgba(238, 156, 92, 0.74);
+  stroke-width: 1.1;
+  stroke-dasharray: 4 4;
+}
+
+.rail-obstacle-node,
+.rail-wait-node {
+  fill: #ee9c5c;
+  stroke: rgba(255, 241, 233, 0.84);
+  stroke-width: 0.6;
+  filter: drop-shadow(0 0 7px rgba(238, 156, 92, 0.72));
+}
+
+.rail-robot-node {
+  position: absolute;
+  left: 14%;
+  bottom: 16%;
+  width: 3.8rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 226, 192, 0.48);
+  border-radius: 0.38rem;
+  background: rgba(238, 156, 92, 0.12);
+  box-shadow: 0 0 20px rgba(238, 156, 92, 0.08);
+}
+
+.rail-robot-node i {
+  position: absolute;
+  bottom: -0.4rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid rgba(255, 226, 192, 0.54);
+  border-radius: 999px;
+  background: #0b0d0d;
+}
+
+.rail-robot-node i:first-child { left: 0.35rem; }
+.rail-robot-node i:nth-child(2) { right: 0.35rem; }
+
+.rail-robot-node span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 241, 233, 0.72);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.rail-drone-node {
+  position: absolute;
+  left: 67%;
+  top: 35%;
+  width: 4rem;
+  height: 4rem;
+  transform: translate(-50%, -50%) rotate(-7deg);
+}
+
+.rail-drone-node > span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.7rem;
+  height: 0.9rem;
+  border: 1px solid rgba(255, 226, 192, 0.72);
+  border-radius: 45% 45% 28% 28%;
+  background: rgba(238, 156, 92, 0.16);
+  box-shadow: 0 0 20px rgba(238, 156, 92, 0.18);
+  transform: translate(-50%, -50%);
+}
+
+.rail-drone-arm {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3.5rem;
+  height: 1px;
+  background: rgba(255, 226, 192, 0.58);
+  transform-origin: center;
+}
+
+.rail-drone-arm::before,
+.rail-drone-arm::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1px solid rgba(238, 156, 92, 0.52);
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.rail-drone-arm::before { left: -0.45rem; }
+.rail-drone-arm::after { right: -0.45rem; }
+.rail-drone-arm-a { transform: translate(-50%, -50%) rotate(38deg); }
+.rail-drone-arm-b { transform: translate(-50%, -50%) rotate(-38deg); }
+
+.rail-cover-status {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  min-width: 9.5rem;
+  border: 1px solid rgba(255, 226, 192, 0.16);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.7rem;
+  background: rgba(8, 10, 10, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.rail-cover-status span,
+.rail-cover-status strong {
+  display: block;
+}
+
+.rail-cover-status span {
+  color: rgba(255, 241, 233, 0.42);
+  font-size: 0.46rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.rail-cover-status strong {
+  margin-top: 0.25rem;
+  color: rgba(255, 241, 233, 0.82);
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
 .drone-cover {
   overflow: hidden;
   background:

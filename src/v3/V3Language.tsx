@@ -38,7 +38,7 @@ const copy = {
     projects: {
       eyebrow: "精选项目 / GitHub",
       title: "项目档案",
-      intro: "五个项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
+      intro: "六个项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
       active: "团队研发中",
       personal: "个人项目",
       open: "在 GitHub 查看",
@@ -83,7 +83,7 @@ const copy = {
     projects: {
       eyebrow: "Selected projects / GitHub",
       title: "Project",
-      intro: "Five projects that show how I move between physical systems, practical tools, music, and visual experiments.",
+      intro: "Six projects that show how I move between physical systems, practical tools, music, and visual experiments.",
       active: "Active team R&D",
       personal: "Personal project",
       open: "Open on GitHub",
@@ -107,6 +107,11 @@ const chineseProjectCopy: Record<string, { longDescription: string; coverLabel: 
     longDescription:
       "这是学生团队用于保存出厂基线、逐步扩展真实科研无人机的工程工作区。目前系统以 Jetson Orin NX 为计算平台，结合 Livox Mid-360、Faster-LIO 定位建图、Diff-Planner 局部轨迹规划与 PX4 飞控。",
     coverLabel: "飞行系统 / 项目",
+  },
+  "rail-drone-mission-studio": {
+    longDescription:
+      "RailDrone Mission Studio 是一个浏览器端软件原型，把无人机任务编排、接触线候选复核和机器人—无人机越障接力放在统一入口下演示，同时明确与真实飞控保持隔离。",
+    coverLabel: "接触网协同 / 项目",
   },
   chordpilot: {
     longDescription:
