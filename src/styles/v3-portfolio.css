@@ -1088,6 +1088,11 @@ body {
   filter: saturate(0.78) contrast(1.08) brightness(0.7);
 }
 
+.v3-project-card[data-project="rail-drone-mission-studio"] .project-cover-image {
+  object-position: center top;
+  filter: saturate(0.86) contrast(1.04) brightness(0.88);
+}
+
 .v3-project-card-visual .project-cover-label {
   top: var(--space-lg);
   left: var(--space-lg);
