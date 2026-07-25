@@ -1,5 +1,5 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects } from "../data/profile";
 import { getProjectLanguage, useV3Language } from "./V3Language";
@@ -11,7 +11,6 @@ export default function V3ProjectReel() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const { language, t } = useV3Language();
-  const [compact, setCompact] = useState(false);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
@@ -19,15 +18,7 @@ export default function V3ProjectReel() {
   const rowOneX = useTransform(scrollYProgress, [0, 1], ["-7%", "-29%"]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
 
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 40rem)");
-    const update = () => setCompact(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  const noSpatialMotion = Boolean(reduceMotion || compact);
+  const noSpatialMotion = Boolean(reduceMotion);
   const rowOne = [...projects.slice(0, 5), ...projects.slice(0, 5)];
   const rowTwo = [...projects.slice(3), ...projects.slice(3)];
 
