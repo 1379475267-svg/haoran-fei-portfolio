@@ -19,10 +19,23 @@ export default function V3ProjectReel() {
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
 
   const noSpatialMotion = Boolean(reduceMotion);
-  const rowOne = [...projects.slice(0, 5), ...projects.slice(0, 5)];
-  const rowTwo = [...projects.slice(3), ...projects.slice(3)];
+  const rowOneProjects = projects.slice(0, 5);
+  const rowTwoProjects = projects.slice(3);
+  const rowOne = [
+    ...rowOneProjects.map((project) => ({ project, duplicate: false })),
+    ...rowOneProjects.map((project) => ({ project, duplicate: true })),
+  ];
+  const rowTwo = [
+    ...rowTwoProjects.map((project, index) => ({ project, duplicate: index < 2 })),
+    ...rowTwoProjects.map((project) => ({ project, duplicate: true })),
+  ];
 
-  const renderTile = (project: (typeof projects)[number], index: number, row: number) => {
+  const renderTile = (
+    item: { project: (typeof projects)[number]; duplicate: boolean },
+    index: number,
+    row: number,
+  ) => {
+    const { project, duplicate } = item;
     const localized = getProjectLanguage(project, language);
     const title = displayTitle(project.id, project.title);
 
@@ -33,7 +46,9 @@ export default function V3ProjectReel() {
         target="_blank"
         rel="noreferrer"
         key={`${row}-${project.id}-${index}`}
-        aria-label={`${t.reel.open} ${title}`}
+        aria-hidden={duplicate || undefined}
+        aria-label={duplicate ? undefined : `${t.reel.open} ${title}`}
+        tabIndex={duplicate ? -1 : undefined}
       >
         <ProjectCover
           type={project.coverType}
