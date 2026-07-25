@@ -18,6 +18,7 @@ const selectedIds = [
   "interactive-particle-saturn",
   "fretboard-caged-lab",
   "gamememory",
+  "string-blade",
 ];
 const selectedProjects = selectedIds
   .map((id) => projects.find((project) => project.id === id))
@@ -70,6 +71,11 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
         github: isDrone ? "Project archive · GitHub" : "View source · GitHub",
         openDemo: "Open live demo",
       };
+  const recognitionLabel = project.recognition
+    ? language === "zh"
+      ? `${project.recognition.name} 收录`
+      : `Featured on ${project.recognition.name}`
+    : null;
   const details = project.highlights
     ? project.highlights.map((detail) => ({
         ...detail,
@@ -117,6 +123,16 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
               <span className="v3-project-card-link-unavailable">
                 {labels.chinaUnavailable}
               </span>
+            ) : null}
+            {project.recognition && recognitionLabel ? (
+              <a
+                href={project.recognition.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${recognitionLabel}: ${title}`}
+              >
+                {recognitionLabel} <ArrowUpRight aria-hidden="true" />
+              </a>
             ) : null}
             <a
               href={project.github}

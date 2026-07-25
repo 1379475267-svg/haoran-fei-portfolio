@@ -28,6 +28,10 @@ export interface Project {
   featured: boolean;
   github: string;
   demo: string;
+  recognition?: {
+    name: string;
+    url: string;
+  };
   globalDemo?: string;
   chinaDemo?: string;
   globalDemoUnavailable?: boolean;
@@ -223,7 +227,7 @@ export const projects: Project[] = [
   },
   {
     id: "string-blade",
-    title: "String-Blade",
+    title: "String Blade",
     category: "Music",
     tagline: "A browser guitar-chord combat game powered by live musical input.",
     description: "Play chords to attack, guard, parry and follow rhythm-based progressions.",
@@ -236,6 +240,10 @@ export const projects: Project[] = [
     demo: "https://stringblade.netlify.app",
     globalDemo: "https://stringblade.netlify.app",
     chinaDemo: "https://fhrzz.me/projects/string-blade/",
+    recognition: {
+      name: "Dead Army",
+      url: "https://dead.army/games/string-blade-c8627c",
+    },
     coverPoster: "./projects/string-blade.webp",
     coverLabel: "CHORD COMBAT / PROJECT",
     demoLabel: "Open Live Demo",

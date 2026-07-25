@@ -38,7 +38,7 @@ const copy = {
     projects: {
       eyebrow: "精选项目 / GitHub",
       title: "项目档案",
-      intro: "六个项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
+      intro: "七个项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
       active: "团队研发中",
       personal: "个人项目",
       open: "在 GitHub 查看",
@@ -83,7 +83,7 @@ const copy = {
     projects: {
       eyebrow: "Selected projects / GitHub",
       title: "Project",
-      intro: "Six projects that show how I move between physical systems, practical tools, music, and visual experiments.",
+      intro: "Seven projects that show how I move between physical systems, practical tools, music, and visual experiments.",
       active: "Active team R&D",
       personal: "Personal project",
       open: "Open on GitHub",
