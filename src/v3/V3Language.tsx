@@ -130,8 +130,8 @@ const chineseProjectCopy: Record<string, { longDescription: string; coverLabel: 
   },
   "string-blade": {
     longDescription:
-      "String Blade 把吉他和弦转换为战斗动作，通过 Phaser、麦克风和弦识别、Web MIDI、校准工具与节奏判定，构成 Duel 和 Progression 两种玩法。",
-    coverLabel: "和弦战斗 / 项目",
+      "String Blade 把吉他和弦转换为战斗动作，通过 Phaser、麦克风和弦识别、Web MIDI、校准工具与节奏判定，构成 Duel 和 Progression 两种玩法。项目现已被独立游戏策展平台 DEAD.ARMY 收录。",
+    coverLabel: "已被 DEAD.ARMY 收录",
   },
   "fretboard-caged-lab": {
     longDescription:

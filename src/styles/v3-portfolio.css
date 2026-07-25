@@ -986,6 +986,17 @@ body {
   background: var(--color-accent-faint);
 }
 
+.v3-project-card-links > .v3-project-card-link-recognition {
+  border-color: oklch(61% 0.235 27 / 0.72);
+  background: oklch(45% 0.17 27 / 0.15);
+  color: oklch(87% 0.075 28);
+}
+
+.v3-project-card-links > .v3-project-card-link-recognition:hover {
+  border-color: oklch(67% 0.25 27);
+  background: oklch(54% 0.21 27 / 0.24);
+}
+
 .v3-project-card-body {
   display: grid;
   grid-template-columns: minmax(17rem, 0.38fr) minmax(0, 0.62fr);
@@ -1084,6 +1095,15 @@ body {
   object-position: center 30%;
 }
 
+.v3-project-card[data-project="string-blade"] .project-cover-image {
+  object-position: center bottom;
+  filter: saturate(0.98) contrast(1.03) brightness(0.9);
+}
+
+.v3-project-card[data-project="string-blade"] .project-cover-scrim {
+  background: linear-gradient(180deg, oklch(8% 0.02 315 / 0.06), oklch(8% 0.02 315 / 0.28));
+}
+
 .v3-project-card[data-project="nonconvex-alpha"] .project-cover-image {
   filter: saturate(0.78) contrast(1.08) brightness(0.7);
 }
@@ -1096,6 +1116,19 @@ body {
 .v3-project-card-visual .project-cover-label {
   top: var(--space-lg);
   left: var(--space-lg);
+}
+
+.v3-project-card[data-project="string-blade"] .project-cover-label {
+  padding: 0.55rem 0.8rem;
+  border: var(--rule-hair) solid oklch(66% 0.25 27 / 0.9);
+  border-radius: var(--radius-pill);
+  background: oklch(12% 0.028 315 / 0.84);
+  box-shadow: 0 0.75rem 2rem oklch(4% 0.01 315 / 0.4);
+  color: oklch(92% 0.035 28);
+  font-size: clamp(0.58rem, 0.7vw, 0.72rem);
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  backdrop-filter: blur(0.65rem);
 }
 
 /* Footer */

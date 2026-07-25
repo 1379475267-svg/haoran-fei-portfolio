@@ -232,7 +232,7 @@ export const projects: Project[] = [
     tagline: "A browser guitar-chord combat game powered by live musical input.",
     description: "Play chords to attack, guard, parry and follow rhythm-based progressions.",
     longDescription:
-      "String Blade turns guitar chords into battle actions across Duel and Progression modes, combining Phaser combat with microphone chord recognition, Web MIDI input, calibration tools and rhythm timing.",
+      "String Blade turns guitar chords into battle actions across Duel and Progression modes, combining Phaser combat with microphone chord recognition, Web MIDI input, calibration tools and rhythm timing. The project is now featured on the independent game curation platform DEAD.ARMY.",
     tech: ["Phaser", "Web Audio", "Web MIDI"],
     coverType: "game",
     featured: false,
@@ -241,11 +241,13 @@ export const projects: Project[] = [
     globalDemo: "https://stringblade.netlify.app",
     chinaDemo: "https://fhrzz.me/projects/string-blade/",
     recognition: {
-      name: "Dead Army",
+      name: "DEAD.ARMY",
       url: "https://dead.army/games/string-blade-c8627c",
     },
-    coverPoster: "./projects/string-blade.webp",
-    coverLabel: "CHORD COMBAT / PROJECT",
+    coverPoster: "./media/string-blade-dead-army.webp",
+    coverVideoWebm: "./media/string-blade-dead-army.webm",
+    coverVideoMp4: "./media/string-blade-dead-army.mp4",
+    coverLabel: "FEATURED ON DEAD.ARMY",
     demoLabel: "Open Live Demo",
   },
   {

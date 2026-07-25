@@ -54,6 +54,7 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
   const primaryUrl = isChinaSite
     ? (project.chinaDemo ?? project.globalDemo ?? project.github)
     : (project.globalDemo ?? project.chinaDemo ?? project.github);
+  const visualUrl = project.recognition?.url ?? primaryUrl;
   const labels = language === "zh"
     ? {
         globalDemo: "在线体验 · Global",
@@ -73,8 +74,8 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
       };
   const recognitionLabel = project.recognition
     ? language === "zh"
-      ? `${project.recognition.name} 收录`
-      : `Featured on ${project.recognition.name}`
+      ? `${project.recognition.name} · 已收录`
+      : `Featured · ${project.recognition.name}`
     : null;
   const details = project.highlights
     ? project.highlights.map((detail) => ({
@@ -126,6 +127,7 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
             ) : null}
             {project.recognition && recognitionLabel ? (
               <a
+                className="v3-project-card-link-recognition"
                 href={project.recognition.url}
                 target="_blank"
                 rel="noreferrer"
@@ -158,10 +160,12 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
           </div>
           <a
             className="v3-project-card-visual"
-            href={primaryUrl}
+            href={visualUrl}
             target="_blank"
             rel="noreferrer"
-            aria-label={`${project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria}: ${title}`}
+            aria-label={project.recognition
+              ? `${recognitionLabel}: ${title}`
+              : `${project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria}: ${title}`}
           >
             <ProjectCover
               type={project.coverType}
