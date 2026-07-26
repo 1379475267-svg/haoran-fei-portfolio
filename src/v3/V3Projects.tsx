@@ -14,11 +14,11 @@ import {
 const selectedIds = [
   "nonconvex-alpha",
   "rail-drone-mission-studio",
+  "string-blade",
   "chordpilot",
   "interactive-particle-saturn",
   "fretboard-caged-lab",
   "gamememory",
-  "string-blade",
 ];
 const selectedProjects = selectedIds
   .map((id) => projects.find((project) => project.id === id))
