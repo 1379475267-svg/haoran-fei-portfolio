@@ -30,6 +30,16 @@
   --color-shadow-soft: oklch(3% 0.01 315 / 0.28);
   --color-overlay: oklch(11% 0.018 315 / 0.78);
   --color-veil: oklch(94% 0.015 260 / 0.06);
+  --color-dead-army-border: oklch(61% 0.235 27 / 0.72);
+  --color-dead-army-border-strong: oklch(67% 0.25 27);
+  --color-dead-army-surface: oklch(45% 0.17 27 / 0.15);
+  --color-dead-army-surface-strong: oklch(54% 0.21 27 / 0.24);
+  --color-dead-army-link-ink: oklch(87% 0.075 28);
+  --color-dead-army-badge-ink: oklch(92% 0.035 28);
+  --color-dead-army-badge-surface: oklch(12% 0.028 315 / 0.84);
+  --color-dead-army-scrim-soft: oklch(8% 0.02 315 / 0.06);
+  --color-dead-army-scrim-strong: oklch(8% 0.02 315 / 0.28);
+  --color-dead-army-shadow: oklch(4% 0.01 315 / 0.4);
 
   --font-display: "Kanit", "Arial Narrow", sans-serif;
   --font-body: "Geist", "Segoe UI", sans-serif;
@@ -68,6 +78,8 @@
   --shadow-whisper: 0 1.5rem 4rem var(--color-shadow-soft);
   --shadow-depth: 0 3rem 8rem var(--color-shadow);
   --shadow-accent: 0 1.5rem 5rem var(--color-accent-glow);
+  --shadow-reel-hover: 0 1.25rem 3rem var(--color-shadow-soft);
+  --shadow-dead-army-badge: 0 0.75rem 2rem var(--color-dead-army-shadow);
   --gradient-atmosphere: radial-gradient(circle at 72% 28%, var(--color-accent-soft), transparent 34%);
   --gradient-panel: linear-gradient(145deg, var(--color-paper-raised), var(--color-paper-soft));
 

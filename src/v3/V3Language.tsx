@@ -1,11 +1,13 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { flushSync } from "react-dom";
 
 export type V3Language = "zh" | "en";
 
@@ -182,11 +184,39 @@ interface LanguageContextValue {
   t: (typeof copy)[V3Language];
 }
 
+interface V3ViewTransition {
+  finished: Promise<void>;
+}
+
+type V3ViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => V3ViewTransition;
+};
+
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function V3LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<V3Language>("zh");
-  const value = useMemo(() => ({ language, setLanguage, t: copy[language] }), [language]);
+  const [language, setLanguageState] = useState<V3Language>("zh");
+  const setLanguage = useCallback((nextLanguage: V3Language) => {
+    if (nextLanguage === language) return;
+
+    const updateLanguage = () => setLanguageState(nextLanguage);
+    const transitionDocument = document as V3ViewTransitionDocument;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!transitionDocument.startViewTransition || reduceMotion) {
+      updateLanguage();
+      return;
+    }
+
+    const transition = transitionDocument.startViewTransition(() => {
+      flushSync(updateLanguage);
+    });
+    void transition.finished.catch(() => undefined);
+  }, [language]);
+  const value = useMemo(
+    () => ({ language, setLanguage, t: copy[language] }),
+    [language, setLanguage],
+  );
 
   useEffect(() => {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";

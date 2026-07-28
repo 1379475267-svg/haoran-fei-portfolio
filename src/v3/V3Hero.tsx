@@ -136,6 +136,33 @@ export default function V3Hero() {
 
   return (
     <section className="v3-hero" id="home" aria-labelledby="v3-hero-title">
+      {!reduceMotion ? (
+        <div className="v3-hero-aperture" aria-hidden="true">
+          <motion.span
+            className="v3-hero-aperture-panel v3-hero-aperture-panel-top"
+            initial={{ y: 0 }}
+            animate={{ y: "-101%" }}
+            transition={{ duration: 0.72, delay: 0.16, ease: ENTER_EASE }}
+          />
+          <motion.span
+            className="v3-hero-aperture-panel v3-hero-aperture-panel-bottom"
+            initial={{ y: 0 }}
+            animate={{ y: "101%" }}
+            transition={{ duration: 0.72, delay: 0.16, ease: ENTER_EASE }}
+          />
+          <motion.span
+            className="v3-hero-aperture-line"
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: [0, 1, 0], scaleX: [0, 1, 1] }}
+            transition={{
+              duration: 0.72,
+              times: [0, 0.42, 1],
+              ease: ENTER_EASE,
+            }}
+          />
+        </div>
+      ) : null}
+
       <motion.div
         className="v3-hero-atmosphere"
         aria-hidden="true"
