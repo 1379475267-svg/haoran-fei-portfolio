@@ -24,28 +24,47 @@ export default function V3Nav() {
   ];
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const activeEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+    let frameId = 0;
 
-        if (!activeEntry) return;
-        const target = sectionTargets.find(({ id }) => id === activeEntry.target.id);
-        if (target) setActiveHref(target.href);
-      },
-      {
-        rootMargin: "-28% 0px -62% 0px",
-        threshold: [0, 0.01],
-      },
-    );
+    const updateActiveSection = () => {
+      const markerY = window.innerHeight * 0.34;
+      let nextHref = "#home";
 
-    sectionTargets.forEach(({ id }) => {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
-    });
+      for (const target of sectionTargets) {
+        const section = document.getElementById(target.id);
+        if (!section) continue;
 
-    return () => observer.disconnect();
+        const bounds = section.getBoundingClientRect();
+        if (bounds.top <= markerY) nextHref = target.href;
+        if (bounds.top <= markerY && bounds.bottom > markerY) break;
+      }
+
+      const atPageEnd =
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      if (atPageEnd) nextHref = "#contact";
+
+      setActiveHref((currentHref) => (
+        currentHref === nextHref ? currentHref : nextHref
+      ));
+    };
+
+    const queueActiveSectionUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        updateActiveSection();
+      });
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", queueActiveSectionUpdate, { passive: true });
+    window.addEventListener("resize", queueActiveSectionUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", queueActiveSectionUpdate);
+      window.removeEventListener("resize", queueActiveSectionUpdate);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   return (
