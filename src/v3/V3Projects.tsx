@@ -1,5 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import type { Variants } from "framer-motion";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import ProjectCover from "../components/ProjectCover";
@@ -27,22 +34,101 @@ const selectedProjects = selectedIds
 const displayTitle = (project: Project) =>
   project.id === "nonconvex-alpha" ? "Nonconvex α / Drone Lab" : project.title;
 
+const quietEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+const headingVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.04,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const eyebrowVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.48, ease: quietEase },
+  },
+};
+
+const headingTitleVariants: Variants = {
+  hidden: { opacity: 0, y: 24, clipPath: "inset(0 0 100% 0)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0 0 0% 0)",
+    transition: { duration: 0.72, ease: quietEase },
+  },
+};
+
+const headingCopyVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.62, ease: quietEase },
+  },
+};
+
+const archiveGroupVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.06,
+      staggerChildren: 0.06,
+    },
+  },
+};
+
+const archiveItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.52, ease: quietEase },
+  },
+};
+
+const archiveVisualVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.985,
+    clipPath: "inset(0 10% 0 0 round 1.5rem)",
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    clipPath: "inset(0 0% 0 0 round 1.5rem)",
+    transition: { duration: 0.72, ease: quietEase },
+  },
+};
+
 interface ProjectCardProps {
   project: Project;
   index: number;
   total: number;
   staticLayout: boolean;
+  reducedMotion: boolean;
 }
 
-function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) {
+function ProjectCard({ project, index, total, staticLayout, reducedMotion }: ProjectCardProps) {
   const { language, t } = useV3Language();
   const wrapRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start start", "end start"],
   });
-  const targetScale = 1 - (total - 1 - index) * 0.015;
+  const targetScale = 1 - (total - 1 - index) * 0.006;
   const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.88, 1],
+    [1, 0.92, index === total - 1 ? 1 : 0.78],
+  );
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
   const localized = getProjectLanguage(project, language);
@@ -96,15 +182,21 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
       <motion.article
         className="v3-project-card"
         data-project={project.id}
-        style={staticLayout ? undefined : { scale }}
+        style={staticLayout ? undefined : { scale, opacity }}
+        initial={reducedMotion ? false : "hidden"}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.18 }}
+        variants={archiveGroupVariants}
       >
-        <div className="v3-project-card-head">
-          <span>{String(index + 1).padStart(2, "0")}</span>
-          <div>
+        <motion.div className="v3-project-card-head" variants={archiveGroupVariants}>
+          <motion.span variants={archiveItemVariants}>
+            {String(index + 1).padStart(2, "0")}
+          </motion.span>
+          <motion.div variants={archiveItemVariants}>
             <p>{categoryLabel[project.category][language]} / {isDrone ? t.projects.active : t.projects.personal}</p>
             <h3>{title}</h3>
-          </div>
-          <div className="v3-project-card-links">
+          </motion.div>
+          <motion.div className="v3-project-card-links" variants={archiveItemVariants}>
             {project.globalDemo ? (
               <a href={project.globalDemo} target="_blank" rel="noreferrer" aria-label={`${labels.globalDemo}: ${title}`}>
                 {labels.globalDemo} <ArrowUpRight aria-hidden="true" />
@@ -144,25 +236,26 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
             >
               {labels.github} <ArrowUpRight aria-hidden="true" />
             </a>
-          </div>
-        </div>
-        <div className="v3-project-card-body">
-          <div className="v3-project-card-notes">
-            <p>{localized.longDescription}</p>
-            <dl>
+          </motion.div>
+        </motion.div>
+        <motion.div className="v3-project-card-body" variants={archiveGroupVariants}>
+          <motion.div className="v3-project-card-notes" variants={archiveGroupVariants}>
+            <motion.p variants={archiveItemVariants}>{localized.longDescription}</motion.p>
+            <motion.dl variants={archiveGroupVariants}>
               {details.map((detail) => (
-                <div key={`${detail.label}-${detail.value}`}>
+                <motion.div key={`${detail.label}-${detail.value}`} variants={archiveItemVariants}>
                   <dt>{detail.label}</dt>
                   <dd>{detail.value}</dd>
-                </div>
+                </motion.div>
               ))}
-            </dl>
-          </div>
-          <a
+            </motion.dl>
+          </motion.div>
+          <motion.a
             className="v3-project-card-visual"
             href={visualUrl}
             target="_blank"
             rel="noreferrer"
+            variants={archiveVisualVariants}
             aria-label={project.recognition
               ? `${recognitionLabel}: ${title}`
               : `${project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria}: ${title}`}
@@ -177,8 +270,8 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
               label={localized.coverLabel}
               language={language}
             />
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
       </motion.article>
     </div>
   );
@@ -187,7 +280,22 @@ function ProjectCard({ project, index, total, staticLayout }: ProjectCardProps) 
 export default function V3Projects() {
   const reduceMotion = useReducedMotion();
   const { t } = useV3Language();
+  const stackRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress: sectionScrollProgress } = useScroll({
+    target: stackRef,
+    offset: ["start start", "end end"],
+  });
+  const progressScale = useTransform(sectionScrollProgress, [0, 1], [0, 1]);
+
+  useMotionValueEvent(sectionScrollProgress, "change", (latest) => {
+    const nextIndex = Math.min(
+      selectedProjects.length - 1,
+      Math.max(0, Math.floor(latest * selectedProjects.length)),
+    );
+    setActiveIndex((current) => (current === nextIndex ? current : nextIndex));
+  });
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 60rem)");
@@ -199,21 +307,46 @@ export default function V3Projects() {
 
   return (
     <section className="v3-projects" id="projects" aria-labelledby="projects-title">
-      <div className="v3-projects-heading">
-        <p className="v3-section-label">{t.projects.eyebrow}</p>
-        <h2 id="projects-title">{t.projects.title}</h2>
-        <p>{t.projects.intro}</p>
-      </div>
-      <div className="v3-project-stack">
-        {selectedProjects.map((project, index) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            index={index}
-            total={selectedProjects.length}
-            staticLayout={Boolean(reduceMotion || compact)}
-          />
-        ))}
+      <motion.div
+        className="v3-projects-heading"
+        initial={reduceMotion ? false : "hidden"}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.45 }}
+        variants={headingVariants}
+      >
+        <motion.p className="v3-section-label" variants={eyebrowVariants}>
+          {t.projects.eyebrow}
+        </motion.p>
+        <motion.h2 id="projects-title" variants={headingTitleVariants}>
+          {t.projects.title}
+        </motion.h2>
+        <motion.p variants={headingCopyVariants}>{t.projects.intro}</motion.p>
+      </motion.div>
+      <div className="v3-projects-body">
+        <aside className="v3-project-index" aria-hidden="true">
+          <span>{String(activeIndex + 1).padStart(2, "0")}</span>
+          <span className="v3-project-index-track">
+            <motion.i
+              style={{
+                scaleY: reduceMotion ? 0 : progressScale,
+                transformOrigin: "top",
+              }}
+            />
+          </span>
+          <span>{String(selectedProjects.length).padStart(2, "0")}</span>
+        </aside>
+        <div className="v3-project-stack" ref={stackRef}>
+          {selectedProjects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              total={selectedProjects.length}
+              staticLayout={Boolean(reduceMotion || compact)}
+              reducedMotion={Boolean(reduceMotion)}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
