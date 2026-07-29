@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  AnimatePresence,
   motion,
   useMotionValueEvent,
   useReducedMotion,
@@ -324,7 +325,19 @@ export default function V3Projects() {
       </motion.div>
       <div className="v3-projects-body">
         <aside className="v3-project-index" aria-hidden="true">
-          <span>{String(activeIndex + 1).padStart(2, "0")}</span>
+          <AnimatePresence initial={false} mode="wait">
+            <motion.span
+              key={activeIndex}
+              initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
+              transition={reduceMotion
+                ? { duration: 0 }
+                : { duration: 0.18, ease: quietEase }}
+            >
+              {String(activeIndex + 1).padStart(2, "0")}
+            </motion.span>
+          </AnimatePresence>
           <span className="v3-project-index-track">
             <motion.i
               style={{

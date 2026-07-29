@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Crosshair } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { profile } from "../data/profile";
@@ -6,7 +6,6 @@ import V3Magnet from "./V3Magnet";
 import { useV3Language } from "./V3Language";
 
 const ENTER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const TOGGLE_EASE: [number, number, number, number] = [0.65, 0, 0.35, 1];
 const COMPACT_MOTION_QUERY = "(max-width: 40rem)";
 
 interface HeroMotionVariants {
@@ -124,7 +123,11 @@ function createHeroMotionVariants(compact: boolean): HeroMotionVariants {
   };
 }
 
-export default function V3Hero() {
+interface V3HeroProps {
+  ready: boolean;
+}
+
+export default function V3Hero({ ready }: V3HeroProps) {
   const reduceMotion = Boolean(useReducedMotion());
   const compactMotion = useCompactMotion();
   const variants = useMemo(
@@ -133,42 +136,16 @@ export default function V3Hero() {
   );
   const { language, t } = useV3Language();
   const initialState = reduceMotion ? false : "hidden";
+  const animateState = ready ? "visible" : "hidden";
 
   return (
     <section className="v3-hero" id="home" aria-labelledby="v3-hero-title">
-      {!reduceMotion ? (
-        <div className="v3-hero-aperture" aria-hidden="true">
-          <motion.span
-            className="v3-hero-aperture-panel v3-hero-aperture-panel-top"
-            initial={{ y: 0 }}
-            animate={{ y: "-101%" }}
-            transition={{ duration: 0.72, delay: 0.16, ease: ENTER_EASE }}
-          />
-          <motion.span
-            className="v3-hero-aperture-panel v3-hero-aperture-panel-bottom"
-            initial={{ y: 0 }}
-            animate={{ y: "101%" }}
-            transition={{ duration: 0.72, delay: 0.16, ease: ENTER_EASE }}
-          />
-          <motion.span
-            className="v3-hero-aperture-line"
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: [0, 1, 0], scaleX: [0, 1, 1] }}
-            transition={{
-              duration: 0.72,
-              times: [0, 0.42, 1],
-              ease: ENTER_EASE,
-            }}
-          />
-        </div>
-      ) : null}
-
       <motion.div
         className="v3-hero-atmosphere"
         aria-hidden="true"
         variants={variants.atmosphere}
         initial={initialState}
-        animate="visible"
+        animate={animateState}
       >
         <div className="v3-hero-grid" />
       </motion.div>
@@ -177,45 +154,44 @@ export default function V3Hero() {
         className="v3-hero-inner"
         variants={variants.sequence}
         initial={initialState}
-        animate="visible"
+        animate={animateState}
       >
+        <motion.div className="v3-hero-kicker" variants={variants.supportItem}>
+          <span>{t.hero.kicker}</span>
+          <span>{t.hero.location} / 31.2304° N</span>
+        </motion.div>
+
         <motion.div className="v3-hero-title-wrap" variants={variants.titleGroup}>
           <h1 id="v3-hero-title">
-            <motion.span variants={variants.titleLine}>{t.hero.greeting}</motion.span>
-            <motion.strong variants={variants.titleLine}>Haoran</motion.strong>
+            <motion.span className="v3-hero-greeting" variants={variants.titleLine}>
+              {t.hero.greeting}
+            </motion.span>
+            <motion.strong className="v3-hero-name-filled" variants={variants.titleLine}>
+              Haoran
+            </motion.strong>
+            <motion.strong className="v3-hero-name-outline" variants={variants.titleLine}>
+              Fei
+            </motion.strong>
           </h1>
         </motion.div>
 
-        <motion.p className="v3-hero-intro" variants={variants.body}>
-          {t.hero.body}
-        </motion.p>
-
-        <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
-          <V3Magnet className="v3-hero-cta-magnet" strength={5}>
-            <a className="v3-action" href="#projects">
-              {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
-            </a>
-          </V3Magnet>
-        </motion.div>
-
         <motion.div className="v3-hero-support" variants={variants.supportGroup}>
-          <motion.div className="v3-hero-kicker" variants={variants.supportItem}>
-            <span>{t.hero.kicker}</span>
-            <span>{t.hero.location}</span>
-          </motion.div>
-
           <motion.div className="v3-hero-media-reveal" variants={variants.media}>
             <div className="v3-hero-media-stage">
               <V3Magnet className="v3-hero-media-magnet" strength={8}>
                 <div className="v3-hero-media">
-                  {reduceMotion ? (
+                  {reduceMotion || !ready ? (
                     <img
                       src="./projects/nonconvex-navigation.webp"
                       alt={t.hero.mediaAlt}
+                      width={568}
+                      height={320}
+                      loading="eager"
+                      decoding="async"
+                      draggable={false}
                     />
                   ) : (
                     <video
-                      {...({ fetchpriority: "high" } as { fetchpriority: string })}
                       autoPlay
                       muted
                       loop
@@ -245,6 +221,23 @@ export default function V3Hero() {
           </motion.div>
         </motion.div>
 
+        <motion.div className="v3-hero-copy-block" variants={variants.body}>
+          <p className="v3-hero-intro">{t.hero.body}</p>
+          <div className="v3-hero-domain" aria-label="Sense, plan, fly">
+            <span><Crosshair aria-hidden="true" /> Sense</span>
+            <span>Plan</span>
+            <span>Fly</span>
+          </div>
+        </motion.div>
+
+        <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
+          <V3Magnet className="v3-hero-cta-magnet" strength={5}>
+            <a className="v3-action" href="#projects">
+              {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
+            </a>
+          </V3Magnet>
+        </motion.div>
+
         <motion.div className="v3-hero-final-details" variants={variants.finalGroup}>
           <motion.span
             className="v3-hero-version"
@@ -260,18 +253,9 @@ export default function V3Hero() {
             variants={variants.finalItem}
           >
             {t.hero.explore}
-            <motion.span
-              className="v3-scroll-cue-icon"
-              aria-hidden="true"
-              animate={reduceMotion ? { y: 0 } : { y: [0, 4, 0] }}
-              transition={
-                reduceMotion
-                  ? { duration: 0 }
-                  : { duration: 2.2, repeat: Infinity, ease: TOGGLE_EASE }
-              }
-            >
+            <span className="v3-scroll-cue-icon" aria-hidden="true">
               <ArrowDownRight />
-            </motion.span>
+            </span>
           </motion.a>
         </motion.div>
       </motion.div>

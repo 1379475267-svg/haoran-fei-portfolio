@@ -13,7 +13,7 @@ export type V3Language = "zh" | "en";
 
 const copy = {
   zh: {
-    skip: "跳到项目",
+    skip: "跳到主要内容",
     nav: { about: "关于我", capabilities: "能力", projects: "项目", contact: "联系我" },
     switchLanguage: "切换到英文",
     hero: {
@@ -36,6 +36,16 @@ const copy = {
       priority: "现在最重要的方向是一套真实的激光雷达自主飞行系统：在实践中理解定位、规划、控制、硬件与团队工程记录如何连接起来。",
       email: "给我发邮件",
     },
+    signalInterlude: {
+      eyebrow: "自主系统 / 行动回路",
+      title: "感知、规划、飞行",
+      statement: "把环境变成信号，把信号变成路径，再让路径成为稳定的动作。",
+      phases: [
+        { word: "SENSE", caption: "读懂环境" },
+        { word: "PLAN", caption: "选择路径" },
+        { word: "FLY", caption: "执行飞行" },
+      ],
+    },
     capabilities: { eyebrow: "能力 / 我在构建什么", title: "我在构建什么" },
     projects: {
       eyebrow: "精选项目 / GitHub",
@@ -55,10 +65,15 @@ const copy = {
       qrCaption: "微信 / WeChat",
       version: "个人网站 / 第 03 版",
     },
-    music: { play: "播放背景音乐", pause: "暂停背景音乐" },
+    music: {
+      play: "播放背景音乐",
+      pause: "暂停背景音乐",
+      retry: "重试背景音乐",
+      error: "背景音乐加载失败",
+    },
   },
   en: {
-    skip: "Skip to projects",
+    skip: "Skip to main content",
     nav: { about: "About", capabilities: "Capabilities", projects: "Projects", contact: "Contact" },
     switchLanguage: "Switch to Chinese",
     hero: {
@@ -81,6 +96,16 @@ const copy = {
       priority: "My current priority is a real LiDAR autonomous-flight stack: understanding how localization, planning, control, hardware, and team documentation connect in practice.",
       email: "Email me",
     },
+    signalInterlude: {
+      eyebrow: "Autonomous systems / action loop",
+      title: "Sense, plan, fly",
+      statement: "Turn the world into signals, signals into paths, and paths into controlled motion.",
+      phases: [
+        { word: "SENSE", caption: "Read the world" },
+        { word: "PLAN", caption: "Choose a path" },
+        { word: "FLY", caption: "Act in space" },
+      ],
+    },
     capabilities: { eyebrow: "Capabilities / what I build", title: "What I build" },
     projects: {
       eyebrow: "Selected projects / GitHub",
@@ -100,7 +125,12 @@ const copy = {
       qrCaption: "WeChat / 微信",
       version: "Portfolio / version 03",
     },
-    music: { play: "Play background music", pause: "Pause background music" },
+    music: {
+      play: "Play background music",
+      pause: "Pause background music",
+      retry: "Retry background music",
+      error: "Background music failed to load",
+    },
   },
 } as const;
 

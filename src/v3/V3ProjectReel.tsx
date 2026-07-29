@@ -81,6 +81,7 @@ export default function V3ProjectReel() {
     ...rowTwoProjects.map((project, index) => ({ project, duplicate: index < 2 })),
     ...rowTwoProjects.map((project) => ({ project, duplicate: true })),
   ];
+  const staticRow = projects.map((project) => ({ project, duplicate: false }));
 
   const renderTile = (
     item: { project: (typeof projects)[number]; duplicate: boolean },
@@ -124,8 +125,20 @@ export default function V3ProjectReel() {
         viewport={{ once: true, amount: 0.5 }}
         variants={headingVariants}
       >
-        <motion.p variants={eyebrowVariants}>{t.reel.eyebrow}</motion.p>
-        <motion.h2 id="reel-title" variants={titleVariants}>{t.reel.title}</motion.h2>
+        <div className="v3-reel-heading-copy">
+          <motion.p variants={eyebrowVariants}>{t.reel.eyebrow}</motion.p>
+          <motion.h2 id="reel-title" variants={titleVariants}>
+            <span>{t.reel.title}</span>
+            <span className="v3-reel-title-outline" aria-hidden="true">
+              {t.reel.title}
+            </span>
+          </motion.h2>
+        </div>
+        <motion.div className="v3-reel-heading-index" variants={eyebrowVariants} aria-hidden="true">
+          <span>{String(projects.length).padStart(2, "0")}</span>
+          <i />
+          <span>{language === "zh" ? "项目系统" : "Project systems"}</span>
+        </motion.div>
       </motion.div>
       <div className="v3-reel-rows">
         {!noSpatialMotion ? (
@@ -147,21 +160,23 @@ export default function V3ProjectReel() {
           variants={rowVariants}
         >
           <motion.div className="v3-reel-row" style={noSpatialMotion ? undefined : { x: rowOneX }}>
-            {rowOne.map((project, index) => renderTile(project, index, 1))}
+            {(noSpatialMotion ? staticRow : rowOne).map((project, index) => renderTile(project, index, 1))}
           </motion.div>
         </motion.div>
-        <motion.div
-          className="v3-reel-row-shell v3-reel-row-shell-reverse"
-          custom={-1}
-          initial={noSpatialMotion ? false : "hidden"}
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.18 }}
-          variants={rowVariants}
-        >
-          <motion.div className="v3-reel-row v3-reel-row-reverse" style={noSpatialMotion ? undefined : { x: rowTwoX }}>
-            {rowTwo.map((project, index) => renderTile(project, index, 2))}
+        {!noSpatialMotion ? (
+          <motion.div
+            className="v3-reel-row-shell v3-reel-row-shell-reverse"
+            custom={-1}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.18 }}
+            variants={rowVariants}
+          >
+            <motion.div className="v3-reel-row v3-reel-row-reverse" style={{ x: rowTwoX }}>
+              {rowTwo.map((project, index) => renderTile(project, index, 2))}
+            </motion.div>
           </motion.div>
-        </motion.div>
+        ) : null}
       </div>
     </section>
   );

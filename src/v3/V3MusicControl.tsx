@@ -1,5 +1,5 @@
 import { Music2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useV3Language } from "./V3Language";
 
 const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
@@ -11,47 +11,30 @@ export default function V3MusicControl() {
   const [isBlocked, setIsBlocked] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
+  const startPlayback = (audio: HTMLAudioElement) => {
     audio.volume = 0.32;
-    let unlockArmed = false;
+    void audio.play().catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === "NotAllowedError") {
+        setIsBlocked(true);
+        return;
+      }
 
-    const removeUnlockListeners = () => {
-      if (!unlockArmed) return;
-      window.removeEventListener("click", unlockPlayback, true);
-      window.removeEventListener("keydown", unlockPlayback, true);
-      unlockArmed = false;
-    };
-
-    const unlockPlayback = (event: Event) => {
-      const target = event.target;
-      if (target instanceof Element && target.closest(".v3-music-toggle")) return;
-      void audio.play().then(removeUnlockListeners).catch(() => setIsBlocked(true));
-    };
-
-    const armUnlock = () => {
-      if (unlockArmed) return;
-      unlockArmed = true;
-      window.addEventListener("click", unlockPlayback, true);
-      window.addEventListener("keydown", unlockPlayback, true);
-    };
-
-    void audio.play().catch(() => {
-      setIsBlocked(true);
-      armUnlock();
+      setHasError(true);
     });
-
-    return removeUnlockListeners;
-  }, []);
+  };
 
   const togglePlayback = () => {
     const audio = audioRef.current;
-    if (!audio || hasError) return;
+    if (!audio) return;
 
-    if (audio.paused) {
-      void audio.play().catch(() => setIsBlocked(true));
+    if (hasError) {
+      setHasError(false);
+      setIsBlocked(false);
+      audio.load();
+    }
+
+    if (audio.paused || hasError) {
+      startPlayback(audio);
     } else {
       audio.pause();
     }
@@ -64,31 +47,39 @@ export default function V3MusicControl() {
       <audio
         ref={audioRef}
         src="./audio/bicycle-bgm.mp3"
-        autoPlay
         loop
-        preload="auto"
+        preload="metadata"
         onPlay={() => {
           setIsPlaying(true);
           setIsBlocked(false);
+          setHasError(false);
         }}
         onPause={() => setIsPlaying(false)}
         onError={() => {
           setHasError(true);
+          setIsBlocked(false);
           setIsPlaying(false);
         }}
       />
       <button
         type="button"
-        className={`v3-music-toggle ${isPlaying ? "is-playing" : ""} ${isBlocked ? "is-blocked" : ""}`}
+        className={`v3-music-toggle ${isPlaying ? "is-playing" : ""} ${isBlocked ? "is-blocked" : ""} ${hasError ? "is-error" : ""}`}
         onClick={togglePlayback}
-        aria-label={`${isPlaying ? t.music.pause : t.music.play}：${TRACK_TITLE}`}
+        aria-label={`BGM：${hasError ? t.music.retry : isPlaying ? t.music.pause : t.music.play}：${TRACK_TITLE}`}
+        aria-describedby="v3-music-state"
         aria-pressed={isPlaying}
         title={TRACK_TITLE}
-        disabled={hasError}
       >
         <Music2 aria-hidden="true" />
         <span>BGM</span>
-        <span className="v3-music-state">{stateLabel}</span>
+        <span
+          id="v3-music-state"
+          className="v3-music-state"
+          aria-label={hasError ? t.music.error : undefined}
+          aria-live="polite"
+        >
+          {stateLabel}
+        </span>
         <span className="v3-music-bars" aria-hidden="true"><i /><i /><i /></span>
       </button>
     </>

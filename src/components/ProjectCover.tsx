@@ -1,4 +1,5 @@
-import { useReducedMotion } from "framer-motion";
+import { useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import type { ProjectCoverType } from "../data/profile";
 
 interface ProjectCoverProps {
@@ -202,6 +203,9 @@ export default function ProjectCover({
   language = "en",
 }: ProjectCoverProps) {
   const reduceMotion = useReducedMotion();
+  const coverRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isInView = useInView(coverRef, { amount: 0.08, margin: "160px 0px" });
   const hasVideo = Boolean(videoWebm || videoMp4);
   const hasMedia = Boolean(image || hasVideo);
   const scenes = {
@@ -215,8 +219,32 @@ export default function ProjectCover({
     cosmos: <CosmosCover />,
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || reduceMotion || !hasVideo) return;
+
+    const syncPlayback = () => {
+      if (isInView && document.visibilityState === "visible") {
+        void video.play().catch(() => undefined);
+      } else {
+        video.pause();
+      }
+    };
+
+    syncPlayback();
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      document.removeEventListener("visibilitychange", syncPlayback);
+      video.pause();
+    };
+  }, [hasVideo, isInView, reduceMotion]);
+
   return (
-    <div className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""} ${hasMedia ? "has-cover-image" : ""}`}>
+    <div
+      className={`project-visual project-visual-${type} ${featured ? "is-featured" : ""} ${hasMedia ? "has-cover-image" : ""}`}
+      ref={coverRef}
+    >
       {image ? (
         <>
           <img
@@ -235,7 +263,7 @@ export default function ProjectCover({
       {hasVideo && !reduceMotion ? (
         <video
           className="project-cover-image project-cover-video"
-          autoPlay
+          ref={videoRef}
           loop
           muted
           playsInline
