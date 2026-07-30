@@ -1,5 +1,5 @@
 import { Music2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useV3Language } from "./V3Language";
 
 const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
@@ -10,18 +10,71 @@ export default function V3MusicControl() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const manuallyPausedRef = useRef(false);
 
-  const startPlayback = (audio: HTMLAudioElement) => {
+  const startPlayback = useCallback((audio: HTMLAudioElement) => {
     audio.volume = 0.32;
-    void audio.play().catch((error: unknown) => {
-      if (error instanceof DOMException && error.name === "NotAllowedError") {
-        setIsBlocked(true);
-        return;
-      }
+    void audio.play().then(
+      () => {
+        setIsBlocked(false);
+        setHasError(false);
+      },
+      (error: unknown) => {
+        const errorName =
+          error instanceof DOMException
+            ? error.name
+            : typeof error === "object" && error !== null && "name" in error
+              ? String((error as { name?: unknown }).name)
+              : "";
 
-      setHasError(true);
-    });
-  };
+        if (errorName === "NotAllowedError") {
+          setIsBlocked(true);
+          return;
+        }
+
+        if (errorName === "AbortError") {
+          return;
+        }
+
+        setHasError(true);
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    manuallyPausedRef.current = false;
+    audio.volume = 0.32;
+    startPlayback(audio);
+  }, [startPlayback]);
+
+  useEffect(() => {
+    if (isPlaying || hasError || manuallyPausedRef.current) return;
+
+    const unlockPlayback = (event: Event) => {
+      if (manuallyPausedRef.current) return;
+
+      const target = event.target;
+      if (target instanceof Element && target.closest(".v3-music-toggle")) return;
+
+      const audio = audioRef.current;
+      if (!audio || !audio.paused) return;
+      startPlayback(audio);
+    };
+
+    const listenerOptions: AddEventListenerOptions = { capture: true, passive: true };
+    window.addEventListener("pointerdown", unlockPlayback, listenerOptions);
+    window.addEventListener("touchstart", unlockPlayback, listenerOptions);
+    window.addEventListener("keydown", unlockPlayback, listenerOptions);
+
+    return () => {
+      window.removeEventListener("pointerdown", unlockPlayback, listenerOptions);
+      window.removeEventListener("touchstart", unlockPlayback, listenerOptions);
+      window.removeEventListener("keydown", unlockPlayback, listenerOptions);
+    };
+  }, [hasError, isPlaying, startPlayback]);
 
   const togglePlayback = () => {
     const audio = audioRef.current;
@@ -30,12 +83,16 @@ export default function V3MusicControl() {
     if (hasError) {
       setHasError(false);
       setIsBlocked(false);
+      manuallyPausedRef.current = false;
       audio.load();
     }
 
     if (audio.paused || hasError) {
+      manuallyPausedRef.current = false;
       startPlayback(audio);
     } else {
+      manuallyPausedRef.current = true;
+      setIsBlocked(false);
       audio.pause();
     }
   };
@@ -47,8 +104,9 @@ export default function V3MusicControl() {
       <audio
         ref={audioRef}
         src="./audio/bicycle-bgm.mp3"
+        autoPlay
         loop
-        preload="metadata"
+        preload="auto"
         onPlay={() => {
           setIsPlaying(true);
           setIsBlocked(false);

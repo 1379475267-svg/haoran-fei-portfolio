@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects } from "../data/profile";
 import { getProjectLanguage, useV3Language } from "./V3Language";
@@ -68,7 +68,6 @@ const rowVariants: Variants = {
 export default function V3ProjectReel() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
-  const [staticInteraction, setStaticInteraction] = useState(false);
   const sectionInView = useInView(sectionRef, { amount: 0.05 });
   const { language, t } = useV3Language();
   const { scrollYProgress } = useScroll({
@@ -78,7 +77,7 @@ export default function V3ProjectReel() {
   const rowOneX = useTransform(scrollYProgress, [0, 1], ["-7%", "-29%"]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
 
-  const noSpatialMotion = Boolean(reduceMotion || staticInteraction);
+  const noSpatialMotion = Boolean(reduceMotion);
   const rowOneProjects = projects.slice(0, 5);
   const rowTwoProjects = projects.slice(3);
   const rowOne = [
@@ -90,17 +89,6 @@ export default function V3ProjectReel() {
     ...rowTwoProjects.map((project) => ({ project, duplicate: true })),
   ];
   const staticRow = projects.map((project) => ({ project, duplicate: false }));
-
-  useEffect(() => {
-    const media = window.matchMedia(
-      "(max-width: 47.999rem), (pointer: coarse), (hover: none)",
-    );
-    const update = () => setStaticInteraction(media.matches);
-
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
 
   const renderTile = (
     item: { project: (typeof projects)[number]; duplicate: boolean },
