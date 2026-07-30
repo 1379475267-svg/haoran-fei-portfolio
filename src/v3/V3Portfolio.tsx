@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import V3About from "./V3About";
 import V3Capabilities from "./V3Capabilities";
 import V3Footer from "./V3Footer";
 import V3Hero from "./V3Hero";
 import V3Nav from "./V3Nav";
-import V3OpeningSequence from "./V3OpeningSequence";
+import V3OpeningSequence, {
+  type OpeningCompletionReason,
+} from "./V3OpeningSequence";
 import V3ProjectReel from "./V3ProjectReel";
 import V3Projects from "./V3Projects";
 import V3SignalInterlude from "./V3SignalInterlude";
@@ -40,15 +42,13 @@ function V3PortfolioContent() {
     return { openingActive, contentReady: !openingActive };
   });
 
-  useEffect(() => {
-    if (!openingState.openingActive) return;
-
+  const markOpeningSeen = useCallback(() => {
     try {
       window.sessionStorage.setItem(OPENING_SESSION_KEY, "1");
     } catch {
       // The intro still works when session storage is unavailable.
     }
-  }, [openingState.openingActive]);
+  }, []);
 
   const revealContent = useCallback(() => {
     setOpeningState((current) => (
@@ -56,21 +56,27 @@ function V3PortfolioContent() {
     ));
   }, []);
 
-  const finishOpening = useCallback(() => {
+  const finishOpening = useCallback((reason: OpeningCompletionReason) => {
+    if (reason === "natural") markOpeningSeen();
     setOpeningState({ openingActive: false, contentReady: true });
-  }, []);
+  }, [markOpeningSeen]);
+
+  const skipOpening = useCallback(() => {
+    finishOpening("skipped");
+  }, [finishOpening]);
 
   return (
     <div className="v3-site" lang={language === "zh" ? "zh-CN" : "en"} data-language={language}>
       <a
         className="v3-skip-link"
         href="#main-content"
-        onClick={openingState.openingActive ? finishOpening : undefined}
+        onClick={openingState.openingActive ? skipOpening : undefined}
       >
         {t.skip}
       </a>
       {openingState.openingActive ? (
         <V3OpeningSequence
+          onVisible={markOpeningSeen}
           onReveal={revealContent}
           onComplete={finishOpening}
         />

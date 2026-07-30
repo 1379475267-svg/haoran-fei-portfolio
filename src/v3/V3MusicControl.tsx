@@ -5,7 +5,7 @@ import { useV3Language } from "./V3Language";
 const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
 
 export default function V3MusicControl() {
-  const { t } = useV3Language();
+  const { language, t } = useV3Language();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);

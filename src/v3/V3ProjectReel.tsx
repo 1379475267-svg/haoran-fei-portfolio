@@ -1,6 +1,12 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects } from "../data/profile";
 import { getProjectLanguage, useV3Language } from "./V3Language";
@@ -62,6 +68,8 @@ const rowVariants: Variants = {
 export default function V3ProjectReel() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
+  const [staticInteraction, setStaticInteraction] = useState(false);
+  const sectionInView = useInView(sectionRef, { amount: 0.05 });
   const { language, t } = useV3Language();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -70,7 +78,7 @@ export default function V3ProjectReel() {
   const rowOneX = useTransform(scrollYProgress, [0, 1], ["-7%", "-29%"]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
 
-  const noSpatialMotion = Boolean(reduceMotion);
+  const noSpatialMotion = Boolean(reduceMotion || staticInteraction);
   const rowOneProjects = projects.slice(0, 5);
   const rowTwoProjects = projects.slice(3);
   const rowOne = [
@@ -83,6 +91,17 @@ export default function V3ProjectReel() {
   ];
   const staticRow = projects.map((project) => ({ project, duplicate: false }));
 
+  useEffect(() => {
+    const media = window.matchMedia(
+      "(max-width: 47.999rem), (pointer: coarse), (hover: none)",
+    );
+    const update = () => setStaticInteraction(media.matches);
+
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
   const renderTile = (
     item: { project: (typeof projects)[number]; duplicate: boolean },
     index: number,
@@ -92,17 +111,8 @@ export default function V3ProjectReel() {
     const localized = getProjectLanguage(project, language);
     const title = displayTitle(project.id, project.title);
 
-    return (
-      <a
-        className="v3-reel-tile"
-        href={project.github}
-        target="_blank"
-        rel="noreferrer"
-        key={`${row}-${project.id}-${index}`}
-        aria-hidden={duplicate || undefined}
-        aria-label={duplicate ? undefined : `${t.reel.open} ${title}`}
-        tabIndex={duplicate ? -1 : undefined}
-      >
+    const content = (
+      <>
         <ProjectCover
           type={project.coverType}
           image={project.coverPoster}
@@ -112,12 +122,62 @@ export default function V3ProjectReel() {
         />
         <span>{String((index % projects.length) + 1).padStart(2, "0")}</span>
         <strong>{title}</strong>
+      </>
+    );
+
+    if (duplicate) {
+      return (
+        <div
+          className="v3-reel-tile is-duplicate"
+          key={`${row}-${project.id}-${index}`}
+          aria-hidden="true"
+        >
+          {content}
+        </div>
+      );
+    }
+
+    return (
+      <a
+        className="v3-reel-tile"
+        href={project.github}
+        target="_blank"
+        rel="noreferrer"
+        key={`${row}-${project.id}-${index}`}
+        aria-label={`${t.reel.open} ${title}${
+          language === "zh" ? "（新标签页打开）" : ", opens in a new tab"
+        }`}
+        onFocus={(event) => {
+          if (!noSpatialMotion) return;
+          const tile = event.currentTarget;
+          const shell = tile.closest<HTMLElement>(".v3-reel-row-shell");
+          if (!shell) return;
+
+          window.requestAnimationFrame(() => {
+            shell.scrollTo({
+              left: Math.max(
+                0,
+                tile.offsetLeft - (shell.clientWidth - tile.offsetWidth) / 2,
+              ),
+              behavior: reduceMotion ? "auto" : "smooth",
+            });
+          });
+        }}
+      >
+        {content}
       </a>
     );
   };
 
   return (
-    <section className="v3-reel" id="project-reel" ref={sectionRef} aria-labelledby="reel-title">
+    <section
+      className="v3-reel"
+      id="project-reel"
+      ref={sectionRef}
+      aria-labelledby="reel-title"
+      data-static={noSpatialMotion || undefined}
+      data-in-view={sectionInView || undefined}
+    >
       <motion.div
         className="v3-reel-heading"
         initial={noSpatialMotion ? false : "hidden"}
@@ -134,11 +194,6 @@ export default function V3ProjectReel() {
             </span>
           </motion.h2>
         </div>
-        <motion.div className="v3-reel-heading-index" variants={eyebrowVariants} aria-hidden="true">
-          <span>{String(projects.length).padStart(2, "0")}</span>
-          <i />
-          <span>{language === "zh" ? "项目系统" : "Project systems"}</span>
-        </motion.div>
       </motion.div>
       <div className="v3-reel-rows">
         {!noSpatialMotion ? (

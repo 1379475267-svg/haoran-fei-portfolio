@@ -1,12 +1,18 @@
 import { ArrowDownRight, ArrowUpRight, Crosshair } from "lucide-react";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { profile } from "../data/profile";
 import V3Magnet from "./V3Magnet";
 import { useV3Language } from "./V3Language";
 
 const ENTER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const COMPACT_MOTION_QUERY = "(max-width: 40rem)";
+const HERO_VIDEO_POSTER_TIME = 2.3;
 
 interface HeroMotionVariants {
   atmosphere: Variants;
@@ -130,6 +136,11 @@ interface V3HeroProps {
 export default function V3Hero({ ready }: V3HeroProps) {
   const reduceMotion = Boolean(useReducedMotion());
   const compactMotion = useCompactMotion();
+  const heroRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const heroInView = useInView(heroRef, { amount: 0.08 });
+  const [mediaReady, setMediaReady] = useState(false);
+  const [mediaVisible, setMediaVisible] = useState(false);
   const variants = useMemo(
     () => createHeroMotionVariants(compactMotion),
     [compactMotion],
@@ -138,8 +149,73 @@ export default function V3Hero({ ready }: V3HeroProps) {
   const initialState = reduceMotion ? false : "hidden";
   const animateState = ready ? "visible" : "hidden";
 
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || reduceMotion) return undefined;
+    let active = true;
+
+    const syncPlayback = () => {
+      const shouldPlay = ready
+        && mediaReady
+        && heroInView
+        && document.visibilityState === "visible";
+
+      if (!shouldPlay) {
+        video.pause();
+        setMediaVisible(false);
+        return;
+      }
+
+      void video.play().then(
+        () => {
+          if (active) setMediaVisible(true);
+        },
+        () => {
+          if (active) setMediaVisible(false);
+        },
+      );
+    };
+
+    if (!ready || !mediaReady || !heroInView) {
+      video.pause();
+      setMediaVisible(false);
+      return undefined;
+    }
+
+    syncPlayback();
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      active = false;
+      document.removeEventListener("visibilitychange", syncPlayback);
+      video.pause();
+    };
+  }, [heroInView, mediaReady, ready, reduceMotion]);
+
+  const prepareVideoPosterFrame = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.currentTime = Math.min(HERO_VIDEO_POSTER_TIME, video.duration || HERO_VIDEO_POSTER_TIME);
+  };
+
+  const confirmVideoPosterFrame = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (Math.abs(video.currentTime - HERO_VIDEO_POSTER_TIME) < 0.2) {
+      setMediaReady(true);
+    }
+  };
+
   return (
-    <section className="v3-hero" id="home" aria-labelledby="v3-hero-title">
+    <section
+      className="v3-hero"
+      id="home"
+      ref={heroRef}
+      aria-labelledby="v3-hero-title"
+    >
       <motion.div
         className="v3-hero-atmosphere"
         aria-hidden="true"
@@ -180,25 +256,36 @@ export default function V3Hero({ ready }: V3HeroProps) {
             <div className="v3-hero-media-stage">
               <V3Magnet className="v3-hero-media-magnet" strength={8}>
                 <div className="v3-hero-media">
-                  {reduceMotion || !ready ? (
-                    <img
-                      src="./projects/nonconvex-navigation.webp"
-                      alt={t.hero.mediaAlt}
-                      width={568}
-                      height={320}
-                      loading="eager"
-                      decoding="async"
-                      draggable={false}
-                    />
-                  ) : (
+                  <img
+                    src="./projects/nonconvex-navigation.webp"
+                    alt={reduceMotion ? t.hero.mediaAlt : ""}
+                    aria-hidden={reduceMotion ? undefined : true}
+                    width={568}
+                    height={320}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    draggable={false}
+                  />
+                  {!reduceMotion && (
                     <video
-                      autoPlay
+                      ref={videoRef}
+                      className={mediaVisible ? "is-visible" : undefined}
                       muted
                       loop
                       playsInline
-                      preload="metadata"
+                      preload="auto"
                       poster="./projects/nonconvex-navigation.webp"
                       aria-label={t.hero.mediaAria}
+                      width={568}
+                      height={320}
+                      onLoadedMetadata={prepareVideoPosterFrame}
+                      onCanPlay={confirmVideoPosterFrame}
+                      onSeeked={confirmVideoPosterFrame}
+                      onError={() => {
+                        setMediaReady(false);
+                        setMediaVisible(false);
+                      }}
                     >
                       <source src="./projects/nonconvex-navigation.webm" type="video/webm" />
                       <source src="./projects/nonconvex-navigation.mp4" type="video/mp4" />
@@ -232,7 +319,10 @@ export default function V3Hero({ ready }: V3HeroProps) {
 
         <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
           <V3Magnet className="v3-hero-cta-magnet" strength={5}>
-            <a className="v3-action" href="#projects">
+            <a
+              className="v3-action"
+              href="#projects"
+            >
               {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
             </a>
           </V3Magnet>
