@@ -12,7 +12,7 @@ import { useV3Language } from "./V3Language";
 
 const sectionTargets = [
   { id: "home", href: "#home" },
-  { id: "project-reel", href: "#projects" },
+  { id: "project-reel", href: "#project-reel" },
   { id: "about", href: "#about" },
   { id: "capabilities", href: "#capabilities" },
   { id: "projects", href: "#projects" },
@@ -38,53 +38,36 @@ export default function V3Nav({ ready }: V3NavProps) {
   ];
   const activeLabel = activeHref === "#home"
     ? (language === "zh" ? "首页" : "Home")
-    : activeHref === "#contact"
-      ? t.nav.contact
-      : links.find((link) => link.href === activeHref)?.label ?? t.nav.projects;
+    : activeHref === "#project-reel"
+      ? (language === "zh" ? "项目进行时" : "Project reel")
+      : activeHref === "#contact"
+        ? t.nav.contact
+        : links.find((link) => link.href === activeHref)?.label ?? t.nav.projects;
 
   useEffect(() => {
-    let frameId = 0;
+    const sections = sectionTargets
+      .map((target) => document.getElementById(target.id))
+      .filter((section): section is HTMLElement => Boolean(section));
 
-    const updateActiveSection = () => {
-      const markerY = window.innerHeight * 0.34;
-      let nextSection: (typeof sectionTargets)[number]["id"] = "home";
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const activeEntry = entries.find((entry) => entry.isIntersecting);
+        if (!activeEntry) return;
 
-      for (const target of sectionTargets) {
-        const section = document.getElementById(target.id);
-        if (!section) continue;
+        const nextSection = activeEntry.target.id as (typeof sectionTargets)[number]["id"];
+        setActiveSection((currentSection) => (
+          currentSection === nextSection ? currentSection : nextSection
+        ));
+      },
+      {
+        rootMargin: "-34% 0px -65% 0px",
+        threshold: 0,
+      },
+    );
 
-        const bounds = section.getBoundingClientRect();
-        if (bounds.top <= markerY) nextSection = target.id;
-        if (bounds.top <= markerY && bounds.bottom > markerY) break;
-      }
-
-      const atPageEnd =
-        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
-      if (atPageEnd) nextSection = "contact";
-
-      setActiveSection((currentSection) => (
-        currentSection === nextSection ? currentSection : nextSection
-      ));
-    };
-
-    const queueActiveSectionUpdate = () => {
-      if (frameId) return;
-      frameId = window.requestAnimationFrame(() => {
-        frameId = 0;
-        updateActiveSection();
-      });
-    };
-
-    updateActiveSection();
-    window.addEventListener("scroll", queueActiveSectionUpdate, { passive: true });
-    window.addEventListener("resize", queueActiveSectionUpdate);
-
-    return () => {
-      window.removeEventListener("scroll", queueActiveSectionUpdate);
-      window.removeEventListener("resize", queueActiveSectionUpdate);
-      if (frameId) window.cancelAnimationFrame(frameId);
-    };
-  }, [language]);
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <motion.header
@@ -99,6 +82,7 @@ export default function V3Nav({ ready }: V3NavProps) {
           href="#home"
           aria-label={language === "zh" ? "费浩然，返回顶部" : "Haoran Fei, back to top"}
           aria-current={activeSection === "home" ? "location" : undefined}
+          onClick={() => setActiveSection("home")}
         >
           <span>HF</span>
           <small>HAORAN FEI</small>
@@ -133,6 +117,10 @@ export default function V3Nav({ ready }: V3NavProps) {
                   key={link.href}
                   href={link.href}
                   aria-current={active ? "location" : undefined}
+                  onClick={() =>
+                    setActiveSection(
+                      link.href.slice(1) as "about" | "capabilities" | "projects",
+                    )}
                 >
                   <b aria-hidden="true">{link.index}</b>
                   <span>{link.label}</span>
@@ -171,6 +159,7 @@ export default function V3Nav({ ready }: V3NavProps) {
             href="#contact"
             aria-label={t.nav.contact}
             aria-current={activeSection === "contact" ? "location" : undefined}
+            onClick={() => setActiveSection("contact")}
           >
             <span>{t.nav.contact}</span>
             <ArrowUpRight aria-hidden="true" />

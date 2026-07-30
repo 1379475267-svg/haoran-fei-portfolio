@@ -82,7 +82,11 @@ export default function V3Footer() {
           <motion.dl className="v3-contact-directory" variants={footerDirectoryVariants}>
             <motion.div variants={footerItemVariants}>
               <dt>Email</dt>
-              <dd><a href={`mailto:${profile.email}`}>{profile.email}</a></dd>
+              <dd>
+                <a href={`mailto:${profile.email}`}>
+                  {profile.email}
+                </a>
+              </dd>
             </motion.div>
             <motion.div variants={footerItemVariants}>
               <dt>QQ</dt>
@@ -110,7 +114,12 @@ export default function V3Footer() {
         <span>© 2026 {profile.name}</span>
         <span>{t.footer.version}</span>
         <div>
-          <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+          <a
+            href={profile.github}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub"
+          >
             <Github aria-hidden="true" />
           </a>
         </div>
