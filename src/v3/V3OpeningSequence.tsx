@@ -150,10 +150,6 @@ export default function V3OpeningSequence({
         aria-label="Enter Haoran Fei's portfolio and start background music"
         title="Enter portfolio"
         disabled={phase === "erasing"}
-        onPointerDown={(event) => {
-          if (!event.isPrimary || event.button !== 0) return;
-          start();
-        }}
         onClick={start}
         onKeyDown={(event) => {
           if (event.key === "Tab") {
