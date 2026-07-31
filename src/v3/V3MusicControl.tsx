@@ -2,7 +2,16 @@ import { Music2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useV3Language } from "./V3Language";
 
-const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
+const TRACK_TITLE = "Take Your Time (feat. Engelwood) — 英雄联盟 / Engelwood";
+
+function getPlaybackErrorName(error: unknown) {
+  if (error instanceof DOMException) return error.name;
+  if (typeof error === "object" && error !== null && "name" in error) {
+    return String((error as { name?: unknown }).name);
+  }
+
+  return "";
+}
 
 export default function V3MusicControl() {
   const { language, t } = useV3Language();
@@ -10,22 +19,63 @@ export default function V3MusicControl() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const isPlayingRef = useRef(false);
+  const hasErrorRef = useRef(false);
   const manuallyPausedRef = useRef(false);
+  const mountedRef = useRef(false);
+  const playAttemptRef = useRef<Promise<void> | null>(null);
 
-  const startPlayback = useCallback((audio: HTMLAudioElement) => {
+  const requestPlayback = useCallback((audio: HTMLAudioElement, allowRetry = false) => {
+    if (
+      manuallyPausedRef.current
+      || isPlayingRef.current
+      || !audio.paused
+      || playAttemptRef.current
+      || (!allowRetry && hasErrorRef.current)
+    ) {
+      return;
+    }
+
     audio.volume = 0.32;
-    void audio.play().then(
+    audio.muted = false;
+
+    let request: Promise<void>;
+    try {
+      request = audio.play();
+    } catch (error) {
+      const errorName = getPlaybackErrorName(error);
+      if (errorName === "NotAllowedError") {
+        if (mountedRef.current) setIsBlocked(true);
+        return;
+      }
+
+      if (errorName !== "AbortError") {
+        hasErrorRef.current = true;
+        if (mountedRef.current) {
+          setHasError(true);
+          setIsBlocked(false);
+        }
+      }
+      return;
+    }
+
+    playAttemptRef.current = request;
+    void request.then(
       () => {
+        if (playAttemptRef.current === request) playAttemptRef.current = null;
+        if (!mountedRef.current) return;
+
+        isPlayingRef.current = true;
+        hasErrorRef.current = false;
+        setIsPlaying(true);
         setIsBlocked(false);
         setHasError(false);
       },
       (error: unknown) => {
-        const errorName =
-          error instanceof DOMException
-            ? error.name
-            : typeof error === "object" && error !== null && "name" in error
-              ? String((error as { name?: unknown }).name)
-              : "";
+        if (playAttemptRef.current === request) playAttemptRef.current = null;
+        if (!mountedRef.current) return;
+
+        const errorName = getPlaybackErrorName(error);
 
         if (errorName === "NotAllowedError") {
           setIsBlocked(true);
@@ -36,9 +86,18 @@ export default function V3MusicControl() {
           return;
         }
 
+        hasErrorRef.current = true;
         setHasError(true);
+        setIsBlocked(false);
       },
     );
+  }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -47,12 +106,10 @@ export default function V3MusicControl() {
 
     manuallyPausedRef.current = false;
     audio.volume = 0.32;
-    startPlayback(audio);
-  }, [startPlayback]);
+    requestPlayback(audio);
+  }, [requestPlayback]);
 
   useEffect(() => {
-    if (isPlaying || hasError || manuallyPausedRef.current) return;
-
     const unlockPlayback = (event: Event) => {
       if (manuallyPausedRef.current) return;
 
@@ -60,36 +117,39 @@ export default function V3MusicControl() {
       if (target instanceof Element && target.closest(".v3-music-toggle")) return;
 
       const audio = audioRef.current;
-      if (!audio || !audio.paused) return;
-      startPlayback(audio);
+      if (!audio) return;
+      requestPlayback(audio);
     };
 
     const listenerOptions: AddEventListenerOptions = { capture: true, passive: true };
-    window.addEventListener("pointerdown", unlockPlayback, listenerOptions);
-    window.addEventListener("touchstart", unlockPlayback, listenerOptions);
-    window.addEventListener("keydown", unlockPlayback, listenerOptions);
+    const unlockEvents = ["pointerdown", "touchend", "keydown", "click", "wheel"] as const;
+    unlockEvents.forEach((eventName) => {
+      window.addEventListener(eventName, unlockPlayback, listenerOptions);
+    });
 
     return () => {
-      window.removeEventListener("pointerdown", unlockPlayback, listenerOptions);
-      window.removeEventListener("touchstart", unlockPlayback, listenerOptions);
-      window.removeEventListener("keydown", unlockPlayback, listenerOptions);
+      unlockEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, unlockPlayback, listenerOptions);
+      });
     };
-  }, [hasError, isPlaying, startPlayback]);
+  }, [requestPlayback]);
 
   const togglePlayback = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (hasError) {
+    const shouldRetry = hasErrorRef.current;
+    if (shouldRetry) {
+      hasErrorRef.current = false;
       setHasError(false);
       setIsBlocked(false);
       manuallyPausedRef.current = false;
       audio.load();
     }
 
-    if (audio.paused || hasError) {
+    if (audio.paused || shouldRetry) {
       manuallyPausedRef.current = false;
-      startPlayback(audio);
+      requestPlayback(audio, shouldRetry);
     } else {
       manuallyPausedRef.current = true;
       setIsBlocked(false);
@@ -103,17 +163,24 @@ export default function V3MusicControl() {
     <>
       <audio
         ref={audioRef}
-        src="./audio/bicycle-bgm.mp3"
-        autoPlay
+        src="/audio/take-your-time-engelwood.mp3"
         loop
         preload="auto"
+        playsInline
         onPlay={() => {
+          isPlayingRef.current = true;
+          hasErrorRef.current = false;
           setIsPlaying(true);
           setIsBlocked(false);
           setHasError(false);
         }}
-        onPause={() => setIsPlaying(false)}
+        onPause={() => {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }}
         onError={() => {
+          hasErrorRef.current = true;
+          isPlayingRef.current = false;
           setHasError(true);
           setIsBlocked(false);
           setIsPlaying(false);

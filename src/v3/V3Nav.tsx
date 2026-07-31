@@ -7,6 +7,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { useEffect, useState } from "react";
+import V3BrandLogo from "./V3BrandLogo";
 import V3MusicControl from "./V3MusicControl";
 import { useV3Language } from "./V3Language";
 
@@ -84,11 +85,12 @@ export default function V3Nav({ ready }: V3NavProps) {
           aria-current={activeSection === "home" ? "location" : undefined}
           onClick={() => setActiveSection("home")}
         >
-          <span>HF</span>
+          <V3BrandLogo className="v3-brand-logo--nav" decorative />
           <small>HAORAN FEI</small>
         </a>
         <div className="v3-nav-status" aria-hidden="true">
           <i />
+          <V3BrandLogo className="v3-brand-logo--status" decorative />
           <span>{language === "zh" ? "系统在线" : "Systems online"}</span>
         </div>
         <AnimatePresence initial={false} mode="wait">

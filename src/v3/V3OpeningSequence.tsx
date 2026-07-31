@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import V3BrandLogo from "./V3BrandLogo";
 
 const ENTER_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const LOCKUP_TIMES: [number, number, number, number] = [0, 0.23, 0.87, 1];
 const ORBIT_TIMES: [number, number, number, number, number] = [
   0,
   0.2,
@@ -10,30 +10,23 @@ const ORBIT_TIMES: [number, number, number, number, number] = [
   0.9,
   1,
 ];
-const VISIBLE_OPACITY_THRESHOLD = 0.26;
 const OPENING_TIMING = {
-  revealFallbackMs: 2400,
-  completeFallbackMs: 4200,
-  shutterDuration: 1.2,
-  shutterDelay: 1.92,
-  identityDuration: 1.6,
-  lockupDuration: 1.82,
-  lockupStagger: 0.14,
-  orbitDuration: 2.4,
-  orbitDelay: 0.4,
+  duration: 3,
+  completeFallbackMs: 3400,
+  identityDuration: 2.28,
+  orbitDuration: 2.42,
+  orbitDelay: 0.12,
 } as const;
 
 export type OpeningCompletionReason = "natural" | "skipped";
 
 interface V3OpeningSequenceProps {
   onComplete: (reason: OpeningCompletionReason) => void;
-  onVisible: () => void;
   onReveal: () => void;
 }
 
 export default function V3OpeningSequence({
   onComplete,
-  onVisible,
   onReveal,
 }: V3OpeningSequenceProps) {
   const reduceMotion = Boolean(useReducedMotion());
@@ -41,14 +34,7 @@ export default function V3OpeningSequence({
     () => typeof document === "undefined" || document.visibilityState === "visible",
   );
   const revealedRef = useRef(false);
-  const visibleRef = useRef(false);
   const completedRef = useRef(false);
-
-  const markVisible = useCallback(() => {
-    if (visibleRef.current) return;
-    visibleRef.current = true;
-    onVisible();
-  }, [onVisible]);
 
   const reveal = useCallback(() => {
     if (revealedRef.current) return;
@@ -59,10 +45,9 @@ export default function V3OpeningSequence({
   const finish = useCallback((reason: OpeningCompletionReason) => {
     if (completedRef.current) return;
     completedRef.current = true;
-    if (reason === "natural") markVisible();
     reveal();
     onComplete(reason);
-  }, [markVisible, onComplete, reveal]);
+  }, [onComplete, reveal]);
 
   const skip = useCallback(() => {
     finish("skipped");
@@ -88,10 +73,6 @@ export default function V3OpeningSequence({
       return undefined;
     }
 
-    const revealFallback = window.setTimeout(
-      reveal,
-      OPENING_TIMING.revealFallbackMs,
-    );
     const completeFallback = window.setTimeout(
       () => finish("natural"),
       OPENING_TIMING.completeFallbackMs,
@@ -104,42 +85,32 @@ export default function V3OpeningSequence({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.clearTimeout(revealFallback);
       window.clearTimeout(completeFallback);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [finish, playbackActive, reduceMotion, reveal, skip]);
 
   return (
-    <div
+    <motion.div
       className="v3-opening"
       aria-hidden="true"
+      initial={{ opacity: 1 }}
+      animate={playbackActive && !reduceMotion ? { opacity: [1, 1, 0] } : { opacity: 1 }}
+      transition={{
+        duration: OPENING_TIMING.duration,
+        times: [0, 0.74, 1],
+        ease: "linear",
+      }}
+      onAnimationComplete={() => {
+        if (playbackActive && !reduceMotion) finish("natural");
+      }}
       onPointerDown={skip}
       onWheel={skip}
     >
       {playbackActive ? (
         <>
-          <motion.div
-            className="v3-opening-shutter v3-opening-shutter-top"
-            initial={{ y: 0 }}
-            animate={{ y: "-101%" }}
-            transition={{
-              duration: OPENING_TIMING.shutterDuration,
-              delay: OPENING_TIMING.shutterDelay,
-              ease: ENTER_EASE,
-            }}
-          />
-          <motion.div
-            className="v3-opening-shutter v3-opening-shutter-bottom"
-            initial={{ y: 0 }}
-            animate={{ y: "101%" }}
-            transition={{
-              duration: OPENING_TIMING.shutterDuration,
-              delay: OPENING_TIMING.shutterDelay,
-              ease: ENTER_EASE,
-            }}
-            onAnimationComplete={() => finish("natural")}
-          />
+          <div className="v3-opening-shutter v3-opening-shutter-top" />
+          <div className="v3-opening-shutter v3-opening-shutter-bottom" />
 
           <motion.div
             className="v3-opening-identity"
@@ -147,43 +118,28 @@ export default function V3OpeningSequence({
             animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6] }}
             transition={{
               duration: OPENING_TIMING.identityDuration,
-              times: [0, 0.22, 0.68, 1],
+              times: [0, 0.12, 0.82, 1],
               ease: ENTER_EASE,
             }}
-            onAnimationComplete={reveal}
           >
             <span>HF / V03</span>
             <span>31.2304 N / SIGNAL READY</span>
           </motion.div>
 
-          <div className="v3-opening-lockup">
-            <span>
-              <motion.strong
-                initial={{ y: "112%" }}
-                animate={{ y: ["112%", "0%", "0%", "-112%"] }}
-                transition={{
-                  duration: OPENING_TIMING.lockupDuration,
-                  times: LOCKUP_TIMES,
-                  ease: ENTER_EASE,
-                }}
-              >
-                HAORAN
-              </motion.strong>
-            </span>
-            <span>
-              <motion.strong
-                initial={{ y: "112%" }}
-                animate={{ y: ["112%", "0%", "0%", "-112%"] }}
-                transition={{
-                  duration: OPENING_TIMING.lockupDuration,
-                  delay: OPENING_TIMING.lockupStagger,
-                  times: LOCKUP_TIMES,
-                  ease: ENTER_EASE,
-                }}
-              >
-                FEI
-              </motion.strong>
-            </span>
+          <div className="v3-opening-brand">
+            <motion.div
+              className="v3-opening-brand-inner"
+              initial={{ opacity: 0, y: 8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.28, ease: ENTER_EASE }}
+            >
+              <V3BrandLogo
+                animated
+                className="v3-brand-logo--opening"
+                decorative
+              />
+              <span className="v3-opening-brand-label">HAORAN FEI / FLIGHT SYSTEMS</span>
+            </motion.div>
           </div>
 
           <motion.div
@@ -201,17 +157,9 @@ export default function V3OpeningSequence({
               times: ORBIT_TIMES,
               ease: ENTER_EASE,
             }}
-            onUpdate={(latest) => {
-              if (
-                typeof latest.opacity === "number"
-                && latest.opacity >= VISIBLE_OPACITY_THRESHOLD
-              ) {
-                markVisible();
-              }
-            }}
           />
         </>
       ) : null}
-    </div>
+    </motion.div>
   );
 }

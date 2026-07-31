@@ -76,7 +76,6 @@ function V3PortfolioContent() {
       </a>
       {openingState.openingActive ? (
         <V3OpeningSequence
-          onVisible={markOpeningSeen}
           onReveal={revealContent}
           onComplete={finishOpening}
         />

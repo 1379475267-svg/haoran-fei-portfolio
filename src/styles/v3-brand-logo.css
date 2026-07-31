@@ -1,0 +1,74 @@
+/* Hallmark | component: brand mark | genre: atmospheric | theme: existing V3 signal tokens */
+.v3-site .v3-brand-logo {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.v3-site .v3-brand-logo--nav {
+  inline-size: 1.45rem;
+  block-size: 1.45rem;
+  flex: none;
+}
+
+.v3-site .v3-brand-logo--status {
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  flex: none;
+}
+
+.v3-opening-brand {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  inline-size: min(62vw, 13.5rem);
+  justify-items: center;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.v3-opening-brand-inner {
+  display: grid;
+  inline-size: 100%;
+  justify-items: center;
+  gap: var(--space-sm);
+}
+
+.v3-site .v3-brand-logo--opening {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.v3-opening-brand-label {
+  color: var(--color-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+}
+
+@media (min-width: 48rem) {
+  .v3-opening-brand {
+    inline-size: clamp(12rem, 22vw, 14.5rem);
+  }
+
+  .v3-opening-brand-label {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (min-width: 64rem) {
+  .v3-nav-mark .v3-brand-logo--nav {
+    inline-size: 1.6rem;
+    block-size: 1.6rem;
+  }
+
+  .v3-nav-status {
+    gap: 0.4rem;
+  }
+}
