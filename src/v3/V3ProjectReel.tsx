@@ -3,13 +3,15 @@ import {
   useInView,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects } from "../data/profile";
 import { getProjectLanguage, useV3Language } from "./V3Language";
+import V3ChapterStrike from "./V3ChapterStrike";
 
 const displayTitle = (id: string, title: string) =>
   id === "nonconvex-alpha" ? "Nonconvex α / Drone Lab" : title;
@@ -68,17 +70,30 @@ const rowVariants: Variants = {
 export default function V3ProjectReel() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
-  const [staticInteraction, setStaticInteraction] = useState(false);
   const sectionInView = useInView(sectionRef, { amount: 0.05 });
   const { language, t } = useV3Language();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
+  const { scrollYProgress: arrivalScrollProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "start start"],
+  });
+  const smoothedArrivalProgress = useSpring(arrivalScrollProgress, {
+    stiffness: 170,
+    damping: 30,
+    mass: 0.3,
+  });
   const rowOneX = useTransform(scrollYProgress, [0, 1], ["-7%", "-29%"]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
+  const headingOpacity = useTransform(smoothedArrivalProgress, [0, 0.18, 0.72], [0, 0.08, 1]);
+  const headingY = useTransform(smoothedArrivalProgress, [0, 0.72], [44, 0]);
+  const rowsOpacity = useTransform(smoothedArrivalProgress, [0, 0.24, 0.86], [0, 0.06, 1]);
+  const rowsY = useTransform(smoothedArrivalProgress, [0, 0.86], [68, 0]);
+  const rowsScale = useTransform(smoothedArrivalProgress, [0, 0.86], [0.985, 1]);
 
-  const noSpatialMotion = Boolean(reduceMotion || staticInteraction);
+  const noSpatialMotion = Boolean(reduceMotion);
   const rowOneProjects = projects.slice(0, 5);
   const rowTwoProjects = projects.slice(3);
   const rowOne = [
@@ -90,17 +105,6 @@ export default function V3ProjectReel() {
     ...rowTwoProjects.map((project) => ({ project, duplicate: true })),
   ];
   const staticRow = projects.map((project) => ({ project, duplicate: false }));
-
-  useEffect(() => {
-    const media = window.matchMedia(
-      "(max-width: 47.999rem), (pointer: coarse), (hover: none)",
-    );
-    const update = () => setStaticInteraction(media.matches);
-
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
 
   const renderTile = (
     item: { project: (typeof projects)[number]; duplicate: boolean },
@@ -140,6 +144,7 @@ export default function V3ProjectReel() {
     return (
       <a
         className="v3-reel-tile"
+        data-reel-project={project.id}
         href={project.github}
         target="_blank"
         rel="noreferrer"
@@ -178,61 +183,76 @@ export default function V3ProjectReel() {
       data-static={noSpatialMotion || undefined}
       data-in-view={sectionInView || undefined}
     >
+      <V3ChapterStrike tone="light" />
       <motion.div
-        className="v3-reel-heading"
-        initial={noSpatialMotion ? false : "hidden"}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
-        variants={headingVariants}
+        className="v3-reel-arrival-heading"
+        style={noSpatialMotion ? undefined : { opacity: headingOpacity, y: headingY }}
       >
-        <div className="v3-reel-heading-copy">
-          <motion.p variants={eyebrowVariants}>{t.reel.eyebrow}</motion.p>
-          <motion.h2 id="reel-title" variants={titleVariants}>
-            <span>{t.reel.title}</span>
-            <span className="v3-reel-title-outline" aria-hidden="true">
-              {t.reel.title}
-            </span>
-          </motion.h2>
-        </div>
-      </motion.div>
-      <div className="v3-reel-rows">
-        {!noSpatialMotion ? (
-          <motion.span
-            className="v3-reel-scanline"
-            aria-hidden="true"
-            initial={{ opacity: 0, x: "-55vw" }}
-            whileInView={{ opacity: [0, 0.58, 0.2, 0], x: ["-55vw", "55vw"] }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 1.35, delay: 0.28, ease: quietEase }}
-          />
-        ) : null}
         <motion.div
-          className="v3-reel-row-shell"
-          custom={1}
-          initial={noSpatialMotion ? false : "hidden"}
+          className="v3-reel-heading"
+          initial={false}
           whileInView="visible"
-          viewport={{ once: true, amount: 0.18 }}
-          variants={rowVariants}
+          viewport={{ once: true, amount: 0.5 }}
+          variants={headingVariants}
         >
-          <motion.div className="v3-reel-row" style={noSpatialMotion ? undefined : { x: rowOneX }}>
-            {(noSpatialMotion ? staticRow : rowOne).map((project, index) => renderTile(project, index, 1))}
-          </motion.div>
+          <div className="v3-reel-heading-copy">
+            <motion.p variants={eyebrowVariants}>{t.reel.eyebrow}</motion.p>
+            <motion.h2 id="reel-title" variants={titleVariants}>
+              <span>{t.reel.title}</span>
+              <span className="v3-reel-title-outline" aria-hidden="true">
+                {t.reel.title}
+              </span>
+            </motion.h2>
+          </div>
         </motion.div>
-        {!noSpatialMotion ? (
+      </motion.div>
+      <motion.div
+        className="v3-reel-arrival-rows"
+        style={noSpatialMotion ? undefined : {
+          opacity: rowsOpacity,
+          y: rowsY,
+          scale: rowsScale,
+        }}
+      >
+        <div className="v3-reel-rows">
+          {!noSpatialMotion ? (
+            <motion.span
+              className="v3-reel-scanline"
+              aria-hidden="true"
+              initial={{ opacity: 0, x: "-55vw" }}
+              whileInView={{ opacity: [0, 0.58, 0.2, 0], x: ["-55vw", "55vw"] }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 1.35, delay: 0.28, ease: quietEase }}
+            />
+          ) : null}
           <motion.div
-            className="v3-reel-row-shell v3-reel-row-shell-reverse"
-            custom={-1}
-            initial="hidden"
+            className="v3-reel-row-shell"
+            custom={1}
+            initial={false}
             whileInView="visible"
             viewport={{ once: true, amount: 0.18 }}
             variants={rowVariants}
           >
-            <motion.div className="v3-reel-row v3-reel-row-reverse" style={{ x: rowTwoX }}>
-              {rowTwo.map((project, index) => renderTile(project, index, 2))}
+            <motion.div className="v3-reel-row" style={noSpatialMotion ? undefined : { x: rowOneX }}>
+              {(noSpatialMotion ? staticRow : rowOne).map((project, index) => renderTile(project, index, 1))}
             </motion.div>
           </motion.div>
-        ) : null}
-      </div>
+          {!noSpatialMotion ? (
+            <motion.div
+              className="v3-reel-row-shell v3-reel-row-shell-reverse"
+              custom={-1}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.18 }}
+              variants={rowVariants}
+            >
+              <motion.div className="v3-reel-row v3-reel-row-reverse" style={{ x: rowTwoX }}>
+                {rowTwo.map((project, index) => renderTile(project, index, 2))}
+              </motion.div>
+            </motion.div>
+          ) : null}
+        </div>
+      </motion.div>
     </section>
   );
 }

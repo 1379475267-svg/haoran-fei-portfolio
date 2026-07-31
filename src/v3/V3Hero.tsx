@@ -3,6 +3,9 @@ import {
   motion,
   useInView,
   useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
   type Variants,
 } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -13,6 +16,22 @@ import { useV3Language } from "./V3Language";
 const ENTER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const COMPACT_MOTION_QUERY = "(max-width: 40rem)";
 const HERO_VIDEO_POSTER_TIME = 2.3;
+
+const domainVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: { delayChildren: 0.08, staggerChildren: 0.09 },
+  },
+};
+
+const domainItemVariants: Variants = {
+  hidden: { opacity: 0, y: 4 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38, ease: ENTER_EASE },
+  },
+};
 
 interface HeroMotionVariants {
   atmosphere: Variants;
@@ -139,6 +158,30 @@ export default function V3Hero({ ready }: V3HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroInView = useInView(heroRef, { amount: 0.08 });
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const smoothedScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 32,
+    mass: 0.28,
+  });
+  const handoffY = useTransform(
+    smoothedScrollProgress,
+    [0, 0.58, 1],
+    [0, 0, compactMotion ? -18 : -56],
+  );
+  const handoffOpacity = useTransform(
+    smoothedScrollProgress,
+    [0, 0.62, 1],
+    [1, 1, 0.18],
+  );
+  const handoffScale = useTransform(
+    smoothedScrollProgress,
+    [0, 0.62, 1],
+    [1, 1, compactMotion ? 0.995 : 0.982],
+  );
   const [mediaReady, setMediaReady] = useState(false);
   const [mediaVisible, setMediaVisible] = useState(false);
   const variants = useMemo(
@@ -215,6 +258,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
       id="home"
       ref={heroRef}
       aria-labelledby="v3-hero-title"
+      data-ready={ready || undefined}
     >
       <motion.div
         className="v3-hero-atmosphere"
@@ -227,11 +271,19 @@ export default function V3Hero({ ready }: V3HeroProps) {
       </motion.div>
 
       <motion.div
-        className="v3-hero-inner"
-        variants={variants.sequence}
-        initial={initialState}
-        animate={animateState}
+        className="v3-hero-scroll-frame"
+        style={reduceMotion ? undefined : {
+          y: handoffY,
+          opacity: handoffOpacity,
+          scale: handoffScale,
+        }}
       >
+        <motion.div
+          className="v3-hero-inner"
+          variants={variants.sequence}
+          initial={initialState}
+          animate={animateState}
+        >
         <motion.div className="v3-hero-kicker" variants={variants.supportItem}>
           <span>{t.hero.kicker}</span>
           <span>{t.hero.location} / 31.2304° N</span>
@@ -255,7 +307,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
           <motion.div className="v3-hero-media-reveal" variants={variants.media}>
             <div className="v3-hero-media-stage">
               <V3Magnet className="v3-hero-media-magnet" strength={8}>
-                <div className="v3-hero-media">
+                <div className="v3-hero-media" data-live={mediaVisible || undefined}>
                   <img
                     src="./projects/nonconvex-navigation.webp"
                     alt={reduceMotion ? t.hero.mediaAlt : ""}
@@ -264,7 +316,6 @@ export default function V3Hero({ ready }: V3HeroProps) {
                     height={320}
                     loading="eager"
                     decoding="async"
-                    fetchPriority="high"
                     draggable={false}
                   />
                   {!reduceMotion && (
@@ -310,11 +361,15 @@ export default function V3Hero({ ready }: V3HeroProps) {
 
         <motion.div className="v3-hero-copy-block" variants={variants.body}>
           <p className="v3-hero-intro">{t.hero.body}</p>
-          <div className="v3-hero-domain" aria-label="Sense, plan, fly">
-            <span><Crosshair aria-hidden="true" /> Sense</span>
-            <span>Plan</span>
-            <span>Fly</span>
-          </div>
+          <motion.div
+            className="v3-hero-domain"
+            aria-label="Sense, plan, fly"
+            variants={domainVariants}
+          >
+            <motion.span variants={domainItemVariants}><Crosshair aria-hidden="true" /> Sense</motion.span>
+            <motion.span variants={domainItemVariants}>Plan</motion.span>
+            <motion.span variants={domainItemVariants}>Fly</motion.span>
+          </motion.div>
         </motion.div>
 
         <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
@@ -347,6 +402,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
               <ArrowDownRight />
             </span>
           </motion.a>
+        </motion.div>
         </motion.div>
       </motion.div>
     </section>

@@ -18,6 +18,7 @@ import {
   type V3Language,
   useV3Language,
 } from "./V3Language";
+import V3ChapterStrike from "./V3ChapterStrike";
 
 const selectedIds = [
   "nonconvex-alpha",
@@ -173,18 +174,53 @@ const archiveGroupVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 0.06,
-      staggerChildren: 0.06,
+      delayChildren: 0.04,
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const archiveCardVariants: Variants = {
+  hidden: { y: 20 },
+  visible: {
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: quietEase,
+      when: "beforeChildren",
+      delayChildren: 0.12,
+      staggerChildren: 0.12,
     },
   },
 };
 
 const archiveItemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.52, ease: quietEase },
+  },
+};
+
+const archiveBodyVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.04,
+      staggerChildren: 0.14,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const archiveMetaVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.04,
+      staggerChildren: 0.08,
+    },
   },
 };
 
@@ -308,11 +344,15 @@ function ProjectCard({
         className="v3-project-card"
         data-project={project.id}
         data-active={active || undefined}
+        data-archive-motion={reducedMotion ? "static" : "layered"}
         style={staticLayout ? undefined : { scale, opacity }}
         initial={reducedMotion ? false : "hidden"}
         whileInView="visible"
         viewport={{ once: true, amount: 0.18 }}
-        variants={archiveGroupVariants}
+        variants={archiveCardVariants}
+        whileHover={reducedMotion
+          ? undefined
+          : { y: -2, transition: { duration: 0.2, ease: quietEase } }}
       >
         <motion.div className="v3-project-card-head" variants={archiveGroupVariants}>
           <motion.span variants={archiveItemVariants}>
@@ -392,8 +432,8 @@ function ProjectCard({
             </div>
           </motion.div>
         </motion.div>
-        <motion.div className="v3-project-card-body" variants={archiveGroupVariants}>
-          <motion.div className="v3-project-card-notes" variants={archiveGroupVariants}>
+        <motion.div className="v3-project-card-body" variants={archiveBodyVariants}>
+          <motion.div className="v3-project-card-notes" variants={archiveMetaVariants}>
             <motion.p variants={archiveItemVariants}>{localized.longDescription}</motion.p>
             <motion.dl variants={archiveGroupVariants}>
               {details.map((detail) => (
@@ -410,6 +450,12 @@ function ProjectCard({
             target="_blank"
             rel="noreferrer"
             variants={archiveVisualVariants}
+            whileHover={reducedMotion
+              ? undefined
+              : { scale: 1.008, transition: { duration: 0.2, ease: quietEase } }}
+            whileFocus={reducedMotion
+              ? undefined
+              : { scale: 1.008, transition: { duration: 0.2, ease: quietEase } }}
             aria-label={`${
               project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria
             }: ${title}${newTabSuffix}`}
@@ -501,6 +547,7 @@ export default function V3Projects() {
 
   return (
     <section className="v3-projects" id="projects" aria-labelledby="projects-title">
+      <V3ChapterStrike tone="light" />
       <motion.div
         className="v3-projects-heading"
         initial={reduceMotion ? false : "hidden"}

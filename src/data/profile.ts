@@ -85,6 +85,8 @@ export const profile = {
   qq: "1379475267",
   wechat: "Congee",
   wechatQr: "./projects/wechat-qr.webp",
+  whatsapp: "Congee",
+  whatsappQr: "./projects/whatsapp-qr.png",
   github: "https://github.com/1379475267-svg",
   heroIntro:
     "I build hands-on systems across autonomous robotics, embedded development, and music technology. I turn learning into tangible work - quietly, clearly, and with personal style.",

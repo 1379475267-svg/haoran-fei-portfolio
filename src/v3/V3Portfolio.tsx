@@ -1,38 +1,31 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import V3About from "./V3About";
 import V3Capabilities from "./V3Capabilities";
 import V3Footer from "./V3Footer";
 import V3Hero from "./V3Hero";
+import type { V3MusicControlHandle } from "./V3MusicControl";
 import V3Nav from "./V3Nav";
 import V3OpeningSequence, {
   type OpeningCompletionReason,
 } from "./V3OpeningSequence";
 import V3ProjectReel from "./V3ProjectReel";
 import V3Projects from "./V3Projects";
-import V3SignalInterlude from "./V3SignalInterlude";
 import { V3LanguageProvider, useV3Language } from "./V3Language";
-
-const OPENING_SESSION_KEY = "hf-v3-opening-seen";
 
 function shouldPlayOpening() {
   if (typeof window === "undefined") return false;
 
   const forceReplay = new URLSearchParams(window.location.search).get("intro") === "1";
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion) return false;
   if (forceReplay) return true;
-  if (window.location.hash || window.scrollY > 0) return false;
+  if (window.location.hash && window.location.hash !== "#home") return false;
+  if (window.scrollY > 0) return false;
 
   const navigation = performance.getEntriesByType("navigation")[0] as
     | PerformanceNavigationTiming
     | undefined;
   if (navigation?.type === "back_forward") return false;
 
-  try {
-    return window.sessionStorage.getItem(OPENING_SESSION_KEY) !== "1";
-  } catch {
-    return true;
-  }
+  return true;
 }
 
 function V3PortfolioContent() {
@@ -41,56 +34,79 @@ function V3PortfolioContent() {
     const openingActive = shouldPlayOpening();
     return { openingActive, contentReady: !openingActive };
   });
+  const musicControlRef = useRef<V3MusicControlHandle>(null);
+  const siteContentRef = useRef<HTMLDivElement>(null);
 
-  const markOpeningSeen = useCallback(() => {
-    try {
-      window.sessionStorage.setItem(OPENING_SESSION_KEY, "1");
-    } catch {
-      // The intro still works when session storage is unavailable.
-    }
+  useLayoutEffect(() => {
+    if (!openingState.openingActive) return undefined;
+
+    const previousRestoration = window.history.scrollRestoration;
+    const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    window.history.scrollRestoration = "manual";
+    resetScroll();
+    const frame = window.requestAnimationFrame(resetScroll);
+    const followUp = window.setTimeout(resetScroll, 120);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(followUp);
+      window.history.scrollRestoration = previousRestoration;
+    };
+  }, [openingState.openingActive]);
+
+  useEffect(() => {
+    const siteContent = siteContentRef.current;
+    document.body.classList.toggle("intro-locked", openingState.openingActive);
+
+    if (siteContent) siteContent.inert = openingState.openingActive;
+
+    return () => {
+      document.body.classList.remove("intro-locked");
+      if (siteContent) siteContent.inert = false;
+    };
+  }, [openingState.openingActive]);
+
+  const finishOpening = useCallback((_reason: OpeningCompletionReason) => {
+    setOpeningState({ openingActive: false, contentReady: true });
   }, []);
 
-  const revealContent = useCallback(() => {
+  const revealOpening = useCallback(() => {
     setOpeningState((current) => (
       current.contentReady ? current : { ...current, contentReady: true }
     ));
   }, []);
 
-  const finishOpening = useCallback((reason: OpeningCompletionReason) => {
-    if (reason === "natural") markOpeningSeen();
-    setOpeningState({ openingActive: false, contentReady: true });
-  }, [markOpeningSeen]);
-
-  const skipOpening = useCallback(() => {
-    finishOpening("skipped");
-  }, [finishOpening]);
+  const startOpening = useCallback(() => {
+    return musicControlRef.current?.startFromGesture() ?? Promise.resolve(null);
+  }, []);
 
   return (
     <div className="v3-site" lang={language === "zh" ? "zh-CN" : "en"} data-language={language}>
-      <a
-        className="v3-skip-link"
-        href="#main-content"
-        onClick={openingState.openingActive ? skipOpening : undefined}
-      >
-        {t.skip}
-      </a>
       {openingState.openingActive ? (
         <V3OpeningSequence
-          onVisible={markOpeningSeen}
-          onReveal={revealContent}
+          onStart={startOpening}
+          onReveal={revealOpening}
           onComplete={finishOpening}
         />
       ) : null}
-      <V3Nav ready={openingState.contentReady} />
-      <main id="main-content" tabIndex={-1}>
-        <V3Hero ready={openingState.contentReady} />
-        <V3ProjectReel />
-        <V3About />
-        <V3SignalInterlude />
-        <V3Capabilities />
-        <V3Projects />
-      </main>
-      <V3Footer />
+      <div
+        ref={siteContentRef}
+        className="v3-site-content"
+        aria-hidden={openingState.openingActive || undefined}
+      >
+        <a className="v3-skip-link" href="#main-content">
+          {t.skip}
+        </a>
+        <V3Nav ready={openingState.contentReady} musicControlRef={musicControlRef} />
+        <main id="main-content" tabIndex={-1}>
+          <V3Hero ready={openingState.contentReady} />
+          <V3ProjectReel />
+          <V3About />
+          <V3Capabilities />
+          <V3Projects />
+        </main>
+        <V3Footer />
+      </div>
     </div>
   );
 }

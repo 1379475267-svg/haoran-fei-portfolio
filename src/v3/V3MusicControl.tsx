@@ -1,41 +1,155 @@
 import { Music2 } from "lucide-react";
-import { useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useV3Language } from "./V3Language";
 
-const TRACK_TITLE = "脚踏车 — 周杰伦 / Terdsak Janpan";
+const TRACK_TITLE = "Take Your Time (feat. Engelwood)";
 
-export default function V3MusicControl() {
-  const { language, t } = useV3Language();
+export interface V3MusicControlHandle {
+  startFromGesture: () => Promise<HTMLAudioElement | null>;
+}
+
+function getPlaybackErrorName(error: unknown) {
+  if (error instanceof DOMException) return error.name;
+  if (typeof error === "object" && error !== null && "name" in error) {
+    return String((error as { name?: unknown }).name);
+  }
+
+  return "";
+}
+
+const V3MusicControl = forwardRef<V3MusicControlHandle>(function V3MusicControl(_, ref) {
+  const { t } = useV3Language();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const isPlayingRef = useRef(false);
+  const hasErrorRef = useRef(false);
+  const manuallyPausedRef = useRef(false);
+  const mountedRef = useRef(false);
+  const playAttemptRef = useRef<Promise<void> | null>(null);
 
-  const startPlayback = (audio: HTMLAudioElement) => {
+  const requestPlayback = useCallback((audio: HTMLAudioElement, allowRetry = false): Promise<boolean> => {
+    if (
+      manuallyPausedRef.current
+      || isPlayingRef.current
+      || !audio.paused
+      || playAttemptRef.current
+      || (!allowRetry && hasErrorRef.current)
+    ) {
+      return Promise.resolve(false);
+    }
+
     audio.volume = 0.32;
-    void audio.play().catch((error: unknown) => {
-      if (error instanceof DOMException && error.name === "NotAllowedError") {
-        setIsBlocked(true);
-        return;
+    audio.muted = false;
+
+    let request: Promise<void>;
+    try {
+      request = audio.play();
+    } catch (error) {
+      const errorName = getPlaybackErrorName(error);
+      if (errorName === "NotAllowedError") {
+        if (mountedRef.current) setIsBlocked(true);
+        return Promise.resolve(false);
       }
 
-      setHasError(true);
-    });
-  };
+      if (errorName !== "AbortError") {
+        hasErrorRef.current = true;
+        if (mountedRef.current) {
+          setHasError(true);
+          setIsBlocked(false);
+        }
+      }
+      return Promise.resolve(false);
+    }
+
+    playAttemptRef.current = request;
+    return request.then(
+      () => {
+        if (playAttemptRef.current === request) playAttemptRef.current = null;
+        if (!mountedRef.current) return true;
+
+        isPlayingRef.current = true;
+        hasErrorRef.current = false;
+        setIsPlaying(true);
+        setIsBlocked(false);
+        setHasError(false);
+        return true;
+      },
+      (error: unknown) => {
+        if (playAttemptRef.current === request) playAttemptRef.current = null;
+        if (!mountedRef.current) return false;
+
+        const errorName = getPlaybackErrorName(error);
+
+        if (errorName === "NotAllowedError") {
+          setIsBlocked(true);
+          return false;
+        }
+
+        if (errorName === "AbortError") {
+          return false;
+        }
+
+        hasErrorRef.current = true;
+        setHasError(true);
+        setIsBlocked(false);
+        return false;
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    startFromGesture: () => {
+      const audio = audioRef.current;
+      if (!audio) return Promise.resolve(null);
+
+      manuallyPausedRef.current = false;
+      if (!audio.paused) audio.pause();
+      try {
+        audio.currentTime = 0;
+      } catch {
+        // The media element may not have metadata yet; play() will load it.
+      }
+
+      // Calling play synchronously here keeps the media request inside the click gesture.
+      return requestPlayback(audio, true).then((didStart) => (didStart ? audio : null));
+    },
+  }), [requestPlayback]);
 
   const togglePlayback = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (hasError) {
+    const shouldRetry = hasErrorRef.current;
+    if (shouldRetry) {
+      hasErrorRef.current = false;
       setHasError(false);
       setIsBlocked(false);
+      manuallyPausedRef.current = false;
       audio.load();
     }
 
-    if (audio.paused || hasError) {
-      startPlayback(audio);
+    if (audio.paused || shouldRetry) {
+      manuallyPausedRef.current = false;
+      void requestPlayback(audio, shouldRetry);
     } else {
+      manuallyPausedRef.current = true;
+      setIsBlocked(false);
       audio.pause();
     }
   };
@@ -46,16 +160,24 @@ export default function V3MusicControl() {
     <>
       <audio
         ref={audioRef}
-        src="./audio/bicycle-bgm.mp3"
+        src="/audio/take-your-time-engelwood.mp3"
         loop
-        preload="metadata"
+        preload="auto"
+        playsInline
         onPlay={() => {
+          isPlayingRef.current = true;
+          hasErrorRef.current = false;
           setIsPlaying(true);
           setIsBlocked(false);
           setHasError(false);
         }}
-        onPause={() => setIsPlaying(false)}
+        onPause={() => {
+          isPlayingRef.current = false;
+          setIsPlaying(false);
+        }}
         onError={() => {
+          hasErrorRef.current = true;
+          isPlayingRef.current = false;
           setHasError(true);
           setIsBlocked(false);
           setIsPlaying(false);
@@ -84,4 +206,8 @@ export default function V3MusicControl() {
       </button>
     </>
   );
-}
+});
+
+V3MusicControl.displayName = "V3MusicControl";
+
+export default V3MusicControl;
