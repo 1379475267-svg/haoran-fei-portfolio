@@ -33,6 +33,22 @@ const domainItemVariants: Variants = {
   },
 };
 
+const domainVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: { delayChildren: 0.08, staggerChildren: 0.09 },
+  },
+};
+
+const domainItemVariants: Variants = {
+  hidden: { opacity: 0, y: 4 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38, ease: ENTER_EASE },
+  },
+};
+
 interface HeroMotionVariants {
   atmosphere: Variants;
   sequence: Variants;
@@ -188,6 +204,22 @@ export default function V3Hero({ ready }: V3HeroProps) {
     () => createHeroMotionVariants(compactMotion),
     [compactMotion],
   );
+  const handoffOpacity = useTransform(
+    smoothedScrollProgress,
+    [0, 0.62, 1],
+    [1, 1, 0.18],
+  );
+  const handoffScale = useTransform(
+    smoothedScrollProgress,
+    [0, 0.62, 1],
+    [1, 1, compactMotion ? 0.995 : 0.982],
+  );
+  const [mediaReady, setMediaReady] = useState(false);
+  const [mediaVisible, setMediaVisible] = useState(false);
+  const variants = useMemo(
+    () => createHeroMotionVariants(compactMotion),
+    [compactMotion],
+  );
   const { language, t } = useV3Language();
   const initialState = reduceMotion ? false : "hidden";
   const animateState = ready ? "visible" : "hidden";
@@ -261,11 +293,12 @@ export default function V3Hero({ ready }: V3HeroProps) {
       data-ready={ready || undefined}
     >
       <motion.div
-        className="v3-hero-atmosphere"
-        aria-hidden="true"
-        variants={variants.atmosphere}
-        initial={initialState}
-        animate={animateState}
+        className="v3-hero-scroll-frame"
+        style={reduceMotion ? undefined : {
+          y: handoffY,
+          opacity: handoffOpacity,
+          scale: handoffScale,
+        }}
       >
         <div className="v3-hero-grid" />
       </motion.div>
@@ -389,6 +422,29 @@ export default function V3Hero({ ready }: V3HeroProps) {
             aria-hidden="true"
             variants={variants.versionItem}
           >
+            <motion.span variants={domainItemVariants}><Crosshair aria-hidden="true" /> Sense</motion.span>
+            <motion.span variants={domainItemVariants}>Plan</motion.span>
+            <motion.span variants={domainItemVariants}>Fly</motion.span>
+          </motion.div>
+        </motion.div>
+
+        <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
+          <V3Magnet className="v3-hero-cta-magnet" strength={5}>
+            <a
+              className="v3-action"
+              href="#projects"
+            >
+              {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
+            </a>
+          </V3Magnet>
+        </motion.div>
+
+        <motion.div className="v3-hero-final-details" variants={variants.finalGroup}>
+          <motion.span
+            className="v3-hero-version"
+            aria-hidden="true"
+            variants={variants.versionItem}
+          >
             V03 / {profile.name.toUpperCase()}
           </motion.span>
           <motion.a
@@ -402,6 +458,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
               <ArrowDownRight />
             </span>
           </motion.a>
+        </motion.div>
         </motion.div>
         </motion.div>
       </motion.div>

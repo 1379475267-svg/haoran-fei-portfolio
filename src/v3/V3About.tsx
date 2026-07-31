@@ -16,8 +16,7 @@ const aboutTitleVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    clipPath: "inset(0 0 0% 0)",
-    transition: { duration: 0.68, ease: aboutEase },
+    transition: { duration: 0.56, ease: aboutEase },
   },
 };
 
