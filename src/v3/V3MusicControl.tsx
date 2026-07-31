@@ -11,8 +11,6 @@ import { useV3Language } from "./V3Language";
 
 const TRACK_TITLE = "Take Your Time (feat. Engelwood)";
 
-const TRACK_TITLE = "Take Your Time (feat. Engelwood)";
-
 export interface V3MusicControlHandle {
   startFromGesture: () => Promise<HTMLAudioElement | null>;
 }

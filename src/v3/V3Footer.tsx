@@ -24,24 +24,6 @@ const footerDirectoryVariants: Variants = {
   },
 };
 
-const footerEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
-const footerItemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.56, ease: footerEase },
-  },
-};
-
-const footerDirectoryVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { delayChildren: 0.04, staggerChildren: 0.08 },
-  },
-};
-
 const footerClosureVariants: Variants = {
   hidden: {},
   visible: {

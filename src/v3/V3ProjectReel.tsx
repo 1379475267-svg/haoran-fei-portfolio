@@ -141,32 +141,6 @@ export default function V3ProjectReel() {
       );
     }
 
-    const content = (
-      <>
-        <ProjectCover
-          type={project.coverType}
-          image={project.coverPoster}
-          title={title}
-          label={localized.coverLabel}
-          language={language}
-        />
-        <span>{String((index % projects.length) + 1).padStart(2, "0")}</span>
-        <strong>{title}</strong>
-      </>
-    );
-
-    if (duplicate) {
-      return (
-        <div
-          className="v3-reel-tile is-duplicate"
-          key={`${row}-${project.id}-${index}`}
-          aria-hidden="true"
-        >
-          {content}
-        </div>
-      );
-    }
-
     return (
       <a
         className="v3-reel-tile"
