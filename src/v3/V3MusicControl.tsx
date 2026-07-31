@@ -160,7 +160,7 @@ const V3MusicControl = forwardRef<V3MusicControlHandle>(function V3MusicControl(
     <>
       <audio
         ref={audioRef}
-        src="/audio/take-your-time-engelwood.mp3"
+        src="./audio/take-your-time-engelwood.mp3"
         loop
         preload="auto"
         playsInline
