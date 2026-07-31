@@ -1,40 +1,57 @@
-import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import V3BrandLogo from "./V3BrandLogo";
 
-const ENTER_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const ORBIT_TIMES: [number, number, number, number, number] = [
-  0,
-  0.2,
-  0.72,
-  0.9,
-  1,
-];
-const OPENING_TIMING = {
-  duration: 3,
-  completeFallbackMs: 3400,
-  identityDuration: 2.28,
-  orbitDuration: 2.42,
-  orbitDelay: 0.12,
-} as const;
+const OPENING_DURATION = 3.2;
+const OPENING_REVEAL_TIME = 2.66;
+const OPENING_FADE_TIME = 2.95;
+const REDUCED_OPENING_DURATION = 0.18;
+const START_FALLBACK_DELAY = 800;
 
 export type OpeningCompletionReason = "natural" | "skipped";
 
 interface V3OpeningSequenceProps {
   onComplete: (reason: OpeningCompletionReason) => void;
   onReveal: () => void;
+  onStart: () => Promise<HTMLAudioElement | null>;
 }
 
 export default function V3OpeningSequence({
   onComplete,
   onReveal,
+  onStart,
 }: V3OpeningSequenceProps) {
   const reduceMotion = Boolean(useReducedMotion());
-  const [playbackActive, setPlaybackActive] = useState(
-    () => typeof document === "undefined" || document.visibilityState === "visible",
-  );
+  const [phase, setPhase] = useState<"idle" | "erasing">("idle");
+  const startedRef = useRef(false);
+  const eraseStartedRef = useRef(false);
   const revealedRef = useRef(false);
   const completedRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fallbackStartRef = useRef(0);
+  const startFallbackRef = useRef<number | null>(null);
+  const openingClock = useMotionValue(0);
+  const openingDuration = reduceMotion
+    ? REDUCED_OPENING_DURATION
+    : OPENING_DURATION;
+  const openingOpacity = useTransform(
+    openingClock,
+    reduceMotion
+      ? [0, 0.01, REDUCED_OPENING_DURATION]
+      : [0, OPENING_FADE_TIME, OPENING_DURATION],
+    [1, 1, 0],
+  );
 
   const reveal = useCallback(() => {
     if (revealedRef.current) return;
@@ -49,117 +66,114 @@ export default function V3OpeningSequence({
     onComplete(reason);
   }, [onComplete, reveal]);
 
-  const skip = useCallback(() => {
-    finish("skipped");
-  }, [finish]);
+  const beginErasing = useCallback((audio: HTMLAudioElement | null) => {
+    if (eraseStartedRef.current) return;
+
+    if (audio) audioRef.current = audio;
+    eraseStartedRef.current = true;
+    fallbackStartRef.current = performance.now();
+    openingClock.set(0);
+    setPhase("erasing");
+  }, [openingClock]);
+
+  const start = useCallback(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    startFallbackRef.current = window.setTimeout(
+      () => beginErasing(null),
+      reduceMotion ? 0 : START_FALLBACK_DELAY,
+    );
+
+    // onStart calls audio.play() in this click handler; the resolved player clock
+    // then becomes the source of truth for each disappearing logo stroke.
+    void onStart().then(
+      (audio) => beginErasing(audio),
+      () => beginErasing(null),
+    );
+  }, [beginErasing, onStart, reduceMotion]);
 
   useEffect(() => {
-    const syncPlaybackVisibility = () => {
-      setPlaybackActive(document.visibilityState === "visible");
-    };
-
-    syncPlaybackVisibility();
-    document.addEventListener("visibilitychange", syncPlaybackVisibility);
     return () => {
-      document.removeEventListener("visibilitychange", syncPlaybackVisibility);
+      if (startFallbackRef.current !== null) {
+        window.clearTimeout(startFallbackRef.current);
+      }
     };
   }, []);
 
   useEffect(() => {
-    if (!playbackActive) return undefined;
-
-    if (reduceMotion) {
-      finish("natural");
-      return undefined;
+    if (phase !== "erasing") return undefined;
+    if (startFallbackRef.current !== null) {
+      window.clearTimeout(startFallbackRef.current);
+      startFallbackRef.current = null;
     }
 
-    const completeFallback = window.setTimeout(
+    const hardFallback = window.setTimeout(
       () => finish("natural"),
-      OPENING_TIMING.completeFallbackMs,
+      Math.ceil((openingDuration + 1.2) * 1000),
     );
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") skip();
-      if (event.key === "Tab") skip();
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
+    return () => window.clearTimeout(hardFallback);
+  }, [finish, openingDuration, phase]);
 
-    return () => {
-      window.clearTimeout(completeFallback);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [finish, playbackActive, reduceMotion, reveal, skip]);
+  useAnimationFrame(() => {
+    if (phase !== "erasing" || completedRef.current) return;
+
+    const audio = audioRef.current;
+    const fallbackElapsed = (performance.now() - fallbackStartRef.current) / 1000;
+    const elapsed = (
+      !reduceMotion
+      && audio
+      && !audio.paused
+      && Number.isFinite(audio.currentTime)
+    )
+      ? audio.currentTime
+      : fallbackElapsed;
+
+    openingClock.set(Math.min(elapsed, openingDuration));
+    if (elapsed >= (reduceMotion ? 0 : OPENING_REVEAL_TIME)) reveal();
+    if (elapsed >= openingDuration) finish("natural");
+  });
 
   return (
     <motion.div
       className="v3-opening"
-      aria-hidden="true"
-      initial={{ opacity: 1 }}
-      animate={playbackActive && !reduceMotion ? { opacity: [1, 1, 0] } : { opacity: 1 }}
-      transition={{
-        duration: OPENING_TIMING.duration,
-        times: [0, 0.74, 1],
-        ease: "linear",
-      }}
-      onAnimationComplete={() => {
-        if (playbackActive && !reduceMotion) finish("natural");
-      }}
-      onPointerDown={skip}
-      onWheel={skip}
+      data-phase={phase}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Portfolio entry"
+      initial={false}
+      style={{ opacity: phase === "erasing" ? openingOpacity : 1 }}
     >
-      {playbackActive ? (
-        <>
-          <div className="v3-opening-shutter v3-opening-shutter-top" />
-          <div className="v3-opening-shutter v3-opening-shutter-bottom" />
-
-          <motion.div
-            className="v3-opening-identity"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6] }}
-            transition={{
-              duration: OPENING_TIMING.identityDuration,
-              times: [0, 0.12, 0.82, 1],
-              ease: ENTER_EASE,
-            }}
-          >
-            <span>HF / V03</span>
-            <span>31.2304 N / SIGNAL READY</span>
-          </motion.div>
-
-          <div className="v3-opening-brand">
-            <motion.div
-              className="v3-opening-brand-inner"
-              initial={{ opacity: 0, y: 8, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.28, ease: ENTER_EASE }}
-            >
-              <V3BrandLogo
-                animated
-                className="v3-brand-logo--opening"
-                decorative
-              />
-              <span className="v3-opening-brand-label">HAORAN FEI / FLIGHT SYSTEMS</span>
-            </motion.div>
-          </div>
-
-          <motion.div
-            className="v3-opening-orbit"
-            initial={{ opacity: 0, x: -32, rotate: -14, scale: 0.98 }}
-            animate={{
-              opacity: [0, 0.58, 0.52, 0.22, 0],
-              x: [-32, -18, 5, 20, 30],
-              rotate: [-14, -12.5, -10.5, -9, -8],
-              scale: [0.98, 0.992, 1, 1.012, 1.02],
-            }}
-            transition={{
-              duration: OPENING_TIMING.orbitDuration,
-              delay: OPENING_TIMING.orbitDelay,
-              times: ORBIT_TIMES,
-              ease: ENTER_EASE,
-            }}
+      <button
+        className="v3-opening-entry"
+        type="button"
+        aria-label="Enter Haoran Fei's portfolio and start background music"
+        title="Enter portfolio"
+        disabled={phase === "erasing"}
+        onPointerDown={(event) => {
+          if (!event.isPrimary || event.button !== 0) return;
+          start();
+        }}
+        onClick={start}
+        onKeyDown={(event) => {
+          if (event.key === "Tab") {
+            event.preventDefault();
+            return;
+          }
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          start();
+        }}
+      >
+        <span className="v3-opening-logo-frame">
+          <V3BrandLogo
+            animationMode={phase === "erasing" ? "erase" : "static"}
+            eraseTimeline={phase === "erasing" ? openingClock : undefined}
+            className="v3-brand-logo--opening"
+            decorative
           />
-        </>
-      ) : null}
+        </span>
+      </button>
     </motion.div>
   );
 }

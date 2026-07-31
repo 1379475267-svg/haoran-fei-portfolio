@@ -1,7 +1,6 @@
-import { Github, Mail } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { profile } from "../data/profile";
 import { useV3Language } from "./V3Language";
+import V3ChapterStrike from "./V3ChapterStrike";
 
 const aboutEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -37,11 +36,12 @@ const aboutCopyItemVariants: Variants = {
   },
 };
 
-const aboutLinksVariants: Variants = {
-  hidden: { opacity: 0 },
+const aboutBridgeVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.48, ease: aboutEase },
+    y: 0,
+    transition: { duration: 0.56, ease: aboutEase },
   },
 };
 
@@ -51,6 +51,7 @@ export default function V3About() {
 
   return (
     <section className="v3-about" id="about" aria-labelledby="about-title">
+      <V3ChapterStrike tone="dark" />
       <div className="v3-about-orbit v3-about-orbit-one" aria-hidden="true"><i /></div>
       <div className="v3-about-orbit v3-about-orbit-two" aria-hidden="true"><i /></div>
       <span className="v3-about-cross v3-about-cross-one" aria-hidden="true">+</span>
@@ -70,13 +71,10 @@ export default function V3About() {
           <motion.p variants={aboutCopyItemVariants}>{t.about.lead}</motion.p>
           <motion.p variants={aboutCopyItemVariants}>{t.about.priority}</motion.p>
         </motion.div>
-        <motion.div className="v3-about-links" variants={aboutLinksVariants}>
-          <a href={profile.github} target="_blank" rel="noreferrer">
-            <Github aria-hidden="true" /> GitHub
-          </a>
-          <a href="#contact">
-            <Mail aria-hidden="true" /> {t.about.email}
-          </a>
+        <motion.div className="v3-about-bridge" variants={aboutBridgeVariants}>
+          <span>{t.about.bridgeLabel}</span>
+          <p>{t.about.bridge}</p>
+          <i aria-hidden="true" />
         </motion.div>
       </motion.div>
     </section>

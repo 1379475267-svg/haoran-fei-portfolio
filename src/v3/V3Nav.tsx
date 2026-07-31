@@ -6,9 +6,9 @@ import {
   useReducedMotion,
   useScroll,
 } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type RefObject } from "react";
 import V3BrandLogo from "./V3BrandLogo";
-import V3MusicControl from "./V3MusicControl";
+import V3MusicControl, { type V3MusicControlHandle } from "./V3MusicControl";
 import { useV3Language } from "./V3Language";
 
 const sectionTargets = [
@@ -22,9 +22,10 @@ const sectionTargets = [
 
 interface V3NavProps {
   ready: boolean;
+  musicControlRef: RefObject<V3MusicControlHandle>;
 }
 
-export default function V3Nav({ ready }: V3NavProps) {
+export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const { language, setLanguage, t } = useV3Language();
@@ -44,6 +45,10 @@ export default function V3Nav({ ready }: V3NavProps) {
       : activeHref === "#contact"
         ? t.nav.contact
         : links.find((link) => link.href === activeHref)?.label ?? t.nav.projects;
+
+  const navigationSurface = activeSection === "project-reel" || activeSection === "projects"
+    ? "light"
+    : "dark";
 
   useEffect(() => {
     const sections = sectionTargets
@@ -73,6 +78,7 @@ export default function V3Nav({ ready }: V3NavProps) {
   return (
     <motion.header
       className="v3-nav-shell"
+      data-surface={navigationSurface}
       initial={reduceMotion ? false : { opacity: 0, y: -18 }}
       animate={ready || reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -18 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -155,7 +161,7 @@ export default function V3Nav({ ready }: V3NavProps) {
             <i aria-hidden="true">/</i>
             <span className={language === "en" ? "is-active" : ""}>EN</span>
           </button>
-          <V3MusicControl />
+          <V3MusicControl ref={musicControlRef} />
           <a
             className={`v3-nav-contact${activeSection === "contact" ? " is-active" : ""}`}
             href="#contact"

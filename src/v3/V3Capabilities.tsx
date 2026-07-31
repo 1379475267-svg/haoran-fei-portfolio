@@ -1,11 +1,15 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { Bot, Code2, Cpu, Music2, Sparkles } from "lucide-react";
 import { useV3Language, type V3Language } from "./V3Language";
+import V3ChapterStrike from "./V3ChapterStrike";
 
 interface Capability {
   area: string;
   description: string;
   tools: string;
 }
+
+const capabilityIcons = [Bot, Cpu, Code2, Sparkles, Music2];
 
 const capabilityFacts: Record<V3Language, Capability[]> = {
   zh: [
@@ -96,12 +100,33 @@ const rowVariants: Variants = {
   },
 };
 
+const markerVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.72, clipPath: "inset(0 0 100% 0)" },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    clipPath: "inset(0 0 0% 0)",
+    transition: { delay: 0.1, duration: 0.42, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const iconVariants: Variants = {
+  hidden: { opacity: 0, y: 5, rotate: -8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotate: 0,
+    transition: { delay: 0.17, duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function V3Capabilities() {
   const { language, t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
     <section className="v3-capabilities" id="capabilities" aria-labelledby="capabilities-title">
+      <V3ChapterStrike tone="dark" />
       <div className="v3-capabilities-inner">
         <div className="v3-capabilities-heading">
           <p className="v3-section-label">{t.capabilities.eyebrow}</p>
@@ -116,21 +141,31 @@ export default function V3Capabilities() {
           viewport={{ once: true, amount: 0.22 }}
           variants={listVariants}
         >
-          {capabilityFacts[language].map((capability, index) => (
-            <motion.article
-              className="v3-capability-row"
-              role="listitem"
-              key={capability.area}
-              variants={rowVariants}
-            >
-              <span aria-hidden="true">/{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <h3>{capability.area}</h3>
-                <p>{capability.description}</p>
-              </div>
-              <small>{capability.tools}</small>
-            </motion.article>
-          ))}
+          {capabilityFacts[language].map((capability, index) => {
+            const Icon = capabilityIcons[index];
+
+            return (
+              <motion.article
+                className="v3-capability-row"
+                role="listitem"
+                key={capability.area}
+                variants={rowVariants}
+                data-capability-index={index + 1}
+              >
+                <motion.div className="v3-capability-marker" aria-hidden="true" variants={markerVariants}>
+                  <span>/{String(index + 1).padStart(2, "0")}</span>
+                  <motion.span className="v3-capability-icon-frame" variants={iconVariants}>
+                    <Icon className="v3-capability-mark-icon" strokeWidth={1.6} />
+                  </motion.span>
+                </motion.div>
+                <div>
+                  <h3>{capability.area}</h3>
+                  <p>{capability.description}</p>
+                </div>
+                <small>{capability.tools}</small>
+              </motion.article>
+            );
+          })}
         </motion.div>
       </div>
     </section>
