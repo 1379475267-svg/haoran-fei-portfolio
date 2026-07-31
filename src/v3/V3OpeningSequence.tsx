@@ -13,11 +13,22 @@ import {
 } from "react";
 import V3BrandLogo from "./V3BrandLogo";
 
-const OPENING_DURATION = 3.2;
-const OPENING_REVEAL_TIME = 2.66;
-const OPENING_FADE_TIME = 2.95;
+const OPENING_DURATION = 3.82;
+const OPENING_CONTENT_READY_TIME = 2.78;
+const OPENING_REVEAL_TIME = 3.08;
+const OPENING_REVEAL_END_TIME = 3.58;
+const OPENING_FADE_TIME = 3.64;
 const REDUCED_OPENING_DURATION = 0.18;
 const START_FALLBACK_DELAY = 800;
+
+function clampUnit(value: number) {
+  return Math.min(Math.max(value, 0), 1);
+}
+
+function easeOutQuad(value: number) {
+  const progress = clampUnit(value);
+  return 1 - (1 - progress) ** 2;
+}
 
 export type OpeningCompletionReason = "natural" | "skipped";
 
@@ -39,6 +50,7 @@ export default function V3OpeningSequence({
   const revealedRef = useRef(false);
   const completedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioStartTimeRef = useRef(0);
   const fallbackStartRef = useRef(0);
   const startFallbackRef = useRef<number | null>(null);
   const openingClock = useMotionValue(0);
@@ -52,6 +64,17 @@ export default function V3OpeningSequence({
       : [0, OPENING_FADE_TIME, OPENING_DURATION],
     [1, 1, 0],
   );
+  const openingRevealMask = useTransform(openingClock, (time) => {
+    const progress = easeOutQuad(
+      (time - OPENING_REVEAL_TIME) / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_TIME),
+    );
+    // 72vmax reaches the far corner even on square viewports while preserving
+    // a readable circular edge during the first half-beat of the reveal.
+    const radius = 72 * progress;
+    const edge = radius + 0.7;
+
+    return `radial-gradient(circle at 50% 50%, transparent ${radius.toFixed(3)}vmax, #000 ${edge.toFixed(3)}vmax)`;
+  });
 
   const reveal = useCallback(() => {
     if (revealedRef.current) return;
@@ -69,7 +92,12 @@ export default function V3OpeningSequence({
   const beginErasing = useCallback((audio: HTMLAudioElement | null) => {
     if (eraseStartedRef.current) return;
 
-    if (audio) audioRef.current = audio;
+    if (audio) {
+      audioRef.current = audio;
+      audioStartTimeRef.current = Number.isFinite(audio.currentTime)
+        ? audio.currentTime
+        : 0;
+    }
     eraseStartedRef.current = true;
     fallbackStartRef.current = performance.now();
     openingClock.set(0);
@@ -84,8 +112,8 @@ export default function V3OpeningSequence({
       reduceMotion ? 0 : START_FALLBACK_DELAY,
     );
 
-    // onStart calls audio.play() in this click handler; the resolved player clock
-    // then becomes the source of truth for each disappearing logo stroke.
+    // onStart calls audio.play() in this click handler; its relative clock then
+    // becomes the source of truth for each disappearing logo stroke.
     void onStart().then(
       (audio) => beginErasing(audio),
       () => beginErasing(null),
@@ -126,11 +154,11 @@ export default function V3OpeningSequence({
       && !audio.paused
       && Number.isFinite(audio.currentTime)
     )
-      ? audio.currentTime
+      ? Math.max(0, audio.currentTime - audioStartTimeRef.current)
       : fallbackElapsed;
 
     openingClock.set(Math.min(elapsed, openingDuration));
-    if (elapsed >= (reduceMotion ? 0 : OPENING_REVEAL_TIME)) reveal();
+    if (elapsed >= (reduceMotion ? 0 : OPENING_CONTENT_READY_TIME)) reveal();
     if (elapsed >= openingDuration) finish("natural");
   });
 
@@ -144,6 +172,15 @@ export default function V3OpeningSequence({
       initial={false}
       style={{ opacity: phase === "erasing" ? openingOpacity : 1 }}
     >
+      <motion.div
+        className="v3-opening-veil"
+        aria-hidden="true"
+        initial={false}
+        style={{
+          WebkitMaskImage: openingRevealMask,
+          maskImage: openingRevealMask,
+        }}
+      />
       <button
         className="v3-opening-entry"
         type="button"
@@ -165,6 +202,7 @@ export default function V3OpeningSequence({
           <V3BrandLogo
             animationMode={phase === "erasing" ? "erase" : "static"}
             eraseTimeline={phase === "erasing" ? openingClock : undefined}
+            openingMoon
             className="v3-brand-logo--opening"
             decorative
           />
