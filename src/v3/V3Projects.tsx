@@ -188,8 +188,8 @@ const archiveCardVariants: Variants = {
       duration: 0.6,
       ease: quietEase,
       when: "beforeChildren",
-      delayChildren: 0.12,
-      staggerChildren: 0.12,
+      delayChildren: 0.06,
+      staggerChildren: 0.08,
     },
   },
 };
@@ -208,7 +208,7 @@ const archiveBodyVariants: Variants = {
   visible: {
     transition: {
       delayChildren: 0.04,
-      staggerChildren: 0.14,
+      staggerChildren: 0.1,
       staggerDirection: -1,
     },
   },
@@ -348,7 +348,7 @@ function ProjectCard({
         style={staticLayout ? undefined : { scale, opacity }}
         initial={reducedMotion ? false : "hidden"}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.18 }}
+        viewport={{ once: true, amount: 0.1 }}
         variants={archiveCardVariants}
         whileHover={reducedMotion
           ? undefined
@@ -552,7 +552,7 @@ export default function V3Projects() {
         className="v3-projects-heading"
         initial={reduceMotion ? false : "hidden"}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.45 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={headingVariants}
       >
         <motion.p className="v3-section-label" variants={eyebrowVariants}>

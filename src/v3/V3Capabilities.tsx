@@ -111,12 +111,18 @@ const markerVariants: Variants = {
 };
 
 const iconVariants: Variants = {
-  hidden: { opacity: 0, y: 5, rotate: -8 },
+  hidden: {
+    opacity: 0,
+    y: 4,
+    scale: 0.88,
+    clipPath: "inset(0 100% 0 0)",
+  },
   visible: {
     opacity: 1,
     y: 0,
-    rotate: 0,
-    transition: { delay: 0.17, duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+    scale: 1,
+    clipPath: "inset(0 0 0 0)",
+    transition: { delay: 0.17, duration: 0.42, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -154,7 +160,11 @@ export default function V3Capabilities() {
               >
                 <motion.div className="v3-capability-marker" aria-hidden="true" variants={markerVariants}>
                   <span>/{String(index + 1).padStart(2, "0")}</span>
-                  <motion.span className="v3-capability-icon-frame" variants={iconVariants}>
+                  <motion.span
+                    className="v3-capability-icon-frame"
+                    variants={iconVariants}
+                    style={{ display: "inline-flex" }}
+                  >
                     <Icon className="v3-capability-mark-icon" strokeWidth={1.6} />
                   </motion.span>
                 </motion.div>
