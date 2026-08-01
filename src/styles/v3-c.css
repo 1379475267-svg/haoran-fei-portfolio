@@ -45,8 +45,9 @@
   background-position: 0 0 !important;
 }
 
-/* Curated visual reel: three proofs, once each. */
+/* Full project reel: C's quiet typography over B's counter-moving filmstrip. */
 .v3-site[data-version="c"] .v3-reel {
+  overflow: clip;
   padding-block: clamp(var(--space-3xl), 8vw, var(--space-4xl));
 }
 
@@ -59,35 +60,47 @@
 
 .v3-site[data-version="c"] .v3-reel-rows {
   margin-top: clamp(var(--space-xl), 5vw, var(--space-2xl));
-  overflow: visible;
-  border: 0;
+  overflow: clip;
+  padding-block: var(--space-sm);
+  border-block: var(--rule-hair) solid var(--color-rule);
 }
 
 .v3-site[data-version="c"] .v3-reel-row-shell {
-  overflow: visible;
+  overflow: hidden;
+}
+
+.v3-site[data-version="c"] .v3-reel-row-shell + .v3-reel-row-shell {
+  margin-top: var(--space-sm);
 }
 
 .v3-site[data-version="c"] .v3-reel-row {
-  display: grid;
-  width: min(100%, var(--page-max));
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-md);
-  margin-inline: auto;
-  padding-inline: 0;
-  transform: none !important;
+  display: flex;
+  width: max-content;
+  max-width: none;
+  gap: var(--space-sm);
+  margin: 0;
+  padding-inline: max(var(--v3-edge), calc((100vw - var(--page-max)) / 2));
+  will-change: transform;
 }
 
 .v3-site[data-version="c"] .v3-reel-tile {
-  width: 100%;
-  min-width: 0;
-  max-width: none;
+  width: clamp(17rem, 32vw, 26rem);
+  min-width: clamp(17rem, 32vw, 26rem);
+  max-width: 26rem;
+  flex: 0 0 clamp(17rem, 32vw, 26rem);
   grid-template-rows: auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-sm);
+  overflow: hidden;
   border-color: var(--color-rule);
   border-radius: var(--radius-md);
+  padding: var(--space-2xs);
   background: var(--color-panel-solid);
   box-shadow: none;
   transform: none;
-  transition: none;
+  transition:
+    border-color var(--dur-short) var(--ease-out),
+    transform var(--dur-short) var(--ease-out);
 }
 
 .v3-site[data-version="c"] .v3-reel-tile .project-visual {
@@ -102,7 +115,22 @@
 }
 
 .v3-site[data-version="c"] .v3-reel-tile::after {
-  display: none;
+  display: block;
+}
+
+.v3-site[data-version="c"] .v3-reel[data-static="true"] .v3-reel-row-shell {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scroll-snap-type: inline proximity;
+}
+
+.v3-site[data-version="c"] .v3-reel[data-static="true"] .v3-reel-row {
+  transform: none !important;
+}
+
+.v3-site[data-version="c"] .v3-reel[data-static="true"] .v3-reel-tile {
+  scroll-snap-align: start;
 }
 
 /* About and capability rows become one quiet argument instead of two spectacles. */
@@ -339,6 +367,45 @@
   height: var(--space-md);
 }
 
+/* Seven complete cases share one left-axis rotary stage. The page keeps native scroll. */
+.v3-site[data-version="c"] .v3-project-rotary-scroll,
+.v3-site[data-version="c"] .v3-project-rotary-sticky,
+.v3-site[data-version="c"] .v3-project-rotary-stage {
+  min-width: 0;
+}
+
+.v3-site[data-version="c"] .v3-project-rotary-scroll {
+  position: relative;
+  height: auto;
+}
+
+.v3-site[data-version="c"] .v3-project-rotary-sticky {
+  position: relative;
+}
+
+.v3-site[data-version="c"] .v3-project-rotary-stage {
+  display: grid;
+  gap: clamp(var(--space-xl), 5vw, var(--space-3xl));
+}
+
+.v3-site[data-version="c"] .v3-project-rotary-index {
+  display: none;
+}
+
+.v3-site[data-version="c"] .v3-project-stack[data-layout="static"] .v3-project-card-wrap {
+  position: relative;
+  inset: auto;
+  height: auto;
+  margin: 0;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+.v3-site[data-version="c"] .v3-project-stack[data-layout="static"] .v3-project-card {
+  height: auto;
+}
+
 /* Four turning points; one route, one signal. */
 .v3-site[data-version="c"] .v3-journey {
   padding-block: clamp(var(--space-3xl), 8vw, var(--space-4xl));
@@ -388,24 +455,31 @@
 }
 
 .v3-site[data-version="c"] .v3-contact-kinetics-stage {
-  display: block;
-  min-height: 0;
+  position: relative;
+  display: grid;
+  min-height: clamp(15rem, 22vw, 20rem);
   margin-top: var(--space-xl);
+  place-items: center;
+  isolation: isolate;
 }
 
 .v3-site[data-version="c"] .v3-contact-kinetics-stage h2 {
   display: flex;
-  max-width: 9ch;
-  flex-wrap: wrap;
-  gap: 0 var(--space-sm);
+  max-width: none;
+  flex-wrap: nowrap;
+  gap: 0.13em;
   color: var(--color-ink-strong);
-  font-size: clamp(var(--text-3xl), 13vw, 7rem);
-  line-height: 1;
-  white-space: normal;
+  font-size: clamp(3.6rem, 7vw, 7.5rem);
+  line-height: 0.84;
+  white-space: nowrap;
 }
 
-.v3-site[data-version="c"] :is(.v3-contact-kinetics-trace, .v3-contact-brand-nodes) {
-  display: none;
+.v3-site[data-version="c"] .v3-contact-kinetics-trace {
+  display: block;
+}
+
+.v3-site[data-version="c"] .v3-contact-brand-nodes {
+  display: block;
 }
 
 .v3-site[data-version="c"] .v3-footer-primary-link {
@@ -487,12 +561,24 @@
 }
 
 .v3-site[data-version="c"] .v3-nav-status,
-.v3-site[data-version="c"] .v3-nav-current,
+.v3-site[data-version="c"] .v3-nav-current {
+  display: none;
+}
+
 .v3-site[data-version="c"] .v3-nav-progress {
   display: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .v3-site[data-version="c"] .v3-reel-tile:not(.is-duplicate):is(:hover, :focus-visible) {
+    border-color: var(--color-accent);
+    transform: translateY(calc(-1 * var(--space-2xs)));
+  }
+
+  .v3-site[data-version="c"] .v3-reel-tile:not(.is-duplicate):is(:hover, :focus-visible)::after {
+    transform: scaleX(1);
+  }
+
   .v3-site[data-version="c"] .v3-reel-tile:is(:hover, :focus-visible) .project-cover-image {
     transform: scale(1.018);
   }
@@ -653,7 +739,50 @@
   }
 
   .v3-site[data-version="c"] .v3-nav-progress {
-    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 7rem;
+    bottom: 1.5rem;
+    left: 1.25rem;
+    display: grid;
+    width: 1.25rem;
+    height: auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    justify-items: center;
+    gap: var(--space-xs);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-muted);
+    pointer-events: none;
+  }
+
+  .v3-site[data-version="c"] .v3-nav-progress > span:not(.v3-nav-progress-track) {
+    display: block;
+    font-size: 0.5rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .v3-site[data-version="c"] .v3-nav-progress-track {
+    display: block;
+    width: var(--rule-hair);
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-rule);
+  }
+
+  .v3-site[data-version="c"] .v3-nav-progress-track i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-signal);
+    box-shadow: 0 0 var(--space-sm) var(--color-signal-faint);
   }
 
   .v3-site[data-version="c"] .v3-project-card-body {
@@ -705,6 +834,242 @@
     grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
     align-items: end;
     gap: clamp(var(--space-2xl), 7vw, var(--space-4xl));
+  }
+}
+
+@media (min-width: 64rem) and (min-height: 43.001rem) and (pointer: fine) {
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] {
+    --v3-rotary-origin-x: -3.5rem;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-scroll {
+    height: var(--v3-project-scroll-height, 652svh);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-sticky {
+    position: sticky;
+    top: 0;
+    display: grid;
+    width: 100%;
+    height: 100svh;
+    grid-template-areas: "stage";
+    align-items: center;
+    box-sizing: border-box;
+    overflow: visible;
+    padding-block: 6.25rem 1.25rem;
+    isolation: isolate;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-stage {
+    position: relative;
+    grid-area: stage;
+    display: block;
+    width: 100%;
+    height: min(42rem, calc(100svh - 8rem));
+    margin: auto;
+    isolation: isolate;
+    perspective: 100rem;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-stage::before {
+    position: absolute;
+    z-index: 30;
+    top: 50%;
+    left: calc(var(--v3-rotary-origin-x) - 0.34rem);
+    width: 0.68rem;
+    height: 0.68rem;
+    border: var(--rule-hair) solid var(--color-accent);
+    border-radius: 50%;
+    background: var(--color-paper);
+    box-shadow: 0 0 0 var(--space-2xs) var(--color-accent-faint);
+    content: "";
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-stage::after {
+    position: absolute;
+    z-index: 29;
+    top: 50%;
+    left: var(--v3-rotary-origin-x);
+    width: 3.5rem;
+    height: var(--rule-hair);
+    background: linear-gradient(90deg, var(--color-accent), var(--color-rule));
+    content: "";
+    pointer-events: none;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: calc(var(--v3-card-index, 0) + 1);
+    display: grid;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-wrap[data-active="true"] {
+    z-index: 20;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-wrap[aria-hidden="true"] {
+    user-select: none;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card {
+    height: 100%;
+    max-height: 100%;
+    grid-template-rows: auto minmax(0, 1fr);
+    border-radius: var(--radius-md);
+    box-shadow: 0 1.5rem 4rem rgb(4 7 12 / 0.12);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-head {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-sm) var(--space-md);
+    padding: clamp(0.8rem, 1.7vh, 1.2rem) clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-head > span {
+    font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-head h3 {
+    font-size: clamp(1.45rem, 3vw, 2.45rem);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-links {
+    gap: var(--space-xs);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] :is(
+    .v3-project-card-demo-group,
+    .v3-project-card-demo-group a,
+    .v3-project-card-demo-group .v3-project-card-link-unavailable,
+    .v3-project-card-meta-links a
+  ) {
+    min-height: 2.25rem;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-demo-group > span,
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] :is(
+    .v3-project-card-demo-group a,
+    .v3-project-card-demo-group .v3-project-card-link-unavailable,
+    .v3-project-card-meta-links a
+  ) {
+    padding-inline: 0.62rem;
+    font-size: 0.58rem;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-body {
+    display: grid;
+    height: 100%;
+    min-height: 0;
+    grid-template-columns: minmax(18rem, 0.82fr) minmax(22rem, 1.18fr);
+    padding: var(--space-2xs);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-notes {
+    min-height: 0;
+    justify-content: flex-start;
+    padding: clamp(0.85rem, 1.8vh, 1.25rem);
+    border-inline-end: var(--rule-hair) solid var(--color-rule-soft);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-notes > p {
+    font-size: clamp(0.76rem, 1.55vh, 0.9rem);
+    line-height: 1.48;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-notes dl {
+    margin-top: clamp(0.65rem, 1.6vh, 1rem);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-notes dl > div {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--space-sm);
+    padding-block: clamp(0.42rem, 1.1vh, 0.65rem);
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] :is(
+    .v3-project-card-notes dt,
+    .v3-project-card-notes dd
+  ) {
+    font-size: clamp(0.64rem, 1.2vh, 0.71rem);
+    line-height: 1.38;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-card-visual {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .v3-site[data-version="c"] .v3-project-stack[data-layout="rotary"] .v3-project-rotary-index {
+    position: absolute;
+    z-index: 40;
+    top: 50%;
+    left: -4.9rem;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-counter {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3xs);
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.54rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-counter [data-current-index] {
+    color: var(--color-accent);
+    font-size: 0.72rem;
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-ticks {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-ticks li {
+    display: grid;
+    width: 1.75rem;
+    height: var(--rule-strong);
+    align-items: center;
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-ticks li > span {
+    display: block;
+    width: 0.45rem;
+    height: var(--rule-hair);
+    background: var(--color-rule);
+    transform-origin: left center;
+    transition:
+      width var(--dur-medium) var(--ease-out),
+      background-color var(--dur-medium) var(--ease-out);
+  }
+
+  .v3-site[data-version="c"] .v3-project-rotary-ticks li[data-active="true"] > span {
+    width: 1.75rem;
+    height: var(--rule-strong);
+    background: var(--color-signal);
   }
 }
 

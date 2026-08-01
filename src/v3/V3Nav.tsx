@@ -267,18 +267,18 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
             <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
-        <div className="v3-nav-progress" aria-hidden="true">
-          <span>00</span>
-          <span className="v3-nav-progress-track">
-            <motion.i
-              style={{
-                scaleY: reduceMotion ? 0 : scrollYProgress,
-                transformOrigin: "top",
-              }}
-            />
-          </span>
-          <span>100</span>
-        </div>
+      </div>
+      <div className="v3-nav-progress" aria-hidden="true">
+        <span>00</span>
+        <span className="v3-nav-progress-track">
+          <motion.i
+            style={{
+              scaleY: reduceMotion ? 0 : scrollYProgress,
+              transformOrigin: "top",
+            }}
+          />
+        </span>
+        <span>100</span>
       </div>
     </motion.header>
   );
