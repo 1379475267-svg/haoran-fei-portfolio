@@ -47,9 +47,9 @@ interface JourneyLanguageCopy {
 const journeyCopy: Record<V3Language, JourneyLanguageCopy> = {
   zh: {
     eyebrow: "成长轨迹 / FLIGHT LOG",
-    title: "一路把兴趣，变成真实系统。",
+    title: "一路把热爱，变成真实系统。",
     intro:
-      "从第一次写下代码，到把软件、硬件、音乐与无人系统做成可运行的项目。这不是技能清单，而是一条仍在延伸的实践路径。",
+      "从敲下第一行代码，到做出跨越软件、硬件与音乐技术的可运行项目。这是一条仍在延展的实践路径。",
     originLabel: "起点",
     currentLabel: "当前",
     workLabel: "实践",
