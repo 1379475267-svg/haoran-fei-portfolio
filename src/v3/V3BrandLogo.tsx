@@ -138,6 +138,8 @@ export default function V3BrandLogo({
       focusable="false"
       data-logo-mode={resolvedAnimationMode}
       data-v3-reveal-origin={revealOrigin || undefined}
+      data-v3-reveal-origin-x={revealOrigin ? LOGO_CORE.x : undefined}
+      data-v3-reveal-origin-y={revealOrigin ? LOGO_CORE.y : undefined}
     >
       {decorative ? null : <title>{label}</title>}
       <defs>

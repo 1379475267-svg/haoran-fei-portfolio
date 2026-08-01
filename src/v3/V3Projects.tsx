@@ -34,13 +34,12 @@ const selectedProjects = selectedIds
   .filter((project): project is Project => Boolean(project));
 
 const STATIC_PROJECT_LAYOUT_QUERY =
-  "(max-width: 63.999rem), (max-height: 43rem), (pointer: coarse), (pointer: none)";
+  "(max-width: 32.999rem), (max-height: 41.999rem), (pointer: coarse), (pointer: none)";
 const ORBIT_STEP_SVH = 60;
 const ORBIT_EDGE_HOLD_SVH = 4;
 const ORBIT_DOCK_RATIO = 0.055;
 const ORBIT_ANGLE = 0.67;
-const ORBIT_Y_RADIUS_SVH = 118;
-const ORBIT_X_RADIUS_VW = 60;
+const ORBIT_RADIUS_SVH = 128;
 
 const displayTitle = (project: Project) => {
   if (project.id === "nonconvex-alpha") return "Nonconvex α / Drone Lab";
@@ -519,6 +518,10 @@ function ProjectCard({
           </motion.a>
         </motion.div>
       </motion.article>
+      <span className="v3-project-card-edge-label" aria-hidden="true">
+        <b>{String(index + 1).padStart(2, "0")}</b>
+        <span>{title}</span>
+      </span>
     </motion.div>
   );
 }
@@ -553,12 +556,12 @@ function RotaryProjectCard({
   });
   const x = useTransform(orbitOffset, (offset) => {
     const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
-    const value = -(1 - Math.cos(angle)) * ORBIT_X_RADIUS_VW;
-    return `${value.toFixed(3)}vw`;
+    const value = -(1 - Math.cos(angle)) * ORBIT_RADIUS_SVH;
+    return `${value.toFixed(3)}svh`;
   });
   const y = useTransform(orbitOffset, (offset) => {
     const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
-    const value = -Math.sin(angle) * ORBIT_Y_RADIUS_SVH;
+    const value = -Math.sin(angle) * ORBIT_RADIUS_SVH;
     return `${value.toFixed(3)}svh`;
   });
   const scale = useTransform(orbitOffset, (offset) =>

@@ -25,9 +25,9 @@ function clampUnit(value: number) {
   return Math.min(Math.max(value, 0), 1);
 }
 
-function easeOutQuad(value: number) {
+function smoothstep(value: number) {
   const progress = clampUnit(value);
-  return 1 - (1 - progress) ** 2;
+  return progress * progress * (3 - 2 * progress);
 }
 
 export type OpeningCompletionReason = "natural" | "skipped";
@@ -70,7 +70,7 @@ export default function V3OpeningSequence({
   );
   const openingRevealMask = useTransform(() => {
     const time = openingClock.get();
-    const progress = easeOutQuad(
+    const progress = smoothstep(
       (time - OPENING_REVEAL_TIME) / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_TIME),
     );
     const radius = revealMaxRadius.get() * progress;
@@ -84,8 +84,20 @@ export default function V3OpeningSequence({
     const viewportHeight = window.innerHeight;
     const logo = document.querySelector<SVGSVGElement>("[data-v3-reveal-origin]");
     const bounds = logo?.getBoundingClientRect();
-    const originX = bounds ? bounds.left + bounds.width / 2 : viewportWidth / 2;
-    const originY = bounds ? bounds.top + bounds.height / 2 : viewportHeight / 2;
+    const sourceX = Number(logo?.getAttribute("data-v3-reveal-origin-x"));
+    const sourceY = Number(logo?.getAttribute("data-v3-reveal-origin-y"));
+    const matrix = logo?.getScreenCTM();
+    let originX = bounds ? bounds.left + bounds.width / 2 : viewportWidth / 2;
+    let originY = bounds ? bounds.top + bounds.height / 2 : viewportHeight / 2;
+
+    if (logo && matrix && Number.isFinite(sourceX) && Number.isFinite(sourceY)) {
+      const sourcePoint = logo.createSVGPoint();
+      sourcePoint.x = sourceX;
+      sourcePoint.y = sourceY;
+      const screenPoint = sourcePoint.matrixTransform(matrix);
+      originX = screenPoint.x;
+      originY = screenPoint.y;
+    }
     const farthestX = Math.max(originX, viewportWidth - originX);
     const farthestY = Math.max(originY, viewportHeight - originY);
 
