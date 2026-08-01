@@ -561,7 +561,7 @@ function RotaryProjectCard({
   });
   const y = useTransform(orbitOffset, (offset) => {
     const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
-    const value = -Math.sin(angle) * ORBIT_RADIUS_SVH;
+    const value = Math.sin(angle) * ORBIT_RADIUS_SVH;
     return `${value.toFixed(3)}svh`;
   });
   const scale = useTransform(orbitOffset, (offset) =>

@@ -16,8 +16,10 @@ import V3BrandLogo from "./V3BrandLogo";
 const OPENING_DURATION = 3.82;
 const OPENING_CONTENT_READY_TIME = 2.78;
 const OPENING_REVEAL_TIME = 3.08;
-const OPENING_REVEAL_END_TIME = 3.58;
-const OPENING_FADE_TIME = 3.64;
+const OPENING_REVEAL_LOGO_END_TIME = 3.13;
+const OPENING_REVEAL_HOLD_END_TIME = 3.28;
+const OPENING_REVEAL_END_TIME = 3.66;
+const OPENING_FADE_TIME = 3.66;
 const REDUCED_OPENING_DURATION = 0.18;
 const START_FALLBACK_DELAY = 800;
 
@@ -57,6 +59,7 @@ export default function V3OpeningSequence({
   const openingClock = useMotionValue(0);
   const revealOriginX = useMotionValue(0);
   const revealOriginY = useMotionValue(0);
+  const revealLogoRadius = useMotionValue(0);
   const revealMaxRadius = useMotionValue(0);
   const openingDuration = reduceMotion
     ? REDUCED_OPENING_DURATION
@@ -70,10 +73,25 @@ export default function V3OpeningSequence({
   );
   const openingRevealMask = useTransform(() => {
     const time = openingClock.get();
-    const progress = smoothstep(
-      (time - OPENING_REVEAL_TIME) / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_TIME),
-    );
-    const radius = revealMaxRadius.get() * progress;
+    const logoRadius = revealLogoRadius.get();
+    let radius = 0;
+
+    if (time <= OPENING_REVEAL_LOGO_END_TIME) {
+      const logoProgress = smoothstep(
+        (time - OPENING_REVEAL_TIME)
+          / (OPENING_REVEAL_LOGO_END_TIME - OPENING_REVEAL_TIME),
+      );
+      radius = logoRadius * logoProgress;
+    } else if (time <= OPENING_REVEAL_HOLD_END_TIME) {
+      radius = logoRadius;
+    } else {
+      const revealProgress = smoothstep(
+        (time - OPENING_REVEAL_HOLD_END_TIME)
+          / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_HOLD_END_TIME),
+      );
+      radius = logoRadius
+        + (revealMaxRadius.get() - logoRadius) * revealProgress;
+    }
     const edge = radius + 0.7;
 
     return `radial-gradient(circle at ${revealOriginX.get().toFixed(2)}px ${revealOriginY.get().toFixed(2)}px, transparent ${radius.toFixed(2)}px, #000 ${edge.toFixed(2)}px)`;
@@ -100,11 +118,18 @@ export default function V3OpeningSequence({
     }
     const farthestX = Math.max(originX, viewportWidth - originX);
     const farthestY = Math.max(originY, viewportHeight - originY);
+    const logoRadius = bounds
+      ? Math.hypot(
+          Math.max(originX - bounds.left, bounds.right - originX),
+          Math.max(originY - bounds.top, bounds.bottom - originY),
+        ) + 2
+      : 18;
 
     revealOriginX.set(originX);
     revealOriginY.set(originY);
+    revealLogoRadius.set(logoRadius);
     revealMaxRadius.set(Math.hypot(farthestX, farthestY) + 2);
-  }, [revealMaxRadius, revealOriginX, revealOriginY]);
+  }, [revealLogoRadius, revealMaxRadius, revealOriginX, revealOriginY]);
 
   const reveal = useCallback(() => {
     if (revealedRef.current) return;
@@ -206,7 +231,7 @@ export default function V3OpeningSequence({
 
     if (!reduceMotion && !revealGeometryLockedRef.current) {
       syncRevealGeometry();
-      if (elapsed >= OPENING_REVEAL_TIME) {
+      if (elapsed >= OPENING_REVEAL_HOLD_END_TIME) {
         revealGeometryLockedRef.current = true;
       }
     }
