@@ -53,7 +53,11 @@ export default function V3OpeningSequence({
   const audioStartTimeRef = useRef(0);
   const fallbackStartRef = useRef(0);
   const startFallbackRef = useRef<number | null>(null);
+  const revealGeometryLockedRef = useRef(false);
   const openingClock = useMotionValue(0);
+  const revealOriginX = useMotionValue(0);
+  const revealOriginY = useMotionValue(0);
+  const revealMaxRadius = useMotionValue(0);
   const openingDuration = reduceMotion
     ? REDUCED_OPENING_DURATION
     : OPENING_DURATION;
@@ -64,17 +68,31 @@ export default function V3OpeningSequence({
       : [0, OPENING_FADE_TIME, OPENING_DURATION],
     [1, 1, 0],
   );
-  const openingRevealMask = useTransform(openingClock, (time) => {
+  const openingRevealMask = useTransform(() => {
+    const time = openingClock.get();
     const progress = easeOutQuad(
       (time - OPENING_REVEAL_TIME) / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_TIME),
     );
-    // 72vmax reaches the far corner even on square viewports while preserving
-    // a readable circular edge during the first half-beat of the reveal.
-    const radius = 72 * progress;
+    const radius = revealMaxRadius.get() * progress;
     const edge = radius + 0.7;
 
-    return `radial-gradient(circle at 50% 50%, transparent ${radius.toFixed(3)}vmax, #000 ${edge.toFixed(3)}vmax)`;
+    return `radial-gradient(circle at ${revealOriginX.get().toFixed(2)}px ${revealOriginY.get().toFixed(2)}px, transparent ${radius.toFixed(2)}px, #000 ${edge.toFixed(2)}px)`;
   });
+
+  const syncRevealGeometry = useCallback(() => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const logo = document.querySelector<SVGSVGElement>("[data-v3-reveal-origin]");
+    const bounds = logo?.getBoundingClientRect();
+    const originX = bounds ? bounds.left + bounds.width / 2 : viewportWidth / 2;
+    const originY = bounds ? bounds.top + bounds.height / 2 : viewportHeight / 2;
+    const farthestX = Math.max(originX, viewportWidth - originX);
+    const farthestY = Math.max(originY, viewportHeight - originY);
+
+    revealOriginX.set(originX);
+    revealOriginY.set(originY);
+    revealMaxRadius.set(Math.hypot(farthestX, farthestY) + 2);
+  }, [revealMaxRadius, revealOriginX, revealOriginY]);
 
   const reveal = useCallback(() => {
     if (revealedRef.current) return;
@@ -99,6 +117,7 @@ export default function V3OpeningSequence({
         : 0;
     }
     eraseStartedRef.current = true;
+    revealGeometryLockedRef.current = false;
     fallbackStartRef.current = performance.now();
     openingClock.set(0);
     setPhase("erasing");
@@ -119,6 +138,22 @@ export default function V3OpeningSequence({
       () => beginErasing(null),
     );
   }, [beginErasing, onStart, reduceMotion]);
+
+  useEffect(() => {
+    syncRevealGeometry();
+
+    const logo = document.querySelector<SVGSVGElement>("[data-v3-reveal-origin]");
+    const resizeObserver = logo ? new ResizeObserver(syncRevealGeometry) : null;
+    if (logo) resizeObserver?.observe(logo);
+    window.addEventListener("resize", syncRevealGeometry);
+    window.visualViewport?.addEventListener("resize", syncRevealGeometry);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", syncRevealGeometry);
+      window.visualViewport?.removeEventListener("resize", syncRevealGeometry);
+    };
+  }, [syncRevealGeometry]);
 
   useEffect(() => {
     return () => {
@@ -157,6 +192,12 @@ export default function V3OpeningSequence({
       ? Math.max(0, audio.currentTime - audioStartTimeRef.current)
       : fallbackElapsed;
 
+    if (!reduceMotion && !revealGeometryLockedRef.current) {
+      syncRevealGeometry();
+      if (elapsed >= OPENING_REVEAL_TIME) {
+        revealGeometryLockedRef.current = true;
+      }
+    }
     openingClock.set(Math.min(elapsed, openingDuration));
     if (elapsed >= (reduceMotion ? 0 : OPENING_CONTENT_READY_TIME)) reveal();
     if (elapsed >= openingDuration) finish("natural");

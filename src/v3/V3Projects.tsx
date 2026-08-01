@@ -35,10 +35,12 @@ const selectedProjects = selectedIds
 
 const STATIC_PROJECT_LAYOUT_QUERY =
   "(max-width: 63.999rem), (max-height: 43rem), (pointer: coarse), (pointer: none)";
-const ROTARY_ENTRY = 0.15;
-const ROTARY_DWELL = 0.7;
-const ROTARY_EXIT = 0.15;
-const ROTARY_STEP = ROTARY_DWELL + ROTARY_EXIT;
+const ORBIT_STEP_SVH = 60;
+const ORBIT_EDGE_HOLD_SVH = 4;
+const ORBIT_DOCK_RATIO = 0.055;
+const ORBIT_ANGLE = 0.67;
+const ORBIT_Y_RADIUS_SVH = 118;
+const ORBIT_X_RADIUS_VW = 60;
 
 const displayTitle = (project: Project) => {
   if (project.id === "nonconvex-alpha") return "Nonconvex α / Drone Lab";
@@ -243,21 +245,36 @@ function useStaticProjectLayout(reducedMotion: boolean) {
   return reducedMotion || mediaRequiresStaticLayout;
 }
 
-const getRotaryTravel = (total: number) =>
-  ROTARY_STEP * Math.max(0, total - 1) + ROTARY_DWELL;
+const clamp = (value: number, minimum: number, maximum: number) =>
+  Math.min(Math.max(value, minimum), maximum);
 
-const getRotaryTimelinePosition = (progress: number, total: number) =>
-  ROTARY_ENTRY + progress * getRotaryTravel(total);
+const getOrbitScrollTravel = (total: number) =>
+  Math.max(0, total - 1) * ORBIT_STEP_SVH + ORBIT_EDGE_HOLD_SVH * 2;
 
-const getActiveProjectIndex = (progress: number, total: number) => {
-  const timelinePosition = getRotaryTimelinePosition(progress, total);
-  const transitionMidpoint = ROTARY_ENTRY / 2;
-  const index = Math.floor(
-    (timelinePosition - transitionMidpoint) / ROTARY_STEP,
+const getOrbitPosition = (progress: number, total: number) => {
+  const lastIndex = Math.max(total - 1, 0);
+  if (lastIndex === 0) return 0;
+
+  const scrollPosition = progress * getOrbitScrollTravel(total);
+  const rawPosition = clamp(
+    (scrollPosition - ORBIT_EDGE_HOLD_SVH) / ORBIT_STEP_SVH,
+    0,
+    lastIndex,
   );
+  const index = Math.floor(rawPosition);
+  if (index >= lastIndex) return lastIndex;
 
-  return Math.min(Math.max(index, 0), Math.max(total - 1, 0));
+  const localProgress = rawPosition - index;
+  if (localProgress <= ORBIT_DOCK_RATIO) return index;
+  if (localProgress >= 1 - ORBIT_DOCK_RATIO) return index + 1;
+
+  return index + (
+    (localProgress - ORBIT_DOCK_RATIO) / (1 - ORBIT_DOCK_RATIO * 2)
+  );
 };
+
+const getActiveProjectIndex = (progress: number, total: number) =>
+  clamp(Math.round(getOrbitPosition(progress, total)), 0, Math.max(total - 1, 0));
 
 interface ProjectCardProps {
   project: Project;
@@ -364,6 +381,7 @@ function ProjectCard({
         data-active={active || undefined}
         data-archive-motion={staticLayout ? "static" : "rotary"}
         initial={reducedMotion || !staticLayout ? false : "hidden"}
+        animate={reducedMotion || !staticLayout ? "visible" : undefined}
         whileInView={reducedMotion || !staticLayout ? undefined : "visible"}
         viewport={{ once: true, amount: 0.1 }}
         variants={archiveCardVariants}
@@ -524,43 +542,35 @@ function RotaryProjectCard({
   staticLayout,
   reducedMotion,
 }: RotaryProjectCardProps) {
-  const timelineTravel = getRotaryTravel(total);
-  const phase = useTransform(
+  const orbitOffset = useTransform(
     progress,
-    (value) => ROTARY_ENTRY + value * timelineTravel - index * ROTARY_STEP,
+    (value) => index - getOrbitPosition(value, total),
   );
-  const opacity = useTransform(
-    phase,
-    [0, ROTARY_ENTRY, ROTARY_ENTRY + ROTARY_DWELL, 1],
-    [0, 1, 1, 0],
-  );
-  const x = useTransform(
-    phase,
-    [0, ROTARY_ENTRY, ROTARY_ENTRY + ROTARY_DWELL, 1],
-    [18, 0, 0, 18],
-  );
-  const y = useTransform(
-    phase,
-    [0, ROTARY_ENTRY, ROTARY_ENTRY + ROTARY_DWELL, 1],
-    [-56, 0, 0, 56],
-  );
-  const scale = useTransform(
-    phase,
-    [0, ROTARY_ENTRY, ROTARY_ENTRY + ROTARY_DWELL, 1],
-    [0.982, 1, 1, 0.982],
-  );
-  const rotate = useTransform(
-    phase,
-    [0, ROTARY_ENTRY, ROTARY_ENTRY + ROTARY_DWELL, 1],
-    [-8, 0, 0, 8],
+  const opacity = useTransform(orbitOffset, (offset) => {
+    const distance = Math.abs(offset);
+    if (distance <= 0.65) return 1;
+    return clamp(1 - (distance - 0.65) / 0.75, 0, 1);
+  });
+  const x = useTransform(orbitOffset, (offset) => {
+    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
+    const value = -(1 - Math.cos(angle)) * ORBIT_X_RADIUS_VW;
+    return `${value.toFixed(3)}vw`;
+  });
+  const y = useTransform(orbitOffset, (offset) => {
+    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
+    const value = -Math.sin(angle) * ORBIT_Y_RADIUS_SVH;
+    return `${value.toFixed(3)}svh`;
+  });
+  const scale = useTransform(orbitOffset, (offset) =>
+    1 - Math.min(Math.abs(offset), 1.4) * 0.035,
   );
   const rotaryStyle = {
     opacity,
     x,
     y,
     scale,
-    rotate,
-    transformOrigin: "var(--v3-rotary-origin-x, -4rem) 50%",
+    rotate: 0,
+    transformOrigin: "center center",
     willChange: "transform, opacity",
   } as MotionStyle;
 
@@ -626,8 +636,8 @@ export default function V3Projects() {
 
   const rotaryStyle = {
     "--v3-project-count": totalProjects,
-    "--v3-rotary-travel": getRotaryTravel(totalProjects),
-    "--v3-project-scroll-height": `${Math.max(totalProjects, 1) * 92 + 8}svh`,
+    "--v3-orbit-scroll-travel": getOrbitScrollTravel(totalProjects),
+    "--v3-project-scroll-height": `calc(100svh + ${getOrbitScrollTravel(totalProjects)}svh)`,
   } as CSSProperties;
   const counterLabel = language === "zh"
     ? `当前项目：第 ${activeIndex + 1} 个，共 ${totalProjects} 个`

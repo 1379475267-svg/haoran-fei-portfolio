@@ -5762,7 +5762,7 @@ body {
   overflow: visible;
 }
 
-.v3-brand-logo--opening .v3-brand-logo__moon-halo {
+.v3-brand-logo--opening:not([data-logo-mode="erase"]) .v3-brand-logo__moon-halo {
   transform-box: fill-box;
   transform-origin: center;
   animation: v3-opening-moon-breathe 3.1s ease-in-out infinite;
@@ -5771,7 +5771,6 @@ body {
 
 .v3-brand-logo--opening[data-logo-mode="erase"] .v3-brand-logo__moon-halo {
   animation: none;
-  opacity: 0.42;
 }
 
 @keyframes v3-opening-moon-breathe {

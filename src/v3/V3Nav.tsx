@@ -182,7 +182,7 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
             setMobileCompact(false);
           }}
         >
-          <V3BrandLogo className="v3-brand-logo--nav" decorative />
+          <V3BrandLogo className="v3-brand-logo--nav" revealOrigin decorative />
           <small>HAORAN FEI</small>
         </a>
         <div className="v3-nav-status" aria-hidden="true">
