@@ -7,6 +7,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import V3ChapterStrike from "./V3ChapterStrike";
 import { useV3Language, type V3Language } from "./V3Language";
 
 type MilestoneTone = "complete" | "active";
@@ -380,6 +381,30 @@ const journeyPulseVariants: Variants = {
   },
 };
 
+const journeyHeadingVariants: Variants = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0.04, staggerChildren: 0.09 } },
+};
+
+const journeyHeadingItemVariants: Variants = {
+  hidden: { opacity: 0, y: 14, clipPath: "inset(0 0 100% 0)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0 0 0% 0)",
+    transition: { duration: 0.54, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const journeyRangeVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0.88 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function V3Journey() {
   const { language } = useV3Language();
   const copy = journeyCopy[language];
@@ -408,12 +433,25 @@ export default function V3Journey() {
 
   return (
     <section className="v3-journey" id="journey" aria-labelledby="journey-title">
+      <V3ChapterStrike tone="dark" />
       <div className="v3-journey-inner">
-        <header className="v3-journey-heading">
-          <p className="v3-section-label">{copy.eyebrow}</p>
-          <h2 id="journey-title">{copy.title}</h2>
-          <p className="v3-journey-intro">{copy.intro}</p>
-          <div className="v3-journey-range" aria-hidden="true">
+        <motion.header
+          className="v3-journey-heading"
+          initial={reduceMotion ? false : "hidden"}
+          whileInView={reduceMotion ? undefined : "visible"}
+          viewport={{ once: true, amount: 0.24 }}
+          variants={journeyHeadingVariants}
+        >
+          <motion.p className="v3-section-label" variants={journeyHeadingItemVariants}>
+            {copy.eyebrow}
+          </motion.p>
+          <motion.h2 id="journey-title" variants={journeyHeadingItemVariants}>
+            {copy.title}
+          </motion.h2>
+          <motion.p className="v3-journey-intro" variants={journeyHeadingItemVariants}>
+            {copy.intro}
+          </motion.p>
+          <motion.div className="v3-journey-range" aria-hidden="true" variants={journeyRangeVariants}>
             <span>
               <small>{copy.originLabel}</small>
               <strong>2019</strong>
@@ -423,8 +461,8 @@ export default function V3Journey() {
               <small>{copy.currentLabel}</small>
               <strong>NOW</strong>
             </span>
-          </div>
-        </header>
+          </motion.div>
+        </motion.header>
 
         <div className="v3-journey-route" ref={routeRef}>
           <div className="v3-journey-track" aria-hidden="true">

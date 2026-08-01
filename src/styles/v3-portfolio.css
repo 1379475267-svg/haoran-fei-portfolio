@@ -6148,6 +6148,7 @@ body {
 .v3-about,
 .v3-capabilities,
 .v3-projects,
+.v3-journey,
 .v3-footer {
   isolation: isolate;
 }
@@ -6221,6 +6222,7 @@ body {
 
 .v3-capabilities .v3-chapter-strike,
 .v3-projects .v3-chapter-strike,
+.v3-journey .v3-chapter-strike,
 .v3-footer .v3-chapter-strike {
   top: 1.35rem;
 }
@@ -7559,6 +7561,7 @@ body {
 }
 
 .v3-journey-range {
+  transform-origin: left center;
   display: grid;
   grid-template-columns: auto minmax(var(--space-2xl), 1fr) auto;
   align-items: end;

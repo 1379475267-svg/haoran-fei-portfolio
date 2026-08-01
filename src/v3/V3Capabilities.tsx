@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Bot, Code2, Cpu, Music2, Sparkles } from "lucide-react";
+import V3ChapterStrike from "./V3ChapterStrike";
 import { useV3Language, type V3Language } from "./V3Language";
 
 interface Capability {
@@ -134,17 +135,43 @@ const capabilityRouteVariants: Variants = {
   },
 };
 
+const capabilityHeadingVariants: Variants = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0.04, staggerChildren: 0.08 } },
+};
+
+const capabilityHeadingItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12, clipPath: "inset(0 0 100% 0)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0 0 0% 0)",
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function V3Capabilities() {
   const { language, t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
     <section className="v3-capabilities" id="capabilities" aria-labelledby="capabilities-title">
+      <V3ChapterStrike tone="light" />
       <div className="v3-capabilities-inner">
-        <div className="v3-capabilities-heading">
-          <p className="v3-section-label">{t.capabilities.eyebrow}</p>
-          <h2 id="capabilities-title">{t.capabilities.title}</h2>
-        </div>
+        <motion.div
+          className="v3-capabilities-heading"
+          initial={reduceMotion ? false : "hidden"}
+          whileInView={reduceMotion ? undefined : "visible"}
+          viewport={{ once: true, amount: 0.42 }}
+          variants={capabilityHeadingVariants}
+        >
+          <motion.p className="v3-section-label" variants={capabilityHeadingItemVariants}>
+            {t.capabilities.eyebrow}
+          </motion.p>
+          <motion.h2 id="capabilities-title" variants={capabilityHeadingItemVariants}>
+            {t.capabilities.title}
+          </motion.h2>
+        </motion.div>
 
         <motion.div
           className="v3-capability-list"
