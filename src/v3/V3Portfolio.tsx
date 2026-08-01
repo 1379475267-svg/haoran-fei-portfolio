@@ -3,6 +3,7 @@ import V3About from "./V3About";
 import V3Capabilities from "./V3Capabilities";
 import V3Footer from "./V3Footer";
 import V3Hero from "./V3Hero";
+import V3Journey from "./V3Journey";
 import type { V3MusicControlHandle } from "./V3MusicControl";
 import V3Nav from "./V3Nav";
 import V3OpeningSequence, {
@@ -66,6 +67,71 @@ function V3PortfolioContent() {
     };
   }, [openingState.openingActive]);
 
+  useEffect(() => {
+    if (openingState.openingActive || !window.location.hash) return undefined;
+
+    const targetId = decodeURIComponent(window.location.hash.slice(1));
+    if (!targetId || targetId === "home") return undefined;
+
+    let cancelled = false;
+    let alignmentFrame = 0;
+    let settleTimer = 0;
+    let layoutObserver: ResizeObserver | undefined;
+    const stopAlignment = () => {
+      cancelled = true;
+      window.cancelAnimationFrame(alignmentFrame);
+      window.clearTimeout(settleTimer);
+      layoutObserver?.disconnect();
+    };
+    const alignTarget = () => {
+      const currentTargetId = decodeURIComponent(window.location.hash.slice(1));
+      if (cancelled || currentTargetId !== targetId) {
+        stopAlignment();
+        return;
+      }
+
+      window.cancelAnimationFrame(alignmentFrame);
+      alignmentFrame = window.requestAnimationFrame(() => {
+        const frameTargetId = decodeURIComponent(window.location.hash.slice(1));
+        if (cancelled || frameTargetId !== targetId) {
+          stopAlignment();
+          return;
+        }
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        const root = document.documentElement;
+        const previousScrollBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = "auto";
+        target.scrollIntoView({ block: "start", behavior: "auto" });
+        root.style.scrollBehavior = previousScrollBehavior;
+      });
+    };
+
+    const watchInitialLayout = () => {
+      if (cancelled) return;
+
+      alignTarget();
+      const siteContent = siteContentRef.current;
+      if (!siteContent || typeof ResizeObserver === "undefined") return;
+
+      layoutObserver = new ResizeObserver(alignTarget);
+      layoutObserver.observe(siteContent);
+      settleTimer = window.setTimeout(() => layoutObserver?.disconnect(), 900);
+    };
+
+    alignTarget();
+    void document.fonts.ready.then(watchInitialLayout);
+    window.addEventListener("load", alignTarget);
+    window.addEventListener("hashchange", stopAlignment);
+
+    return () => {
+      stopAlignment();
+      window.removeEventListener("load", alignTarget);
+      window.removeEventListener("hashchange", stopAlignment);
+    };
+  }, [openingState.openingActive]);
+
   const finishOpening = useCallback((_reason: OpeningCompletionReason) => {
     setOpeningState({ openingActive: false, contentReady: true });
   }, []);
@@ -104,6 +170,7 @@ function V3PortfolioContent() {
           <V3About />
           <V3Capabilities />
           <V3Projects />
+          <V3Journey />
         </main>
         <V3Footer />
       </div>

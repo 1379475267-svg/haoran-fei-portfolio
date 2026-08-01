@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 type ChapterStrikeTone = "light" | "dark";
 
@@ -7,6 +7,15 @@ interface V3ChapterStrikeProps {
 }
 
 const strikeEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const strikeSignalVariants: Variants = {
+  hidden: { opacity: 0, x: "-120%" },
+  visible: {
+    opacity: [0, 1, 1, 0],
+    x: ["-120%", "0%", "1800%", "1920%"],
+    transition: { duration: 0.68, ease: strikeEase },
+  },
+};
 
 /** A compact section boundary that gives the black/white rhythm a visible beat. */
 export default function V3ChapterStrike({ tone }: V3ChapterStrikeProps) {
@@ -53,6 +62,10 @@ export default function V3ChapterStrike({ tone }: V3ChapterStrikeProps) {
           />
         ))}
       </span>
+      <motion.i
+        className="v3-chapter-strike-signal"
+        variants={strikeSignalVariants}
+      />
     </motion.div>
   );
 }

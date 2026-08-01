@@ -17,8 +17,20 @@ const sectionTargets = [
   { id: "about", href: "#about" },
   { id: "capabilities", href: "#capabilities" },
   { id: "projects", href: "#projects" },
+  { id: "journey", href: "#journey" },
   { id: "contact", href: "#contact" },
 ] as const;
+
+type SectionId = (typeof sectionTargets)[number]["id"];
+
+function getSectionFromHash(): SectionId | null {
+  if (typeof window === "undefined") return null;
+
+  const targetId = decodeURIComponent(window.location.hash.slice(1));
+  if (targetId.startsWith("project-")) return "projects";
+
+  return sectionTargets.find((target) => target.id === targetId)?.id ?? null;
+}
 
 interface V3NavProps {
   ready: boolean;
@@ -29,9 +41,10 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const { language, setLanguage, t } = useV3Language();
-  const [activeSection, setActiveSection] = useState<
-    (typeof sectionTargets)[number]["id"]
-  >("home");
+  const [activeSection, setActiveSection] = useState<SectionId>(
+    () => getSectionFromHash() ?? "home",
+  );
+  const [mobileCompact, setMobileCompact] = useState(false);
   const activeHref = sectionTargets.find((target) => target.id === activeSection)?.href ?? "#home";
   const links = [
     { label: t.nav.about, href: "#about", index: "01" },
@@ -42,6 +55,8 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
     ? (language === "zh" ? "首页" : "Home")
     : activeHref === "#project-reel"
       ? (language === "zh" ? "项目进行时" : "Project reel")
+      : activeHref === "#journey"
+        ? t.nav.journey
       : activeHref === "#contact"
         ? t.nav.contact
         : links.find((link) => link.href === activeHref)?.label ?? t.nav.projects;
@@ -75,10 +90,68 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    let frame = 0;
+
+    const syncSectionFromHash = () => {
+      if (cancelled) return;
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const nextSection = getSectionFromHash();
+        if (nextSection) setActiveSection(nextSection);
+      });
+    };
+
+    syncSectionFromHash();
+    void document.fonts.ready.then(syncSectionFromHash);
+    window.addEventListener("hashchange", syncSectionFromHash);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("hashchange", syncSectionFromHash);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useEffect(() => {
+    let previousY = window.scrollY;
+    let frame = 0;
+
+    setMobileCompact(previousY > 72);
+
+    const handleScroll = () => {
+      if (frame) return;
+
+      frame = window.requestAnimationFrame(() => {
+        const nextY = window.scrollY;
+
+        if (nextY < 72) {
+          setMobileCompact(false);
+        } else if (nextY > previousY + 6) {
+          setMobileCompact(true);
+        } else if (nextY < previousY - 6) {
+          setMobileCompact(false);
+        }
+
+        previousY = nextY;
+        frame = 0;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <motion.header
       className="v3-nav-shell"
       data-surface={navigationSurface}
+      data-section={activeSection}
+      data-compact={mobileCompact || undefined}
       initial={reduceMotion ? false : { opacity: 0, y: -18 }}
       animate={ready || reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -18 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}

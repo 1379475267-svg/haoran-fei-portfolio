@@ -21,17 +21,17 @@ const contactNodes: ContactNode[] = [
   {
     id: "wechat",
     icon: "/contact/wechat.svg",
-    offset: { x: -20, y: 14, rotate: -9, delay: 0.84 },
+    offset: { x: -16, y: 10, rotate: -7, delay: 0.18 },
   },
   {
     id: "qq",
     icon: "/contact/qq.svg",
-    offset: { x: 18, y: -16, rotate: 8, delay: 0.96 },
+    offset: { x: 14, y: -12, rotate: 6, delay: 0.28 },
   },
   {
     id: "whatsapp",
     icon: "/contact/whatsapp.svg",
-    offset: { x: 14, y: 18, rotate: 10, delay: 1.08 },
+    offset: { x: 12, y: 14, rotate: 8, delay: 0.38 },
   },
 ];
 
@@ -57,7 +57,7 @@ const contactTitleVariants: Variants = {
     opacity: 1,
     y: 0,
     clipPath: "inset(0 0 0% 0)",
-    transition: { duration: 0.72, ease: contactEase, delay: 0.12 },
+    transition: { duration: 0.5, ease: contactEase, delay: 0.08 },
   },
 };
 
@@ -76,11 +76,20 @@ const contactNodeVariants: Variants = {
     scale: 1,
     rotate: 0,
     transition: {
-      duration: 0.52,
+      duration: 0.4,
       ease: contactEase,
       delay: offset.delay,
     },
   }),
+};
+
+const contactTraceVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.62, ease: contactEase, delay: 0.12 },
+  },
 };
 
 interface V3ContactKineticsProps {
@@ -106,6 +115,11 @@ export default function V3ContactKinetics({
         {question}
       </motion.p>
       <div className="v3-contact-kinetics-stage">
+        <motion.i
+          className="v3-contact-kinetics-trace"
+          aria-hidden="true"
+          variants={contactTraceVariants}
+        />
         <motion.h2 aria-label={`${contactTitle} / Contact me`} variants={contactTitleVariants}>
           <span>CONTACT</span>
           <span>ME</span>

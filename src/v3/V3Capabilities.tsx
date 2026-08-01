@@ -1,7 +1,6 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Bot, Code2, Cpu, Music2, Sparkles } from "lucide-react";
 import { useV3Language, type V3Language } from "./V3Language";
-import V3ChapterStrike from "./V3ChapterStrike";
 
 interface Capability {
   area: string;
@@ -126,13 +125,21 @@ const iconVariants: Variants = {
   },
 };
 
+const capabilityRouteVariants: Variants = {
+  hidden: { opacity: 0, scaleY: 0 },
+  visible: {
+    opacity: 1,
+    scaleY: 1,
+    transition: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function V3Capabilities() {
   const { language, t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
     <section className="v3-capabilities" id="capabilities" aria-labelledby="capabilities-title">
-      <V3ChapterStrike tone="dark" />
       <div className="v3-capabilities-inner">
         <div className="v3-capabilities-heading">
           <p className="v3-section-label">{t.capabilities.eyebrow}</p>
@@ -147,6 +154,11 @@ export default function V3Capabilities() {
           viewport={{ once: true, amount: 0.22 }}
           variants={listVariants}
         >
+          <motion.i
+            className="v3-capability-route"
+            aria-hidden="true"
+            variants={capabilityRouteVariants}
+          />
           {capabilityFacts[language].map((capability, index) => {
             const Icon = capabilityIcons[index];
 
