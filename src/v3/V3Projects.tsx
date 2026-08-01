@@ -1,6 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  AnimatePresence,
   motion,
   useReducedMotion,
   useScroll,
@@ -8,7 +7,7 @@ import {
 } from "framer-motion";
 import type { Variants } from "framer-motion";
 import type { CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects, type Project } from "../data/profile";
 import {
@@ -32,18 +31,13 @@ const selectedIds = [
 const selectedProjects = selectedIds
   .map((id) => projects.find((project) => project.id === id))
   .filter((project): project is Project => Boolean(project));
+const featuredProjects = selectedProjects.slice(0, 2);
+const archiveProjects = selectedProjects.slice(2);
 
-const displayTitle = (project: Project) =>
-  project.id === "nonconvex-alpha" ? "Nonconvex α / Drone Lab" : project.title;
-
-const projectIndexTitles: Record<string, string> = {
-  "nonconvex-alpha": "NONCONVEX α",
-  "rail-drone-mission-studio": "RAILDRONE",
-  "string-blade": "STRING BLADE",
-  chordpilot: "CHORDPILOT",
-  "interactive-particle-saturn": "PARTICLE SATURN",
-  "fretboard-caged-lab": "FRET LAB",
-  gamememory: "GAMEMEMORY",
+const displayTitle = (project: Project) => {
+  if (project.id === "nonconvex-alpha") return "Nonconvex α / Drone Lab";
+  if (project.id === "interactive-particle-saturn") return "Particle Saturn";
+  return project.title;
 };
 
 interface ProjectEvidence {
@@ -469,73 +463,89 @@ function ProjectCard({
   );
 }
 
-export default function V3Projects() {
-  const reduceMotion = useReducedMotion();
+interface CompactProjectRowProps {
+  project: Project;
+  index: number;
+  reducedMotion: boolean;
+}
+
+function CompactProjectRow({ project, index, reducedMotion }: CompactProjectRowProps) {
   const { language, t } = useV3Language();
-  const stackRef = useRef<HTMLDivElement>(null);
-  const [staticInteraction, setStaticInteraction] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const { scrollYProgress: sectionScrollProgress } = useScroll({
-    target: stackRef,
-    offset: ["start start", "end end"],
-  });
-  const progressScale = useTransform(sectionScrollProgress, [0, 1], [0, 1]);
+  const localized = getProjectLanguage(project, language);
+  const evidence = projectEvidence[project.id]?.[language];
+  const title = displayTitle(project);
+  const liveUrl = project.globalDemo ?? project.chinaDemo;
+  const newTabSuffix = language === "zh" ? "（新标签页打开）" : ", opens in a new tab";
+  const labels = language === "zh"
+    ? { demo: "在线体验", source: "源代码", featured: "项目收录" }
+    : { demo: "Live demo", source: "Source", featured: "Featured" };
 
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 63.999rem), (pointer: coarse)");
-    const update = () => setStaticInteraction(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
+  return (
+    <motion.article
+      className="v3-project-compact-row"
+      id={`project-${project.id}`}
+      data-project-index={index}
+      data-project={project.id}
+      initial={reducedMotion ? false : "hidden"}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.35 }}
+      variants={archiveCardVariants}
+    >
+      <span className="v3-project-compact-index" aria-hidden="true">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <div className="v3-project-compact-title">
+        <p>{categoryLabel[project.category][language]}</p>
+        <h4>{title}</h4>
+      </div>
+      <p className="v3-project-compact-summary">
+        {evidence?.problem ?? localized.longDescription}
+      </p>
+      <ul className="v3-project-compact-tech" aria-label={language === "zh" ? "技术栈" : "Technology"}>
+        {project.tech.slice(0, 3).map((technology) => (
+          <li key={technology}>{technology}</li>
+        ))}
+      </ul>
+      <div className="v3-project-compact-actions">
+        {project.recognition ? (
+          <a
+            href={project.recognition.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${labels.featured}: ${project.recognition.name}${newTabSuffix}`}
+          >
+            <span>{labels.featured}</span>
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+        ) : null}
+        {liveUrl ? (
+          <a
+            href={liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${labels.demo}: ${title}${newTabSuffix}`}
+          >
+            <span>{labels.demo}</span>
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+        ) : null}
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${t.projects.openAria}: ${title}${newTabSuffix}`}
+        >
+          <span>{labels.source}</span>
+          <ArrowUpRight aria-hidden="true" />
+        </a>
+      </div>
+    </motion.article>
+  );
+}
 
-  useEffect(() => {
-    const stack = stackRef.current;
-    if (!stack) return;
-
-    const visibleCards = new Set<HTMLElement>();
-    const cards = Array.from(
-      stack.querySelectorAll<HTMLElement>("[data-project-index]"),
-    );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const card = entry.target as HTMLElement;
-          if (entry.isIntersecting) {
-            visibleCards.add(card);
-          } else {
-            visibleCards.delete(card);
-          }
-        });
-
-        const viewportMarker = window.innerHeight * 0.5;
-        const candidate = Array.from(visibleCards)
-          .map((card) => ({
-            index: Number(card.dataset.projectIndex),
-            distance: Math.abs(
-              card.getBoundingClientRect().top
-                + card.getBoundingClientRect().height * 0.5
-                - viewportMarker,
-            ),
-          }))
-          .filter(({ index }) => Number.isFinite(index))
-          .sort((a, b) => a.distance - b.distance)[0];
-
-        if (candidate) {
-          setActiveIndex((current) =>
-            current === candidate.index ? current : candidate.index,
-          );
-        }
-      },
-      {
-        rootMargin: "-42% 0px -42% 0px",
-        threshold: 0,
-      },
-    );
-
-    cards.forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, []);
+export default function V3Projects() {
+  const reduceMotion = Boolean(useReducedMotion());
+  const { language, t } = useV3Language();
 
   return (
     <section className="v3-projects" id="projects" aria-labelledby="projects-title">
@@ -555,76 +565,43 @@ export default function V3Projects() {
         </motion.h2>
       </motion.div>
       <div className="v3-projects-body">
-        <aside
-          className="v3-project-index"
-          aria-label={language === "zh" ? "项目档案目录" : "Project archive directory"}
-        >
-          <div className="v3-project-index-meter" aria-hidden="true">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.span
-                key={activeIndex}
-                initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
-                transition={reduceMotion
-                  ? { duration: 0 }
-                  : { duration: 0.18, ease: quietEase }}
-              >
-                {String(activeIndex + 1).padStart(2, "0")}
-              </motion.span>
-            </AnimatePresence>
-            <span className="v3-project-index-track">
-              <motion.i
-                style={{
-                  scaleY: reduceMotion ? 0 : progressScale,
-                  transformOrigin: "top",
-                }}
-              />
-            </span>
-            <span>{String(selectedProjects.length).padStart(2, "0")}</span>
-          </div>
-          <nav
-            className="v3-project-index-nav"
-            aria-label={language === "zh" ? "跳转至项目" : "Jump to project"}
-          >
-            {selectedProjects.map((project, index) => {
-              const active = index === activeIndex;
-              const title = displayTitle(project);
-              const indexTitle = projectIndexTitles[project.id] ?? title;
-
-              return (
-                <a
-                  className={active ? "is-active" : undefined}
-                  href={`#project-${project.id}`}
-                  key={project.id}
-                  aria-current={active ? "location" : undefined}
-                  aria-label={`${String(index + 1).padStart(2, "0")} · ${title}`}
-                  onClick={() => setActiveIndex(index)}
-                >
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <strong className="v3-project-index-short-title" aria-hidden="true">
-                    {indexTitle}
-                  </strong>
-                  <i aria-hidden="true" />
-                </a>
-              );
-            })}
-          </nav>
-        </aside>
-        <div className="v3-project-stack" ref={stackRef}>
-          {selectedProjects.map((project, index) => (
+        <div className="v3-project-stack">
+          <div className="v3-project-featured">
+          {featuredProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
               project={project}
               index={index}
-              total={selectedProjects.length}
-              active={index === activeIndex}
-              staticLayout={Boolean(reduceMotion || staticInteraction)}
-              reducedMotion={Boolean(reduceMotion)}
+              total={featuredProjects.length}
+              active={index === 0}
+              staticLayout={reduceMotion}
+              reducedMotion={reduceMotion}
             />
           ))}
+          </div>
+          <section className="v3-project-compact-archive" aria-labelledby="project-index-title">
+            <div className="v3-project-compact-heading">
+              <div>
+                <p>{language === "zh" ? "其余实践" : "Further practice"}</p>
+                <h3 id="project-index-title">
+                  {language === "zh" ? "项目索引" : "Project index"}
+                </h3>
+              </div>
+              <span aria-label={language === "zh" ? "五个项目" : "Five projects"}>
+                {String(archiveProjects.length).padStart(2, "0")}
+              </span>
+            </div>
+            <div className="v3-project-compact-list">
+              {archiveProjects.map((project, index) => (
+                <CompactProjectRow
+                  key={project.id}
+                  project={project}
+                  index={index + featuredProjects.length}
+                  reducedMotion={reduceMotion}
+                />
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </section>

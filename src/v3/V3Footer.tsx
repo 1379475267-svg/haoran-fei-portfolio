@@ -1,8 +1,6 @@
-import { Github } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { profile } from "../data/profile";
-import V3BrandLogo from "./V3BrandLogo";
-import V3ChapterStrike from "./V3ChapterStrike";
 import V3ContactKinetics from "./V3ContactKinetics";
 import { useV3Language } from "./V3Language";
 
@@ -24,57 +22,31 @@ const footerDirectoryVariants: Variants = {
   },
 };
 
-const footerClosureVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { delayChildren: 0.08, staggerChildren: 0.08 },
-  },
-};
-
-const footerClosureLineVariants: Variants = {
-  hidden: { opacity: 0, scaleX: 0 },
-  visible: {
-    opacity: 1,
-    scaleX: 1,
-    transition: { duration: 0.72, ease: footerEase },
-  },
-};
-
-const footerClosureMarkVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.84 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.56, ease: footerEase },
-  },
-};
-
 export default function V3Footer() {
   const { language, t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
     <footer className="v3-footer" id="contact">
-      <V3ChapterStrike tone="dark" />
-      <motion.div
-        className="v3-footer-closure"
-        aria-hidden="true"
-        initial={reduceMotion ? false : "hidden"}
-        whileInView={reduceMotion ? undefined : "visible"}
-        viewport={{ once: true, amount: 0.2 }}
-        variants={footerClosureVariants}
-      >
-        <motion.i className="v3-footer-closure-line is-left" variants={footerClosureLineVariants} />
-        <motion.span className="v3-footer-closure-mark" variants={footerClosureMarkVariants}>
-          <V3BrandLogo decorative />
-        </motion.span>
-        <motion.i className="v3-footer-closure-line is-right" variants={footerClosureLineVariants} />
-      </motion.div>
       <div className="v3-footer-cta">
-        <V3ContactKinetics
-          contactTitle={t.footer.title}
-          question={t.footer.question}
-        />
+        <div className="v3-footer-primary-stage">
+          <V3ContactKinetics
+            contactTitle={t.footer.title}
+            question={t.footer.question}
+          />
+          <motion.a
+            className="v3-footer-primary-link"
+            href={`mailto:${profile.email}`}
+            initial={reduceMotion ? false : "hidden"}
+            whileInView={reduceMotion ? undefined : "visible"}
+            viewport={{ once: true, amount: 0.5 }}
+            variants={footerItemVariants}
+          >
+            <span>{language === "zh" ? "写封邮件" : "Write an email"}</span>
+            <strong>{profile.email}</strong>
+            <ArrowUpRight aria-hidden="true" />
+          </motion.a>
+        </div>
         <motion.div
           className="v3-footer-directory-stage"
           initial={reduceMotion ? false : "hidden"}
@@ -83,14 +55,6 @@ export default function V3Footer() {
           variants={footerDirectoryVariants}
         >
           <motion.dl className="v3-contact-directory" variants={footerDirectoryVariants}>
-            <motion.div variants={footerItemVariants}>
-              <dt>Email</dt>
-              <dd>
-                <a href={`mailto:${profile.email}`}>
-                  {profile.email}
-                </a>
-              </dd>
-            </motion.div>
             <motion.div variants={footerItemVariants}>
               <dt>QQ</dt>
               <dd>{profile.qq}</dd>
@@ -132,7 +96,7 @@ export default function V3Footer() {
       </div>
       <div className="v3-footer-line">
         <span>© 2026 {profile.name}</span>
-        <span>{t.footer.version}</span>
+        <span>{language === "zh" ? "C 版" : "VERSION C"}</span>
         <div>
           <a
             href={profile.github}

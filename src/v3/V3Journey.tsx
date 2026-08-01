@@ -405,9 +405,17 @@ const journeyRangeVariants: Variants = {
   },
 };
 
+const visibleMilestoneIds = new Set([
+  "first-code",
+  "embedded-shift",
+  "music-technology",
+  "rail-drone-studio",
+]);
+
 export default function V3Journey() {
   const { language } = useV3Language();
   const copy = journeyCopy[language];
+  const milestones = copy.milestones.filter((milestone) => visibleMilestoneIds.has(milestone.id));
   const routeRef = useRef<HTMLDivElement>(null);
   const reduceMotion = Boolean(useReducedMotion());
   const [compactRoute, setCompactRoute] = useState(() =>
@@ -475,7 +483,7 @@ export default function V3Journey() {
             />
           </div>
           <ol aria-label={copy.routeLabel}>
-            {copy.milestones.map((milestone, index) => (
+            {milestones.map((milestone, index) => (
               <motion.li
                 className={milestone.current ? "is-current" : undefined}
                 data-tone={milestone.tone}

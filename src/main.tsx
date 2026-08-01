@@ -5,6 +5,7 @@ import "../tokens.css";
 import "./styles/globals.css";
 import "./styles/v3-portfolio.css";
 import "./styles/v3-brand-logo.css";
+import "./styles/v3-c.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

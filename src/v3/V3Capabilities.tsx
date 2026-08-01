@@ -1,6 +1,5 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Bot, Code2, Cpu, Music2, Sparkles } from "lucide-react";
-import V3ChapterStrike from "./V3ChapterStrike";
 import { useV3Language, type V3Language } from "./V3Language";
 
 interface Capability {
@@ -156,7 +155,6 @@ export default function V3Capabilities() {
 
   return (
     <section className="v3-capabilities" id="capabilities" aria-labelledby="capabilities-title">
-      <V3ChapterStrike tone="light" />
       <div className="v3-capabilities-inner">
         <motion.div
           className="v3-capabilities-heading"
