@@ -11,8 +11,8 @@ const OPENING_MOON = {
 const LOGO_CORE = { x: 512, y: 480 } as const;
 const MOON_FLIGHT_START = 2.18;
 const MOON_FLIGHT_END = 2.82;
-const MOON_DISSOLVE_START = 2.88;
-const MOON_DISSOLVE_END = 3.16;
+const MOON_CORE_DISSOLVE_END = 2.98;
+const MOON_HALO_DISSOLVE_END = 3.02;
 
 function clampUnit(value: number) {
   return Math.min(Math.max(value, 0), 1);
@@ -57,6 +57,7 @@ interface V3BrandLogoProps {
   animationMode?: "static" | "draw" | "erase";
   eraseTimeline?: MotionValue<number>;
   openingMoon?: boolean;
+  revealOrigin?: boolean;
   className?: string;
   decorative?: boolean;
   label?: string;
@@ -67,6 +68,7 @@ export default function V3BrandLogo({
   animationMode,
   eraseTimeline,
   openingMoon = false,
+  revealOrigin = false,
   className,
   decorative = false,
   label = "Haoran Fei logo",
@@ -90,28 +92,28 @@ export default function V3BrandLogo({
   const moonCenterY = useTransform(timeline, (time) => getMoonPosition(time).y);
   const moonCoreRadius = useTransform(timeline, (time) => {
     const settle = easeInOutCubic(
-      (time - MOON_FLIGHT_END) / (MOON_DISSOLVE_END - MOON_FLIGHT_END),
+      (time - MOON_FLIGHT_END) / (MOON_CORE_DISSOLVE_END - MOON_FLIGHT_END),
     );
     return lerp(OPENING_MOON.radius, 4, settle);
   });
   const moonCoreOpacity = useTransform(timeline, (time) => {
     const dissolve = easeInOutCubic(
-      (time - MOON_DISSOLVE_START) / (MOON_DISSOLVE_END - MOON_DISSOLVE_START),
+      (time - MOON_FLIGHT_END) / (MOON_CORE_DISSOLVE_END - MOON_FLIGHT_END),
     );
     return 1 - dissolve;
   });
   const moonHaloRadius = useTransform(timeline, (time) => {
-    const settle = easeInOutCubic(
-      (time - MOON_FLIGHT_END) / (MOON_DISSOLVE_END - MOON_FLIGHT_END),
+    const flight = easeInOutCubic(
+      (time - MOON_FLIGHT_START) / (MOON_FLIGHT_END - MOON_FLIGHT_START),
     );
-    return lerp(OPENING_MOON.radius, 44, settle);
+    return lerp(OPENING_MOON.radius, OPENING_MOON.radius + 2.5, flight);
   });
   const moonHaloOpacity = useTransform(timeline, (time) => {
     const flight = easeInOutCubic(
       (time - MOON_FLIGHT_START) / (MOON_FLIGHT_END - MOON_FLIGHT_START),
     );
     const dissolve = easeInOutCubic(
-      (time - MOON_DISSOLVE_START) / (MOON_DISSOLVE_END - MOON_DISSOLVE_START),
+      (time - MOON_FLIGHT_END) / (MOON_HALO_DISSOLVE_END - MOON_FLIGHT_END),
     );
     return lerp(0.34, 0.58, flight) * (1 - dissolve);
   });
@@ -135,6 +137,9 @@ export default function V3BrandLogo({
       aria-label={decorative ? undefined : label}
       focusable="false"
       data-logo-mode={resolvedAnimationMode}
+      data-v3-reveal-origin={revealOrigin || undefined}
+      data-v3-reveal-origin-x={revealOrigin ? LOGO_CORE.x : undefined}
+      data-v3-reveal-origin-y={revealOrigin ? LOGO_CORE.y : undefined}
     >
       {decorative ? null : <title>{label}</title>}
       <defs>

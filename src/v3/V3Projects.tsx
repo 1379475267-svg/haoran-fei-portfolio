@@ -1,12 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  AnimatePresence,
   motion,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useTransform,
 } from "framer-motion";
-import type { Variants } from "framer-motion";
+import type { MotionStyle, MotionValue, Variants } from "framer-motion";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import ProjectCover from "../components/ProjectCover";
@@ -33,17 +33,18 @@ const selectedProjects = selectedIds
   .map((id) => projects.find((project) => project.id === id))
   .filter((project): project is Project => Boolean(project));
 
-const displayTitle = (project: Project) =>
-  project.id === "nonconvex-alpha" ? "Nonconvex α / Drone Lab" : project.title;
+const STATIC_PROJECT_LAYOUT_QUERY =
+  "(max-width: 32.999rem), (max-height: 41.999rem), (pointer: coarse), (pointer: none)";
+const ORBIT_STEP_SVH = 60;
+const ORBIT_EDGE_HOLD_SVH = 4;
+const ORBIT_DOCK_RATIO = 0.055;
+const ORBIT_ANGLE = 0.67;
+const ORBIT_RADIUS_SVH = 128;
 
-const projectIndexTitles: Record<string, string> = {
-  "nonconvex-alpha": "NONCONVEX α",
-  "rail-drone-mission-studio": "RAILDRONE",
-  "string-blade": "STRING BLADE",
-  chordpilot: "CHORDPILOT",
-  "interactive-particle-saturn": "PARTICLE SATURN",
-  "fretboard-caged-lab": "FRET LAB",
-  gamememory: "GAMEMEMORY",
+const displayTitle = (project: Project) => {
+  if (project.id === "nonconvex-alpha") return "Nonconvex α / Drone Lab";
+  if (project.id === "interactive-particle-saturn") return "Particle Saturn";
+  return project.title;
 };
 
 interface ProjectEvidence {
@@ -224,36 +225,74 @@ const archiveVisualVariants: Variants = {
   },
 };
 
+function useStaticProjectLayout(reducedMotion: boolean) {
+  const [mediaRequiresStaticLayout, setMediaRequiresStaticLayout] = useState(() =>
+    typeof window === "undefined"
+      ? true
+      : window.matchMedia(STATIC_PROJECT_LAYOUT_QUERY).matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(STATIC_PROJECT_LAYOUT_QUERY);
+    const updateLayout = () => setMediaRequiresStaticLayout(mediaQuery.matches);
+
+    updateLayout();
+    mediaQuery.addEventListener("change", updateLayout);
+    return () => mediaQuery.removeEventListener("change", updateLayout);
+  }, []);
+
+  return reducedMotion || mediaRequiresStaticLayout;
+}
+
+const clamp = (value: number, minimum: number, maximum: number) =>
+  Math.min(Math.max(value, minimum), maximum);
+
+const getOrbitScrollTravel = (total: number) =>
+  Math.max(0, total - 1) * ORBIT_STEP_SVH + ORBIT_EDGE_HOLD_SVH * 2;
+
+const getOrbitPosition = (progress: number, total: number) => {
+  const lastIndex = Math.max(total - 1, 0);
+  if (lastIndex === 0) return 0;
+
+  const scrollPosition = progress * getOrbitScrollTravel(total);
+  const rawPosition = clamp(
+    (scrollPosition - ORBIT_EDGE_HOLD_SVH) / ORBIT_STEP_SVH,
+    0,
+    lastIndex,
+  );
+  const index = Math.floor(rawPosition);
+  if (index >= lastIndex) return lastIndex;
+
+  const localProgress = rawPosition - index;
+  if (localProgress <= ORBIT_DOCK_RATIO) return index;
+  if (localProgress >= 1 - ORBIT_DOCK_RATIO) return index + 1;
+
+  return index + (
+    (localProgress - ORBIT_DOCK_RATIO) / (1 - ORBIT_DOCK_RATIO * 2)
+  );
+};
+
+const getActiveProjectIndex = (progress: number, total: number) =>
+  clamp(Math.round(getOrbitPosition(progress, total)), 0, Math.max(total - 1, 0));
+
 interface ProjectCardProps {
   project: Project;
   index: number;
-  total: number;
   active: boolean;
   staticLayout: boolean;
   reducedMotion: boolean;
+  rotaryStyle?: MotionStyle;
 }
 
 function ProjectCard({
   project,
   index,
-  total,
   active,
   staticLayout,
   reducedMotion,
+  rotaryStyle,
 }: ProjectCardProps) {
   const { language, t } = useV3Language();
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ["start start", "end start"],
-  });
-  const targetScale = 1 - (total - 1 - index) * 0.006;
-  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.88, 1],
-    [1, 0.92, index === total - 1 ? 1 : 0.78],
-  );
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
   const localized = getProjectLanguage(project, language);
@@ -317,23 +356,32 @@ function ProjectCard({
           label: t.projects.detailLabels[techIndex],
           value,
         }));
+  const interactive = staticLayout || active;
+  const wrapStyle = {
+    "--v3-card-index": index,
+    "--v3-card-offset": "0rem",
+    ...rotaryStyle,
+    pointerEvents: interactive ? undefined : "none",
+  } as MotionStyle & CSSProperties;
 
   return (
-    <div
+    <motion.div
       className="v3-project-card-wrap"
       id={`project-${project.id}`}
-      ref={wrapRef}
       data-project-index={index}
-      style={{ "--v3-card-offset": `${index * 1.45}rem` } as CSSProperties}
+      data-project={project.id}
+      data-active={active || undefined}
+      aria-hidden={interactive ? undefined : true}
+      style={wrapStyle}
     >
       <motion.article
         className="v3-project-card"
         data-project={project.id}
         data-active={active || undefined}
-        data-archive-motion={reducedMotion ? "static" : "layered"}
-        style={staticLayout ? undefined : { scale, opacity }}
-        initial={reducedMotion ? false : "hidden"}
-        whileInView="visible"
+        data-archive-motion={staticLayout ? "static" : "rotary"}
+        initial={reducedMotion || !staticLayout ? false : "hidden"}
+        animate={reducedMotion || !staticLayout ? "visible" : undefined}
+        whileInView={reducedMotion || !staticLayout ? undefined : "visible"}
         viewport={{ once: true, amount: 0.1 }}
         variants={archiveCardVariants}
       >
@@ -363,6 +411,7 @@ function ProjectCard({
                     href={project.globalDemo}
                     target="_blank"
                     rel="noreferrer"
+                    tabIndex={interactive ? undefined : -1}
                     aria-label={`${labels.liveDemo} · ${labels.globalDemo}: ${title}${newTabSuffix}`}
                   >
                     <span>{labels.globalDemo}</span>
@@ -378,6 +427,7 @@ function ProjectCard({
                     href={project.chinaDemo}
                     target="_blank"
                     rel="noreferrer"
+                    tabIndex={interactive ? undefined : -1}
                     aria-label={`${labels.liveDemo} · ${labels.chinaDemo}: ${title}${newTabSuffix}`}
                   >
                     <span>{labels.chinaDemo}</span>
@@ -405,6 +455,7 @@ function ProjectCard({
                   href={project.recognition.url}
                   target="_blank"
                   rel="noreferrer"
+                  tabIndex={interactive ? undefined : -1}
                   aria-label={`${recognitionLabel}: ${title}${newTabSuffix}`}
                 >
                   <span>{recognitionLabel}</span>
@@ -416,6 +467,7 @@ function ProjectCard({
                 href={project.github}
                 target="_blank"
                 rel="noreferrer"
+                tabIndex={interactive ? undefined : -1}
                 aria-label={`${t.projects.openAria}：${title}${newTabSuffix}`}
               >
                 <span>{labels.github}</span>
@@ -441,6 +493,7 @@ function ProjectCard({
             href={visualUrl}
             target="_blank"
             rel="noreferrer"
+            tabIndex={interactive ? undefined : -1}
             variants={archiveVisualVariants}
             whileHover={reducedMotion
               ? undefined
@@ -456,8 +509,8 @@ function ProjectCard({
               type={project.coverType}
               featured={isDrone}
               image={project.coverPoster}
-              videoWebm={project.coverVideoWebm}
-              videoMp4={project.coverVideoMp4}
+              videoWebm={interactive ? project.coverVideoWebm : undefined}
+              videoMp4={interactive ? project.coverVideoMp4 : undefined}
               title={title}
               label={localized.coverLabel}
               language={language}
@@ -465,80 +518,141 @@ function ProjectCard({
           </motion.a>
         </motion.div>
       </motion.article>
-    </div>
+      <span className="v3-project-card-edge-label" aria-hidden="true">
+        <b>{String(index + 1).padStart(2, "0")}</b>
+        <span>{title}</span>
+      </span>
+    </motion.div>
+  );
+}
+
+interface RotaryProjectCardProps {
+  progress: MotionValue<number>;
+  project: Project;
+  index: number;
+  total: number;
+  active: boolean;
+  staticLayout: boolean;
+  reducedMotion: boolean;
+}
+
+function RotaryProjectCard({
+  progress,
+  project,
+  index,
+  total,
+  active,
+  staticLayout,
+  reducedMotion,
+}: RotaryProjectCardProps) {
+  const orbitOffset = useTransform(
+    progress,
+    (value) => index - getOrbitPosition(value, total),
+  );
+  const opacity = useTransform(orbitOffset, (offset) => {
+    const distance = Math.abs(offset);
+    if (distance <= 0.65) return 1;
+    return clamp(1 - (distance - 0.65) / 0.75, 0, 1);
+  });
+  const x = useTransform(orbitOffset, (offset) => {
+    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
+    const value = -(1 - Math.cos(angle)) * ORBIT_RADIUS_SVH;
+    return `${value.toFixed(3)}svh`;
+  });
+  const y = useTransform(orbitOffset, (offset) => {
+    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
+    const value = Math.sin(angle) * ORBIT_RADIUS_SVH;
+    return `${value.toFixed(3)}svh`;
+  });
+  const scale = useTransform(orbitOffset, (offset) =>
+    1 - Math.min(Math.abs(offset), 1.4) * 0.035,
+  );
+  const rotaryStyle = {
+    opacity,
+    x,
+    y,
+    scale,
+    rotate: 0,
+    transformOrigin: "center center",
+    willChange: "transform, opacity",
+  } as MotionStyle;
+
+  return (
+    <ProjectCard
+      project={project}
+      index={index}
+      active={active}
+      staticLayout={staticLayout}
+      reducedMotion={reducedMotion}
+      rotaryStyle={staticLayout ? undefined : rotaryStyle}
+    />
   );
 }
 
 export default function V3Projects() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = Boolean(useReducedMotion());
   const { language, t } = useV3Language();
-  const stackRef = useRef<HTMLDivElement>(null);
-  const [staticInteraction, setStaticInteraction] = useState(false);
+  const staticLayout = useStaticProjectLayout(reduceMotion);
+  const rotaryScrollRef = useRef<HTMLDivElement>(null);
+  const rotaryStageRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { scrollYProgress: sectionScrollProgress } = useScroll({
-    target: stackRef,
+  const { scrollYProgress } = useScroll({
+    target: rotaryScrollRef,
     offset: ["start start", "end end"],
   });
-  const progressScale = useTransform(sectionScrollProgress, [0, 1], [0, 1]);
+  const totalProjects = selectedProjects.length;
+  const activeProject = selectedProjects[activeIndex] ?? selectedProjects[0];
+
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (staticLayout || totalProjects === 0) return;
+
+    const nextIndex = getActiveProjectIndex(progress, totalProjects);
+    setActiveIndex((currentIndex) =>
+      currentIndex === nextIndex ? currentIndex : nextIndex,
+    );
+  });
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 63.999rem), (pointer: coarse)");
-    const update = () => setStaticInteraction(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
+    if (staticLayout) {
+      setActiveIndex(0);
+      return;
+    }
+
+    setActiveIndex(getActiveProjectIndex(scrollYProgress.get(), totalProjects));
+  }, [scrollYProgress, staticLayout, totalProjects]);
 
   useEffect(() => {
-    const stack = stackRef.current;
-    if (!stack) return;
+    if (staticLayout) return;
 
-    const visibleCards = new Set<HTMLElement>();
-    const cards = Array.from(
-      stack.querySelectorAll<HTMLElement>("[data-project-index]"),
+    const focusedElement = document.activeElement;
+    if (!(focusedElement instanceof HTMLElement)) return;
+
+    const focusedCard = focusedElement.closest<HTMLElement>(
+      ".v3-project-card-wrap",
     );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const card = entry.target as HTMLElement;
-          if (entry.isIntersecting) {
-            visibleCards.add(card);
-          } else {
-            visibleCards.delete(card);
-          }
-        });
+    if (!focusedCard || !rotaryStageRef.current?.contains(focusedCard)) return;
 
-        const viewportMarker = window.innerHeight * 0.5;
-        const candidate = Array.from(visibleCards)
-          .map((card) => ({
-            index: Number(card.dataset.projectIndex),
-            distance: Math.abs(
-              card.getBoundingClientRect().top
-                + card.getBoundingClientRect().height * 0.5
-                - viewportMarker,
-            ),
-          }))
-          .filter(({ index }) => Number.isFinite(index))
-          .sort((a, b) => a.distance - b.distance)[0];
+    if (focusedCard.dataset.projectIndex !== String(activeIndex)) {
+      focusedElement.blur();
+    }
+  }, [activeIndex, staticLayout]);
 
-        if (candidate) {
-          setActiveIndex((current) =>
-            current === candidate.index ? current : candidate.index,
-          );
-        }
-      },
-      {
-        rootMargin: "-42% 0px -42% 0px",
-        threshold: 0,
-      },
-    );
-
-    cards.forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, []);
+  const rotaryStyle = {
+    "--v3-project-count": totalProjects,
+    "--v3-orbit-scroll-travel": getOrbitScrollTravel(totalProjects),
+    "--v3-project-scroll-height": `calc(100svh + ${getOrbitScrollTravel(totalProjects)}svh)`,
+  } as CSSProperties;
+  const counterLabel = language === "zh"
+    ? `当前项目：第 ${activeIndex + 1} 个，共 ${totalProjects} 个`
+    : `Current project: ${activeIndex + 1} of ${totalProjects}`;
 
   return (
-    <section className="v3-projects" id="projects" aria-labelledby="projects-title">
+    <section
+      className="v3-projects"
+      id="projects"
+      aria-labelledby="projects-title"
+      data-project-layout={staticLayout ? "static" : "rotary"}
+    >
       <V3ChapterStrike tone="light" />
       <motion.div
         className="v3-projects-heading"
@@ -555,76 +669,68 @@ export default function V3Projects() {
         </motion.h2>
       </motion.div>
       <div className="v3-projects-body">
-        <aside
-          className="v3-project-index"
-          aria-label={language === "zh" ? "项目档案目录" : "Project archive directory"}
+        <div
+          className="v3-project-stack"
+          data-layout={staticLayout ? "static" : "rotary"}
         >
-          <div className="v3-project-index-meter" aria-hidden="true">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.span
-                key={activeIndex}
-                initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
-                transition={reduceMotion
-                  ? { duration: 0 }
-                  : { duration: 0.18, ease: quietEase }}
-              >
-                {String(activeIndex + 1).padStart(2, "0")}
-              </motion.span>
-            </AnimatePresence>
-            <span className="v3-project-index-track">
-              <motion.i
-                style={{
-                  scaleY: reduceMotion ? 0 : progressScale,
-                  transformOrigin: "top",
-                }}
-              />
-            </span>
-            <span>{String(selectedProjects.length).padStart(2, "0")}</span>
-          </div>
-          <nav
-            className="v3-project-index-nav"
-            aria-label={language === "zh" ? "跳转至项目" : "Jump to project"}
+          <div
+            className="v3-project-rotary-scroll"
+            ref={rotaryScrollRef}
+            style={rotaryStyle}
           >
-            {selectedProjects.map((project, index) => {
-              const active = index === activeIndex;
-              const title = displayTitle(project);
-              const indexTitle = projectIndexTitles[project.id] ?? title;
-
-              return (
-                <a
-                  className={active ? "is-active" : undefined}
-                  href={`#project-${project.id}`}
-                  key={project.id}
-                  aria-current={active ? "location" : undefined}
-                  aria-label={`${String(index + 1).padStart(2, "0")} · ${title}`}
-                  onClick={() => setActiveIndex(index)}
+            <div className="v3-project-rotary-sticky">
+              {!staticLayout ? (
+                <aside
+                  className="v3-project-rotary-index"
+                  aria-label={language === "zh" ? "项目轮转进度" : "Project rotation progress"}
                 >
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <strong className="v3-project-index-short-title" aria-hidden="true">
-                    {indexTitle}
-                  </strong>
-                  <i aria-hidden="true" />
-                </a>
-              );
-            })}
-          </nav>
-        </aside>
-        <div className="v3-project-stack" ref={stackRef}>
-          {selectedProjects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              total={selectedProjects.length}
-              active={index === activeIndex}
-              staticLayout={Boolean(reduceMotion || staticInteraction)}
-              reducedMotion={Boolean(reduceMotion)}
-            />
-          ))}
+                  <p
+                    className="v3-project-rotary-counter"
+                    aria-label={counterLabel}
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    <span data-current-index>
+                      {String(activeIndex + 1).padStart(2, "0")}
+                    </span>
+                    <span aria-hidden="true"> / </span>
+                    <span>{String(totalProjects).padStart(2, "0")}</span>
+                  </p>
+                  <ol className="v3-project-rotary-ticks" aria-hidden="true">
+                    {selectedProjects.map((project, index) => (
+                      <li
+                        key={project.id}
+                        data-project-index={index}
+                        data-active={index === activeIndex || undefined}
+                      >
+                        <span />
+                      </li>
+                    ))}
+                  </ol>
+                </aside>
+              ) : null}
+              <div
+                className="v3-project-rotary-stage"
+                ref={rotaryStageRef}
+                data-current-index={String(activeIndex + 1).padStart(2, "0")}
+                data-current-project={activeProject?.id}
+                aria-label={language === "zh" ? "七个完整项目档案" : "Seven complete project cases"}
+              >
+                {selectedProjects.map((project, index) => (
+                  <RotaryProjectCard
+                    key={project.id}
+                    progress={scrollYProgress}
+                    project={project}
+                    index={index}
+                    total={totalProjects}
+                    active={!staticLayout && index === activeIndex}
+                    staticLayout={staticLayout}
+                    reducedMotion={reduceMotion}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

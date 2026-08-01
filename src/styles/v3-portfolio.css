@@ -5699,6 +5699,7 @@ body {
 
 /* Entry gate and first-project handoff: the site opens through the mark, then stays on one dark canvas. */
 .v3-opening {
+  z-index: calc(var(--z-sticky-nav) + 1);
   display: grid;
   place-items: center;
   background: transparent;
@@ -5718,6 +5719,20 @@ body {
   will-change: mask-image;
 }
 
+.v3-opening-aperture {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  border: var(--rule-hair) solid rgb(216 182 85 / 0.58);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0.7rem rgb(216 182 85 / 0.1),
+    inset 0 0 0.35rem rgb(216 182 85 / 0.06);
+  pointer-events: none;
+  translate: -50% -50%;
+  will-change: top, left, width, height, opacity;
+}
+
 .v3-opening :is(
   .v3-opening-shutter,
   .v3-opening-identity,
@@ -5729,7 +5744,7 @@ body {
 
 .v3-opening-entry {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   inset: 0;
   display: grid;
   min-width: 0;
@@ -5762,7 +5777,7 @@ body {
   overflow: visible;
 }
 
-.v3-brand-logo--opening .v3-brand-logo__moon-halo {
+.v3-brand-logo--opening:not([data-logo-mode="erase"]) .v3-brand-logo__moon-halo {
   transform-box: fill-box;
   transform-origin: center;
   animation: v3-opening-moon-breathe 3.1s ease-in-out infinite;
@@ -5771,7 +5786,6 @@ body {
 
 .v3-brand-logo--opening[data-logo-mode="erase"] .v3-brand-logo__moon-halo {
   animation: none;
-  opacity: 0.42;
 }
 
 @keyframes v3-opening-moon-breathe {
@@ -6148,6 +6162,7 @@ body {
 .v3-about,
 .v3-capabilities,
 .v3-projects,
+.v3-journey,
 .v3-footer {
   isolation: isolate;
 }
@@ -6221,6 +6236,7 @@ body {
 
 .v3-capabilities .v3-chapter-strike,
 .v3-projects .v3-chapter-strike,
+.v3-journey .v3-chapter-strike,
 .v3-footer .v3-chapter-strike {
   top: 1.35rem;
 }
@@ -7559,6 +7575,7 @@ body {
 }
 
 .v3-journey-range {
+  transform-origin: left center;
   display: grid;
   grid-template-columns: auto minmax(var(--space-2xl), 1fr) auto;
   align-items: end;

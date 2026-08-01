@@ -7,6 +7,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import V3ChapterStrike from "./V3ChapterStrike";
 import { useV3Language, type V3Language } from "./V3Language";
 
 type MilestoneTone = "complete" | "active";
@@ -47,9 +48,9 @@ interface JourneyLanguageCopy {
 const journeyCopy: Record<V3Language, JourneyLanguageCopy> = {
   zh: {
     eyebrow: "成长轨迹 / FLIGHT LOG",
-    title: "一路把兴趣，变成真实系统。",
+    title: "一路把热爱，变成真实系统。",
     intro:
-      "从第一次写下代码，到把软件、硬件、音乐与无人系统做成可运行的项目。这不是技能清单，而是一条仍在延伸的实践路径。",
+      "从敲下第一行代码，到做出跨越软件、硬件与音乐技术的可运行项目。这是一条仍在延展的实践路径。",
     originLabel: "起点",
     currentLabel: "当前",
     workLabel: "实践",
@@ -380,9 +381,41 @@ const journeyPulseVariants: Variants = {
   },
 };
 
+const journeyHeadingVariants: Variants = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0.04, staggerChildren: 0.09 } },
+};
+
+const journeyHeadingItemVariants: Variants = {
+  hidden: { opacity: 0, y: 14, clipPath: "inset(0 0 100% 0)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0 0 0% 0)",
+    transition: { duration: 0.54, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const journeyRangeVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0.88 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const visibleMilestoneIds = new Set([
+  "first-code",
+  "embedded-shift",
+  "music-technology",
+  "rail-drone-studio",
+]);
+
 export default function V3Journey() {
   const { language } = useV3Language();
   const copy = journeyCopy[language];
+  const milestones = copy.milestones.filter((milestone) => visibleMilestoneIds.has(milestone.id));
   const routeRef = useRef<HTMLDivElement>(null);
   const reduceMotion = Boolean(useReducedMotion());
   const [compactRoute, setCompactRoute] = useState(() =>
@@ -408,12 +441,25 @@ export default function V3Journey() {
 
   return (
     <section className="v3-journey" id="journey" aria-labelledby="journey-title">
+      <V3ChapterStrike tone="dark" />
       <div className="v3-journey-inner">
-        <header className="v3-journey-heading">
-          <p className="v3-section-label">{copy.eyebrow}</p>
-          <h2 id="journey-title">{copy.title}</h2>
-          <p className="v3-journey-intro">{copy.intro}</p>
-          <div className="v3-journey-range" aria-hidden="true">
+        <motion.header
+          className="v3-journey-heading"
+          initial={reduceMotion ? false : "hidden"}
+          whileInView={reduceMotion ? undefined : "visible"}
+          viewport={{ once: true, amount: 0.24 }}
+          variants={journeyHeadingVariants}
+        >
+          <motion.p className="v3-section-label" variants={journeyHeadingItemVariants}>
+            {copy.eyebrow}
+          </motion.p>
+          <motion.h2 id="journey-title" variants={journeyHeadingItemVariants}>
+            {copy.title}
+          </motion.h2>
+          <motion.p className="v3-journey-intro" variants={journeyHeadingItemVariants}>
+            {copy.intro}
+          </motion.p>
+          <motion.div className="v3-journey-range" aria-hidden="true" variants={journeyRangeVariants}>
             <span>
               <small>{copy.originLabel}</small>
               <strong>2019</strong>
@@ -423,8 +469,8 @@ export default function V3Journey() {
               <small>{copy.currentLabel}</small>
               <strong>NOW</strong>
             </span>
-          </div>
-        </header>
+          </motion.div>
+        </motion.header>
 
         <div className="v3-journey-route" ref={routeRef}>
           <div className="v3-journey-track" aria-hidden="true">
@@ -437,7 +483,7 @@ export default function V3Journey() {
             />
           </div>
           <ol aria-label={copy.routeLabel}>
-            {copy.milestones.map((milestone, index) => (
+            {milestones.map((milestone, index) => (
               <motion.li
                 className={milestone.current ? "is-current" : undefined}
                 data-tone={milestone.tone}

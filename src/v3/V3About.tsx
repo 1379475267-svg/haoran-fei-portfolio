@@ -1,4 +1,5 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
+import V3ChapterStrike from "./V3ChapterStrike";
 import { useV3Language } from "./V3Language";
 
 const aboutEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -58,6 +59,7 @@ export default function V3About() {
 
   return (
     <section className="v3-about" id="about" aria-labelledby="about-title">
+      <V3ChapterStrike tone="dark" />
       <div className="v3-about-orbit v3-about-orbit-one" aria-hidden="true"><i /></div>
       <div className="v3-about-orbit v3-about-orbit-two" aria-hidden="true"><i /></div>
       <span className="v3-about-cross v3-about-cross-one" aria-hidden="true">+</span>

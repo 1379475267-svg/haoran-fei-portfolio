@@ -44,22 +44,19 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   const [activeSection, setActiveSection] = useState<SectionId>(
     () => getSectionFromHash() ?? "home",
   );
+  const [navFloating, setNavFloating] = useState(false);
   const [mobileCompact, setMobileCompact] = useState(false);
   const activeHref = sectionTargets.find((target) => target.id === activeSection)?.href ?? "#home";
   const links = [
-    { label: t.nav.about, href: "#about", index: "01" },
-    { label: t.nav.capabilities, href: "#capabilities", index: "02" },
-    { label: t.nav.projects, href: "#projects", index: "03" },
+    { label: t.nav.about, href: "#about", index: "01", sections: ["about", "capabilities"] },
+    { label: t.nav.projects, href: "#projects", index: "02", sections: ["project-reel", "projects"] },
+    { label: t.nav.journey, href: "#journey", index: "03", sections: ["journey"] },
   ];
   const activeLabel = activeHref === "#home"
     ? (language === "zh" ? "首页" : "Home")
-    : activeHref === "#project-reel"
-      ? (language === "zh" ? "项目进行时" : "Project reel")
-      : activeHref === "#journey"
-        ? t.nav.journey
-      : activeHref === "#contact"
+    : activeHref === "#contact"
         ? t.nav.contact
-        : links.find((link) => link.href === activeHref)?.label ?? t.nav.projects;
+        : links.find((link) => link.sections.includes(activeSection))?.label ?? t.nav.projects;
 
   const navigationSurface = activeSection === "project-reel" || activeSection === "projects"
     ? "light"
@@ -115,26 +112,15 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   }, []);
 
   useEffect(() => {
-    let previousY = window.scrollY;
     let frame = 0;
 
-    setMobileCompact(previousY > 72);
+    setNavFloating(window.scrollY > 80);
 
     const handleScroll = () => {
       if (frame) return;
 
       frame = window.requestAnimationFrame(() => {
-        const nextY = window.scrollY;
-
-        if (nextY < 72) {
-          setMobileCompact(false);
-        } else if (nextY > previousY + 6) {
-          setMobileCompact(true);
-        } else if (nextY < previousY - 6) {
-          setMobileCompact(false);
-        }
-
-        previousY = nextY;
+        setNavFloating(window.scrollY > 80);
         frame = 0;
       });
     };
@@ -146,11 +132,40 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
     };
   }, []);
 
+  useEffect(() => {
+    let previousY = window.scrollY;
+    let frame = 0;
+
+    const handleScrollDirection = () => {
+      if (frame) return;
+
+      frame = window.requestAnimationFrame(() => {
+        const nextY = window.scrollY;
+
+        if (nextY < 80 || nextY < previousY - 8) {
+          setMobileCompact(false);
+        } else if (nextY > previousY + 8) {
+          setMobileCompact(true);
+        }
+
+        previousY = nextY;
+        frame = 0;
+      });
+    };
+
+    window.addEventListener("scroll", handleScrollDirection, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScrollDirection);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <motion.header
       className="v3-nav-shell"
       data-surface={navigationSurface}
       data-section={activeSection}
+      data-floating={navFloating || undefined}
       data-compact={mobileCompact || undefined}
       initial={reduceMotion ? false : { opacity: 0, y: -18 }}
       animate={ready || reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -18 }}
@@ -162,9 +177,12 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
           href="#home"
           aria-label={language === "zh" ? "费浩然，返回顶部" : "Haoran Fei, back to top"}
           aria-current={activeSection === "home" ? "location" : undefined}
-          onClick={() => setActiveSection("home")}
+          onClick={() => {
+            setActiveSection("home");
+            setMobileCompact(false);
+          }}
         >
-          <V3BrandLogo className="v3-brand-logo--nav" decorative />
+          <V3BrandLogo className="v3-brand-logo--nav" revealOrigin decorative />
           <small>HAORAN FEI</small>
         </a>
         <div className="v3-nav-status" aria-hidden="true">
@@ -190,7 +208,7 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
         <nav aria-label={language === "zh" ? "主导航" : "Primary navigation"}>
           <LayoutGroup id="v3-nav-sections">
             {links.map((link) => {
-              const active = activeHref === link.href;
+              const active = link.sections.includes(activeSection);
 
               return (
                 <a
@@ -198,10 +216,10 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
                   key={link.href}
                   href={link.href}
                   aria-current={active ? "location" : undefined}
-                  onClick={() =>
-                    setActiveSection(
-                      link.href.slice(1) as "about" | "capabilities" | "projects",
-                    )}
+                  onClick={() => {
+                    setActiveSection(link.href.slice(1) as SectionId);
+                    setMobileCompact(false);
+                  }}
                 >
                   <b aria-hidden="true">{link.index}</b>
                   <span>{link.label}</span>
@@ -240,24 +258,27 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
             href="#contact"
             aria-label={t.nav.contact}
             aria-current={activeSection === "contact" ? "location" : undefined}
-            onClick={() => setActiveSection("contact")}
+            onClick={() => {
+              setActiveSection("contact");
+              setMobileCompact(false);
+            }}
           >
             <span>{t.nav.contact}</span>
             <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
-        <div className="v3-nav-progress" aria-hidden="true">
-          <span>00</span>
-          <span className="v3-nav-progress-track">
-            <motion.i
-              style={{
-                scaleY: reduceMotion ? 0 : scrollYProgress,
-                transformOrigin: "top",
-              }}
-            />
-          </span>
-          <span>100</span>
-        </div>
+      </div>
+      <div className="v3-nav-progress" aria-hidden="true">
+        <span>00</span>
+        <span className="v3-nav-progress-track">
+          <motion.i
+            style={{
+              scaleY: reduceMotion ? 0 : scrollYProgress,
+              transformOrigin: "top",
+            }}
+          />
+        </span>
+        <span>100</span>
       </div>
     </motion.header>
   );

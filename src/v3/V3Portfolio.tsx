@@ -147,7 +147,12 @@ function V3PortfolioContent() {
   }, []);
 
   return (
-    <div className="v3-site" lang={language === "zh" ? "zh-CN" : "en"} data-language={language}>
+    <div
+      className="v3-site"
+      lang={language === "zh" ? "zh-CN" : "en"}
+      data-language={language}
+      data-version="c"
+    >
       {openingState.openingActive ? (
         <V3OpeningSequence
           onStart={startOpening}
