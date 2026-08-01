@@ -173,68 +173,54 @@ const headingTitleVariants: Variants = {
 const archiveGroupVariants: Variants = {
   hidden: {},
   visible: {
-    transition: {
-      delayChildren: 0.04,
-      staggerChildren: 0.08,
-    },
+    transition: { delayChildren: 0.04, staggerChildren: 0.06 },
   },
 };
 
 const archiveCardVariants: Variants = {
-  hidden: { y: 20 },
+  hidden: { y: 16 },
   visible: {
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.48,
       ease: quietEase,
-      when: "beforeChildren",
-      delayChildren: 0.06,
-      staggerChildren: 0.08,
     },
   },
 };
 
 const archiveItemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.52, ease: quietEase },
+    transition: { duration: 0.4, ease: quietEase },
   },
 };
 
 const archiveBodyVariants: Variants = {
   hidden: {},
   visible: {
-    transition: {
-      delayChildren: 0.04,
-      staggerChildren: 0.1,
-      staggerDirection: -1,
-    },
+    transition: { delayChildren: 0.08, staggerChildren: 0.1 },
   },
 };
 
 const archiveMetaVariants: Variants = {
   hidden: {},
   visible: {
-    transition: {
-      delayChildren: 0.04,
-      staggerChildren: 0.08,
-    },
+    transition: { delayChildren: 0.04, staggerChildren: 0.08 },
   },
 };
 
 const archiveVisualVariants: Variants = {
   hidden: {
     opacity: 0,
-    scale: 0.985,
-    clipPath: "inset(0 10% 0 0 round 1.5rem)",
+    scale: 0.99,
+    clipPath: "inset(0 4% 0 0 round 0.5rem)",
   },
   visible: {
     opacity: 1,
     scale: 1,
-    clipPath: "inset(0 0% 0 0 round 1.5rem)",
-    transition: { duration: 0.72, ease: quietEase },
+    clipPath: "inset(0 0% 0 0 round 0.5rem)",
+    transition: { duration: 0.48, ease: quietEase },
   },
 };
 
@@ -350,10 +336,16 @@ function ProjectCard({
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
         variants={archiveCardVariants}
-        whileHover={reducedMotion
-          ? undefined
-          : { y: -2, transition: { duration: 0.2, ease: quietEase } }}
       >
+        <motion.i
+          className="v3-project-card-active-signal"
+          aria-hidden="true"
+          initial={false}
+          animate={{ opacity: active ? 1 : 0, scaleX: active ? 1 : 0 }}
+          transition={reducedMotion
+            ? { duration: 0 }
+            : { duration: 0.36, ease: quietEase }}
+        />
         <motion.div className="v3-project-card-head" variants={archiveGroupVariants}>
           <motion.span variants={archiveItemVariants}>
             {String(index + 1).padStart(2, "0")}

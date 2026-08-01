@@ -1,6 +1,5 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useV3Language } from "./V3Language";
-import V3ChapterStrike from "./V3ChapterStrike";
 
 const aboutEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -12,7 +11,7 @@ const aboutSequenceVariants: Variants = {
 };
 
 const aboutTitleVariants: Variants = {
-  hidden: { opacity: 0, y: 16, clipPath: "inset(0 0 100% 0)" },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
@@ -44,13 +43,21 @@ const aboutBridgeVariants: Variants = {
   },
 };
 
+const aboutBridgeLineVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.52, ease: aboutEase, delay: 0.12 },
+  },
+};
+
 export default function V3About() {
   const { t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
     <section className="v3-about" id="about" aria-labelledby="about-title">
-      <V3ChapterStrike tone="dark" />
       <div className="v3-about-orbit v3-about-orbit-one" aria-hidden="true"><i /></div>
       <div className="v3-about-orbit v3-about-orbit-two" aria-hidden="true"><i /></div>
       <span className="v3-about-cross v3-about-cross-one" aria-hidden="true">+</span>
@@ -73,7 +80,7 @@ export default function V3About() {
         <motion.div className="v3-about-bridge" variants={aboutBridgeVariants}>
           <span>{t.about.bridgeLabel}</span>
           <p>{t.about.bridge}</p>
-          <i aria-hidden="true" />
+          <motion.i aria-hidden="true" variants={aboutBridgeLineVariants} />
         </motion.div>
       </motion.div>
     </section>

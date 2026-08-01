@@ -60,8 +60,7 @@ const rowVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.72,
-      delay: direction < 0 ? 0.1 : 0,
+      duration: 0.48,
       ease: quietEase,
     },
   }),
@@ -87,11 +86,11 @@ export default function V3ProjectReel() {
   });
   const rowOneX = useTransform(scrollYProgress, [0, 1], ["-7%", "-29%"]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], ["-30%", "-6%"]);
-  const headingOpacity = useTransform(smoothedArrivalProgress, [0, 0.18, 0.72], [0, 0.08, 1]);
-  const headingY = useTransform(smoothedArrivalProgress, [0, 0.72], [44, 0]);
-  const rowsOpacity = useTransform(smoothedArrivalProgress, [0, 0.24, 0.86], [0, 0.06, 1]);
-  const rowsY = useTransform(smoothedArrivalProgress, [0, 0.86], [68, 0]);
-  const rowsScale = useTransform(smoothedArrivalProgress, [0, 0.86], [0.985, 1]);
+  const headingOpacity = useTransform(smoothedArrivalProgress, [0, 0.08, 0.42], [0, 0.12, 1]);
+  const headingY = useTransform(smoothedArrivalProgress, [0, 0.42], [32, 0]);
+  const rowsOpacity = useTransform(smoothedArrivalProgress, [0.06, 0.18, 0.55], [0, 0.12, 1]);
+  const rowsY = useTransform(smoothedArrivalProgress, [0.06, 0.55], [44, 0]);
+  const rowsScale = useTransform(smoothedArrivalProgress, [0.06, 0.55], [0.99, 1]);
 
   const noSpatialMotion = Boolean(reduceMotion);
   const rowOneProjects = projects.slice(0, 5);
@@ -215,16 +214,6 @@ export default function V3ProjectReel() {
         }}
       >
         <div className="v3-reel-rows">
-          {!noSpatialMotion ? (
-            <motion.span
-              className="v3-reel-scanline"
-              aria-hidden="true"
-              initial={{ opacity: 0, x: "-55vw" }}
-              whileInView={{ opacity: [0, 0.58, 0.2, 0], x: ["-55vw", "55vw"] }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 1.35, delay: 0.28, ease: quietEase }}
-            />
-          ) : null}
           <motion.div
             className="v3-reel-row-shell"
             custom={1}

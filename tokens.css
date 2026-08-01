@@ -46,6 +46,54 @@
   --color-dead-army-scrim-strong: oklch(8% 0.02 315 / 0.28);
   --color-dead-army-shadow: oklch(4% 0.01 315 / 0.4);
 
+  --v3-surface-carbon: #090b10;
+  --v3-surface-carbon-deep: #06080c;
+  --v3-surface-graphite: #10131a;
+  --v3-surface-raised-dark: #171b23;
+  --v3-surface-dark-edge: #242a34;
+  --v3-surface-fog: #e9edf2;
+  --v3-surface-paper: #f8f9fb;
+  --v3-surface-light-edge: #cfd6de;
+  --v3-ink-on-dark: #e9edf2;
+  --v3-ink-strong-on-dark: #f8f9fb;
+  --v3-body-on-dark: #b8c0ca;
+  --v3-muted-on-dark: #8993a0;
+  --v3-faint-on-dark: #7a8491;
+  --v3-rule-on-dark: rgb(233 237 242 / 0.16);
+  --v3-rule-soft-on-dark: rgb(233 237 242 / 0.08);
+  --v3-ink-on-light: #0d1117;
+  --v3-ink-strong-on-light: #070a0f;
+  --v3-body-on-light: #414b57;
+  --v3-muted-on-light: #5d6874;
+  --v3-faint-on-light: #606c78;
+  --v3-rule-on-light: rgb(13 17 23 / 0.17);
+  --v3-rule-soft-on-light: rgb(13 17 23 / 0.08);
+  --v3-accent-moon-on-dark: #d8b655;
+  --v3-accent-moon-strong-on-dark: #ead376;
+  --v3-accent-moon-soft-on-dark: rgb(216 182 85 / 0.18);
+  --v3-accent-moon-faint-on-dark: rgb(216 182 85 / 0.09);
+  --v3-accent-moon-on-light: #775411;
+  --v3-accent-moon-strong-on-light: #624307;
+  --v3-accent-moon-soft-on-light: rgb(119 84 17 / 0.15);
+  --v3-accent-moon-faint-on-light: rgb(119 84 17 / 0.08);
+  --v3-signal-mint-on-dark: #55d6b2;
+  --v3-signal-mint-strong-on-dark: #78e4c5;
+  --v3-signal-mint-soft-on-dark: rgb(85 214 178 / 0.16);
+  --v3-signal-mint-faint-on-dark: rgb(85 214 178 / 0.08);
+  --v3-signal-mint-on-light: #087467;
+  --v3-signal-mint-strong-on-light: #075e54;
+  --v3-signal-mint-soft-on-light: rgb(8 116 103 / 0.15);
+  --v3-signal-mint-faint-on-light: rgb(8 116 103 / 0.08);
+  --v3-nav-surface: rgb(9 11 16 / 0.94);
+  --v3-nav-surface-soft: rgb(16 19 26 / 0.94);
+  --v3-shadow-on-light: rgb(6 8 12 / 0.12);
+  --v3-dead-army-ink-on-light: #851f2c;
+  --v3-dead-army-border-on-light: #b63242;
+  --v3-dead-army-surface-on-light: rgb(182 50 66 / 0.1);
+  --v3-dead-army-surface-strong-on-light: rgb(182 50 66 / 0.18);
+  --v3-qr-paper: #ffffff;
+  --v3-qr-ink: #05070a;
+
   --font-display: "Kanit", "Arial Narrow", sans-serif;
   --font-body: "Geist", "Segoe UI", sans-serif;
 
@@ -100,6 +148,7 @@
   --z-base: 1;
   --z-raised: 10;
   --z-sticky: 200;
+  --z-sticky-nav: 300;
   --z-modal: 400;
 
   --page-gutter: clamp(1rem, 4vw, 4rem);

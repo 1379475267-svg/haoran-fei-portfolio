@@ -14,7 +14,13 @@ export type V3Language = "zh" | "en";
 const copy = {
   zh: {
     skip: "跳到主要内容",
-    nav: { about: "关于我", capabilities: "能力", projects: "项目", contact: "联系我" },
+    nav: {
+      about: "关于我",
+      capabilities: "能力",
+      projects: "项目",
+      journey: "成长轨迹",
+      contact: "联系我",
+    },
     switchLanguage: "切换到英文",
     hero: {
       kicker: "电子信息 / 开发者",
@@ -78,7 +84,13 @@ const copy = {
   },
   en: {
     skip: "Skip to main content",
-    nav: { about: "About", capabilities: "Capabilities", projects: "Projects", contact: "Contact" },
+    nav: {
+      about: "About",
+      capabilities: "Capabilities",
+      projects: "Projects",
+      journey: "Flight log",
+      contact: "Contact",
+    },
     switchLanguage: "Switch to Chinese",
     hero: {
       kicker: "Electronic information / developer",
