@@ -5699,6 +5699,7 @@ body {
 
 /* Entry gate and first-project handoff: the site opens through the mark, then stays on one dark canvas. */
 .v3-opening {
+  z-index: calc(var(--z-sticky-nav) + 1);
   display: grid;
   place-items: center;
   background: transparent;
@@ -5718,6 +5719,20 @@ body {
   will-change: mask-image;
 }
 
+.v3-opening-aperture {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  border: var(--rule-hair) solid rgb(216 182 85 / 0.58);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0.7rem rgb(216 182 85 / 0.1),
+    inset 0 0 0.35rem rgb(216 182 85 / 0.06);
+  pointer-events: none;
+  translate: -50% -50%;
+  will-change: top, left, width, height, opacity;
+}
+
 .v3-opening :is(
   .v3-opening-shutter,
   .v3-opening-identity,
@@ -5729,7 +5744,7 @@ body {
 
 .v3-opening-entry {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   inset: 0;
   display: grid;
   min-width: 0;

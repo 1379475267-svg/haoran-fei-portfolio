@@ -71,31 +71,47 @@ export default function V3OpeningSequence({
       : [0, OPENING_FADE_TIME, OPENING_DURATION],
     [1, 1, 0],
   );
-  const openingRevealMask = useTransform(() => {
+  const openingRevealRadius = useTransform(() => {
     const time = openingClock.get();
     const logoRadius = revealLogoRadius.get();
-    let radius = 0;
 
     if (time <= OPENING_REVEAL_LOGO_END_TIME) {
       const logoProgress = smoothstep(
         (time - OPENING_REVEAL_TIME)
           / (OPENING_REVEAL_LOGO_END_TIME - OPENING_REVEAL_TIME),
       );
-      radius = logoRadius * logoProgress;
-    } else if (time <= OPENING_REVEAL_HOLD_END_TIME) {
-      radius = logoRadius;
-    } else {
-      const revealProgress = smoothstep(
-        (time - OPENING_REVEAL_HOLD_END_TIME)
-          / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_HOLD_END_TIME),
-      );
-      radius = logoRadius
-        + (revealMaxRadius.get() - logoRadius) * revealProgress;
+      return logoRadius * logoProgress;
     }
-    const edge = radius + 0.7;
+
+    if (time <= OPENING_REVEAL_HOLD_END_TIME) return logoRadius;
+
+    const revealProgress = smoothstep(
+      (time - OPENING_REVEAL_HOLD_END_TIME)
+        / (OPENING_REVEAL_END_TIME - OPENING_REVEAL_HOLD_END_TIME),
+    );
+    return logoRadius
+      + (revealMaxRadius.get() - logoRadius) * revealProgress;
+  });
+  const openingRevealMask = useTransform(() => {
+    const radius = openingRevealRadius.get();
+    const edge = radius + 1;
 
     return `radial-gradient(circle at ${revealOriginX.get().toFixed(2)}px ${revealOriginY.get().toFixed(2)}px, transparent ${radius.toFixed(2)}px, #000 ${edge.toFixed(2)}px)`;
   });
+  const openingApertureSize = useTransform(
+    openingRevealRadius,
+    (radius) => `${Math.max(radius * 2, 0).toFixed(2)}px`,
+  );
+  const openingApertureOpacity = useTransform(
+    openingClock,
+    [
+      OPENING_REVEAL_TIME,
+      OPENING_REVEAL_LOGO_END_TIME,
+      OPENING_REVEAL_HOLD_END_TIME,
+      OPENING_REVEAL_HOLD_END_TIME + 0.06,
+    ],
+    [0, 1, 1, 0],
+  );
 
   const syncRevealGeometry = useCallback(() => {
     const viewportWidth = window.innerWidth;
@@ -119,11 +135,11 @@ export default function V3OpeningSequence({
     const farthestX = Math.max(originX, viewportWidth - originX);
     const farthestY = Math.max(originY, viewportHeight - originY);
     const logoRadius = bounds
-      ? Math.hypot(
+      ? Math.ceil(Math.hypot(
           Math.max(originX - bounds.left, bounds.right - originX),
           Math.max(originY - bounds.top, bounds.bottom - originY),
-        ) + 2
-      : 18;
+        ) + 3)
+      : 20;
 
     revealOriginX.set(originX);
     revealOriginY.set(originY);
@@ -257,6 +273,18 @@ export default function V3OpeningSequence({
         style={{
           WebkitMaskImage: openingRevealMask,
           maskImage: openingRevealMask,
+        }}
+      />
+      <motion.span
+        className="v3-opening-aperture"
+        aria-hidden="true"
+        initial={false}
+        style={{
+          top: revealOriginY,
+          left: revealOriginX,
+          width: openingApertureSize,
+          height: openingApertureSize,
+          opacity: reduceMotion ? 0 : openingApertureOpacity,
         }}
       />
       <button
