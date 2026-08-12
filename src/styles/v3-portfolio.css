@@ -6885,11 +6885,28 @@ body {
 }
 
 .v3-hero {
-  background: var(--v3-surface-carbon);
+  background: #090b10;
 }
 
 .v3-hero-atmosphere {
-  background: var(--v3-surface-carbon);
+  background:
+    radial-gradient(62% 76% at 82% 39%, rgb(56 125 119 / 0.15), transparent 72%),
+    radial-gradient(48% 56% at 12% 100%, rgb(218 180 75 / 0.055), transparent 78%),
+    linear-gradient(122deg, #090b10 0%, #0b0e14 52%, #080a0e 100%);
+}
+
+/* Let the hero imagery and type set the structure, without the page-wide grid. */
+.v3-hero-grid {
+  display: none;
+}
+
+@media (max-width: 47.999rem) {
+  .v3-hero-atmosphere {
+    background:
+      radial-gradient(105% 38% at 100% 18%, rgb(56 125 119 / 0.12), transparent 74%),
+      radial-gradient(100% 30% at 0% 100%, rgb(218 180 75 / 0.04), transparent 78%),
+      linear-gradient(122deg, #090b10 0%, #0b0e14 54%, #080a0e 100%);
+  }
 }
 
 .v3-reel {
