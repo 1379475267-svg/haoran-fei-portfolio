@@ -389,7 +389,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
             aria-hidden="true"
             variants={variants.versionItem}
           >
-            V03 / {profile.name.toUpperCase()}
+            D / {profile.name.toUpperCase()}
           </motion.span>
           <motion.a
             className="v3-scroll-cue"

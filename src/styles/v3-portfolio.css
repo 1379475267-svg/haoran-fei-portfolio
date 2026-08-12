@@ -5131,6 +5131,72 @@ body {
   }
 }
 
+/* Version D keeps the mobile hero as a single, calm reading sequence. */
+@media (max-width: 47.999rem) {
+  .v3-site[data-version="d"] .v3-hero {
+    min-height: 100svh;
+    padding-top: max(4rem, calc(env(safe-area-inset-top) + 3.5rem));
+    padding-bottom: 2.75rem;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-atmosphere {
+    background:
+      radial-gradient(105% 38% at 100% 18%, rgb(56 125 119 / 0.12), transparent 74%),
+      radial-gradient(100% 30% at 0% 100%, rgb(218 180 75 / 0.04), transparent 78%),
+      linear-gradient(122deg, #090b10 0%, #0b0e14 54%, #080a0e 100%);
+  }
+
+  .v3-site[data-version="d"] .v3-hero-title-wrap {
+    margin-top: 1.25rem;
+  }
+
+  .v3-site[data-version="d"] .v3-hero h1,
+  .v3-site[data-version="d"][data-language="zh"] .v3-hero h1 {
+    font-size: clamp(3.2rem, 16.2vw, 3.95rem);
+    letter-spacing: -0.04em;
+    line-height: 0.94;
+  }
+
+  .v3-site[data-version="d"] .v3-hero h1 .v3-hero-greeting {
+    margin-bottom: 0.7rem;
+  }
+
+  .v3-site[data-version="d"] .v3-hero h1 .v3-hero-name-outline {
+    margin-top: 0.2rem;
+    color: rgb(224 193 91 / 0.06);
+    -webkit-text-stroke: 0.075rem var(--color-accent-strong);
+    text-align: start;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-support {
+    height: clamp(12rem, 52vw, 13.5rem);
+    margin-top: 1.35rem;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-copy-block {
+    margin-top: 1.25rem;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-intro {
+    max-width: 21rem;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-domain {
+    margin-bottom: 0;
+  }
+
+  .v3-site[data-version="d"] .v3-hero-cta-reveal {
+    margin-top: 1.15rem;
+  }
+
+  .v3-site[data-version="d"] .v3-action {
+    min-height: 3.125rem;
+    padding-inline: 1.15rem;
+  }
+}
+
 @media (min-width: 48rem) and (max-width: 63.999rem) {
   .v3-hero {
     padding: 3.5rem 2rem 4rem;
@@ -6885,11 +6951,19 @@ body {
 }
 
 .v3-hero {
-  background: var(--v3-surface-carbon);
+  background: #090b10;
 }
 
 .v3-hero-atmosphere {
-  background: var(--v3-surface-carbon);
+  background:
+    radial-gradient(62% 76% at 82% 39%, rgb(56 125 119 / 0.15), transparent 72%),
+    radial-gradient(48% 56% at 12% 100%, rgb(218 180 75 / 0.055), transparent 78%),
+    linear-gradient(122deg, #090b10 0%, #0b0e14 52%, #080a0e 100%);
+}
+
+/* Keep the hero calm: the footage and type are the visual structure, not a page-wide grid. */
+.v3-hero-grid {
+  display: none;
 }
 
 .v3-reel {
