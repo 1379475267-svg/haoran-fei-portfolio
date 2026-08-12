@@ -73,7 +73,7 @@ const copy = {
       whatsapp: "WhatsApp",
       whatsappQrAlt: "WhatsApp 联系二维码",
       whatsappQrCaption: "WhatsApp / Congee",
-      version: "个人网站 / D 版",
+      version: "个人网站 / 第 03 版",
     },
     music: {
       play: "播放背景音乐",
@@ -143,7 +143,7 @@ const copy = {
       whatsapp: "WhatsApp",
       whatsappQrAlt: "WhatsApp contact QR code",
       whatsappQrCaption: "WhatsApp / Congee",
-      version: "Portfolio / version D",
+      version: "Portfolio / version 03",
     },
     music: {
       play: "Play background music",

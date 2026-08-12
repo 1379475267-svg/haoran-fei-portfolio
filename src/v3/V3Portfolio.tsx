@@ -151,7 +151,7 @@ function V3PortfolioContent() {
       className="v3-site"
       lang={language === "zh" ? "zh-CN" : "en"}
       data-language={language}
-      data-version="d"
+      data-version="c"
     >
       {openingState.openingActive ? (
         <V3OpeningSequence
