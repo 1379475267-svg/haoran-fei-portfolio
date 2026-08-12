@@ -20,17 +20,17 @@ interface ContactNode {
 const contactNodes: ContactNode[] = [
   {
     id: "wechat",
-    icon: "/contact/wechat.svg",
+    icon: "./contact/wechat.svg",
     offset: { x: -16, y: 10, rotate: -7, delay: 0.18 },
   },
   {
     id: "qq",
-    icon: "/contact/qq.svg",
+    icon: "./contact/qq.svg",
     offset: { x: 14, y: -12, rotate: 6, delay: 0.28 },
   },
   {
     id: "whatsapp",
-    icon: "/contact/whatsapp.svg",
+    icon: "./contact/whatsapp.svg",
     offset: { x: 12, y: 14, rotate: 8, delay: 0.38 },
   },
 ];
