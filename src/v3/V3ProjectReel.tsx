@@ -3,6 +3,7 @@ import {
   useInView,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
 import type { Variants } from "framer-motion";
@@ -120,8 +121,11 @@ export default function V3ProjectReel() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const forwardX = useTransform(scrollYProgress, [0, 1], ["-5%", "-29%"]);
-  const reverseX = useTransform(scrollYProgress, [0, 1], ["-29%", "-5%"]);
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.35 });
+  const forwardX = useTransform(smoothProgress, [0, 1], ["-5%", "-29%"]);
+  const reverseX = useTransform(smoothProgress, [0, 1], ["-29%", "-5%"]);
+  const arrivalRadius = useTransform(smoothProgress, [0, 0.25], [36, 0]);
+  const headingArrival = useTransform(smoothProgress, [0, 0.22], [40, 0]);
 
   const renderTile = (
     entry: ReelEntry,
@@ -173,7 +177,10 @@ export default function V3ProjectReel() {
         target="_blank"
         rel="noreferrer"
         key={key}
-        aria-label={`${t.reel.open} ${title}${newTabSuffix}`}
+        aria-label={`${language === "zh"
+          ? (project.globalDemo || project.chinaDemo ? "在线体验" : "查看 GitHub 项目")
+          : (project.globalDemo || project.chinaDemo ? "Open live demo" : "View GitHub project")
+        } ${title}${newTabSuffix}`}
         variants={tileVariants}
         onFocus={(event) => {
           const tile = event.currentTarget;
@@ -204,16 +211,17 @@ export default function V3ProjectReel() {
   };
 
   return (
-    <section
+    <motion.section
       className="v3-reel"
       id="project-reel"
       ref={sectionRef}
       aria-labelledby="reel-title"
       data-static={reduceMotion || undefined}
       data-in-view={sectionInView || undefined}
+      style={reduceMotion ? undefined : { borderTopLeftRadius: arrivalRadius, borderTopRightRadius: arrivalRadius }}
     >
       <V3ChapterStrike tone="light" />
-      <div className="v3-reel-arrival-heading">
+      <motion.div className="v3-reel-arrival-heading" style={reduceMotion ? undefined : { y: headingArrival }}>
         <motion.div
           className="v3-reel-heading"
           initial={reduceMotion ? false : "hidden"}
@@ -228,7 +236,7 @@ export default function V3ProjectReel() {
             </motion.h2>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       <div className="v3-reel-arrival-rows">
         <div className="v3-reel-rows">
@@ -272,6 +280,6 @@ export default function V3ProjectReel() {
           ) : null}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

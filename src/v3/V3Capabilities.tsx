@@ -193,6 +193,9 @@ export default function V3Capabilities() {
                 role="listitem"
                 key={capability.area}
                 variants={rowVariants}
+                initial={reduceMotion ? false : "hidden"}
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.45 }}
                 data-capability-index={index + 1}
               >
                 <motion.div className="v3-capability-marker" aria-hidden="true" variants={markerVariants}>

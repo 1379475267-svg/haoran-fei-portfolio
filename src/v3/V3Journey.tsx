@@ -417,6 +417,7 @@ export default function V3Journey() {
   const copy = journeyCopy[language];
   const milestones = copy.milestones.filter((milestone) => visibleMilestoneIds.has(milestone.id));
   const routeRef = useRef<HTMLDivElement>(null);
+  const [readingId, setReadingId] = useState("first-code");
   const reduceMotion = Boolean(useReducedMotion());
   const [compactRoute, setCompactRoute] = useState(() =>
     typeof window !== "undefined"
@@ -429,6 +430,20 @@ export default function V3Journey() {
   });
   const routeProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const staticRoute = reduceMotion || compactRoute;
+
+  useEffect(() => {
+    const items = routeRef.current?.querySelectorAll<HTMLElement>("[data-milestone]");
+    if (!items) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting);
+      if (visible.length) {
+        const target = visible[0].target as HTMLElement;
+        setReadingId(target.dataset.milestone ?? "first-code");
+      }
+    }, { rootMargin: "-18% 0px -52% 0px", threshold: 0 });
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [language]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 40rem)");
@@ -487,6 +502,8 @@ export default function V3Journey() {
               <motion.li
                 className={milestone.current ? "is-current" : undefined}
                 data-tone={milestone.tone}
+                data-milestone={milestone.id}
+                data-reading={readingId === milestone.id || undefined}
                 key={milestone.id}
                 aria-current={milestone.current ? "step" : undefined}
                 initial={reduceMotion ? false : "hidden"}

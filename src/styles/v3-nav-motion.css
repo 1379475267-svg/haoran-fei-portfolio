@@ -1,0 +1,165 @@
+/* Compact navigation is an ordinary disclosure: scrolling and tab order remain native. */
+.v3-mobile-menu-toggle,
+.v3-mobile-menu {
+  display: none;
+}
+
+@media (max-width: 63.999rem) {
+  .v3-site .v3-nav-shell .v3-nav > nav,
+  .v3-site .v3-nav-shell .v3-nav-actions > .v3-language-toggle,
+  .v3-site .v3-nav-shell .v3-nav-actions > .v3-nav-contact {
+    display: none;
+  }
+
+  .v3-site .v3-nav-shell .v3-mobile-menu-toggle {
+    display: inline-flex;
+    order: 4;
+    min-width: 5rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 0.65rem 0.8rem;
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    background: var(--v3-nav-surface);
+    color: var(--color-ink-strong);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background-color 180ms ease, border-color 180ms ease;
+  }
+
+  .v3-site .v3-nav-shell .v3-mobile-menu-toggle[aria-expanded="true"] {
+    border-color: var(--color-accent);
+    background: var(--color-paper-soft);
+  }
+
+  .v3-mobile-menu-icon {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 1.5;
+  }
+
+  .v3-nav-shell .v3-mobile-menu {
+    position: fixed;
+    z-index: 3;
+    top: calc(var(--v3-edge) + var(--v3-safe-top, 0px) + 3.4rem);
+    right: calc(var(--v3-edge) + var(--v3-safe-right, 0px));
+    display: block;
+    width: min(22rem, calc(100vw - 2 * var(--v3-edge) - var(--v3-safe-left, 0px) - var(--v3-safe-right, 0px)));
+    max-height: calc(100dvh - 6rem - var(--v3-safe-top, 0px) - var(--v3-safe-bottom, 0px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.5rem 1rem;
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: 0.75rem;
+    background: var(--color-paper-deep);
+    box-shadow: 0 14px 44px rgb(0 0 0 / 28%);
+    color: var(--color-ink-strong);
+    pointer-events: auto;
+    scrollbar-width: thin;
+  }
+
+  .v3-mobile-menu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.75rem;
+    border-bottom: var(--rule-hair) solid var(--color-rule);
+    color: var(--color-muted);
+    font-size: 0.625rem;
+  }
+
+  .v3-mobile-menu > a {
+    display: flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: var(--rule-hair) solid var(--color-rule-soft);
+    color: var(--color-body);
+    font-size: 1rem;
+    transition: color 180ms ease;
+  }
+
+  .v3-mobile-menu > a > span {
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+  }
+
+  .v3-mobile-menu > a b {
+    color: var(--color-muted);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .v3-mobile-menu > a[aria-current="location"],
+  .v3-mobile-menu > a[aria-current="location"] b {
+    color: var(--color-accent);
+  }
+
+  .v3-mobile-menu svg {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 1.5;
+  }
+
+  .v3-mobile-menu-footer {
+    display: flex;
+    min-height: 4rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .v3-mobile-menu-footer > :is(a, button) {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.65rem;
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    color: var(--color-body);
+    font-size: 0.75rem;
+  }
+
+  .v3-mobile-menu-footer > a {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .v3-mobile-language {
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .v3-mobile-language i {
+    opacity: 0.4;
+    font-style: normal;
+  }
+
+  .v3-mobile-language .is-active {
+    color: var(--color-accent);
+  }
+
+  .v3-mobile-menu :is(a, button):focus-visible,
+  .v3-mobile-menu-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-site .v3-nav-shell .v3-mobile-menu-toggle,
+  .v3-mobile-menu > a {
+    transition: none;
+  }
+}

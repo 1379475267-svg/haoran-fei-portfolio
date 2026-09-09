@@ -6,6 +6,9 @@ import "./styles/globals.css";
 import "./styles/v3-portfolio.css";
 import "./styles/v3-brand-logo.css";
 import "./styles/v3-c.css";
+import "./styles/v3-motion-refinement.css";
+import "./styles/v3-nav-motion.css";
+import "./styles/v3-project-motion.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

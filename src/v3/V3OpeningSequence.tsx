@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import V3BrandLogo from "./V3BrandLogo";
+import { useV3Language } from "./V3Language";
 
 const OPENING_DURATION = 3.82;
 const OPENING_CONTENT_READY_TIME = 2.78;
@@ -45,6 +46,7 @@ export default function V3OpeningSequence({
   onReveal,
   onStart,
 }: V3OpeningSequenceProps) {
+  const { language } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
   const [phase, setPhase] = useState<"idle" | "erasing">("idle");
   const startedRef = useRef(false);
@@ -312,6 +314,10 @@ export default function V3OpeningSequence({
             className="v3-brand-logo--opening"
             decorative
           />
+        </span>
+        <span className="v3-opening-hint" aria-hidden="true">
+          <span>{language === "zh" ? "点击进入 · 开启背景音乐" : "Click to enter · Sound on"}</span>
+          <small>HAORAN FEI / PORTFOLIO</small>
         </span>
       </button>
     </motion.div>

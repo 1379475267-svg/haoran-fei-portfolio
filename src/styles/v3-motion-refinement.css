@@ -1,0 +1,85 @@
+/* Motion refinement: retain the original opening/audio clock and visual identity. */
+.v3-opening-hint {
+  position: absolute;
+  top: calc(50% + clamp(5.75rem, 19vmin, 9rem) + 1.8rem);
+  left: 1rem;
+  right: 1rem;
+  display: grid;
+  gap: 0.7rem;
+  color: #dfc57a;
+  font-size: 0.83rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  pointer-events: none;
+}
+.v3-opening-hint small {
+  color: #8a8d91;
+  font-size: 0.61rem;
+  letter-spacing: 0.2em;
+}
+.v3-opening[data-phase="erasing"] .v3-opening-hint { visibility: hidden; }
+
+.v3-site[data-version="c"] .v3-hero-media {
+  outline: 1px solid rgb(216 182 85 / 0.18);
+  outline-offset: 7px;
+  transition: outline-color 350ms ease;
+}
+.v3-site[data-version="c"] .v3-hero-support:hover .v3-hero-media {
+  outline-color: rgb(216 182 85 / 0.48);
+}
+.v3-site[data-version="c"] .v3-hero-media > :is(img, video) {
+  transform-origin: center;
+}
+.v3-site[data-version="c"] .v3-reel-heading h2 { line-height: 1.12; }
+
+/* Align motion to reading: each capability settles before its copy is read. */
+.v3-site[data-version="c"] .v3-capability-row {
+  position: relative;
+  transition: background-color 320ms ease, border-color 320ms ease;
+}
+.v3-site[data-version="c"] .v3-capability-row > div:nth-child(2) {
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v3-site[data-version="c"] .v3-capability-row h3 {
+  transition: color 250ms ease;
+}
+.v3-site[data-version="c"] .v3-journey-route li .v3-journey-node {
+  transition: box-shadow 400ms ease, border-color 400ms ease;
+}
+.v3-site[data-version="c"] .v3-journey-route li[data-reading] .v3-journey-node {
+  box-shadow: 0 0 0 7px rgb(216 182 85 / 0.1);
+  border-color: var(--color-accent);
+}
+.v3-site[data-version="c"] .v3-journey-meta time {
+  transition: color 350ms ease;
+}
+.v3-site[data-version="c"] .v3-journey-route li[data-reading] .v3-journey-meta time {
+  color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .v3-site[data-version="c"] .v3-capability-row:hover {
+    background: rgb(216 182 85 / 0.035);
+    border-color: rgb(216 182 85 / 0.3);
+  }
+  .v3-site[data-version="c"] .v3-capability-row:hover > div:nth-child(2) {
+    transform: translateX(8px);
+  }
+  .v3-site[data-version="c"] .v3-capability-row:hover h3 { color: var(--color-accent); }
+  .v3-site[data-version="c"] .v3-reel-tile:not(.is-duplicate) .project-visual {
+    transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .v3-site[data-version="c"] .v3-reel-tile:not(.is-duplicate):hover .project-visual {
+    transform: scale(1.025);
+  }
+}
+@media (max-width: 40rem), (pointer: coarse) {
+  .v3-site[data-version="c"] .v3-hero-media { outline-offset: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v3-site[data-version="c"] :is(.v3-capability-row, .v3-capability-row > div, .v3-capability-row h3, .v3-journey-node, .v3-journey-meta time, .v3-hero-media, .v3-reel-tile .project-visual) {
+    transition: none !important;
+  }
+  .v3-site[data-version="c"] .v3-capability-row:hover > div:nth-child(2),
+  .v3-site[data-version="c"] .v3-reel-tile:not(.is-duplicate):hover .project-visual { transform: none; }
+}

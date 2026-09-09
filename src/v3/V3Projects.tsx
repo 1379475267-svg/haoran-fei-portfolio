@@ -1,13 +1,12 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import {
+  AnimatePresence,
   motion,
-  useMotionValueEvent,
+  useIsPresent,
   useReducedMotion,
-  useScroll,
-  useTransform,
 } from "framer-motion";
-import type { MotionStyle, MotionValue, Variants } from "framer-motion";
-import type { CSSProperties } from "react";
+import type { Variants } from "framer-motion";
+import type { KeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import ProjectCover from "../components/ProjectCover";
 import { projects, type Project } from "../data/profile";
@@ -34,12 +33,7 @@ const selectedProjects = selectedIds
   .filter((project): project is Project => Boolean(project));
 
 const STATIC_PROJECT_LAYOUT_QUERY =
-  "(max-width: 32.999rem), (max-height: 41.999rem), (pointer: coarse), (pointer: none)";
-const ORBIT_STEP_SVH = 60;
-const ORBIT_EDGE_HOLD_SVH = 4;
-const ORBIT_DOCK_RATIO = 0.055;
-const ORBIT_ANGLE = 0.67;
-const ORBIT_RADIUS_SVH = 128;
+  "(max-width: 63.999rem), (pointer: coarse), (pointer: none)";
 
 const displayTitle = (project: Project) => {
   if (project.id === "nonconvex-alpha") return "Nonconvex α / Drone Lab";
@@ -244,44 +238,12 @@ function useStaticProjectLayout(reducedMotion: boolean) {
   return reducedMotion || mediaRequiresStaticLayout;
 }
 
-const clamp = (value: number, minimum: number, maximum: number) =>
-  Math.min(Math.max(value, minimum), maximum);
-
-const getOrbitScrollTravel = (total: number) =>
-  Math.max(0, total - 1) * ORBIT_STEP_SVH + ORBIT_EDGE_HOLD_SVH * 2;
-
-const getOrbitPosition = (progress: number, total: number) => {
-  const lastIndex = Math.max(total - 1, 0);
-  if (lastIndex === 0) return 0;
-
-  const scrollPosition = progress * getOrbitScrollTravel(total);
-  const rawPosition = clamp(
-    (scrollPosition - ORBIT_EDGE_HOLD_SVH) / ORBIT_STEP_SVH,
-    0,
-    lastIndex,
-  );
-  const index = Math.floor(rawPosition);
-  if (index >= lastIndex) return lastIndex;
-
-  const localProgress = rawPosition - index;
-  if (localProgress <= ORBIT_DOCK_RATIO) return index;
-  if (localProgress >= 1 - ORBIT_DOCK_RATIO) return index + 1;
-
-  return index + (
-    (localProgress - ORBIT_DOCK_RATIO) / (1 - ORBIT_DOCK_RATIO * 2)
-  );
-};
-
-const getActiveProjectIndex = (progress: number, total: number) =>
-  clamp(Math.round(getOrbitPosition(progress, total)), 0, Math.max(total - 1, 0));
-
 interface ProjectCardProps {
   project: Project;
   index: number;
   active: boolean;
   staticLayout: boolean;
   reducedMotion: boolean;
-  rotaryStyle?: MotionStyle;
 }
 
 function ProjectCard({
@@ -290,8 +252,9 @@ function ProjectCard({
   active,
   staticLayout,
   reducedMotion,
-  rotaryStyle,
 }: ProjectCardProps) {
+  const isPresent = useIsPresent();
+  const cardRef = useRef<HTMLDivElement>(null);
   const { language, t } = useV3Language();
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
@@ -356,30 +319,28 @@ function ProjectCard({
           label: t.projects.detailLabels[techIndex],
           value,
         }));
-  const interactive = staticLayout || active;
-  const wrapStyle = {
-    "--v3-card-index": index,
-    "--v3-card-offset": "0rem",
-    ...rotaryStyle,
-    pointerEvents: interactive ? undefined : "none",
-  } as MotionStyle & CSSProperties;
+  const interactive = isPresent && (staticLayout || active);
+
+  useEffect(() => {
+    if (cardRef.current) cardRef.current.inert = !interactive;
+  }, [interactive]);
 
   return (
     <motion.div
+      ref={cardRef}
       className="v3-project-card-wrap"
       id={`project-${project.id}`}
       data-project-index={index}
       data-project={project.id}
       data-active={active || undefined}
       aria-hidden={interactive ? undefined : true}
-      style={wrapStyle}
     >
       <motion.article
         className="v3-project-card"
         data-project={project.id}
         data-active={active || undefined}
-        data-archive-motion={staticLayout ? "static" : "rotary"}
-        initial={reducedMotion || !staticLayout ? false : "hidden"}
+        data-archive-motion={staticLayout ? "static" : "stage"}
+        initial={reducedMotion ? false : "hidden"}
         animate={reducedMotion || !staticLayout ? "visible" : undefined}
         whileInView={reducedMotion || !staticLayout ? undefined : "visible"}
         viewport={{ once: true, amount: 0.1 }}
@@ -526,132 +487,83 @@ function ProjectCard({
   );
 }
 
-interface RotaryProjectCardProps {
-  progress: MotionValue<number>;
-  project: Project;
-  index: number;
-  total: number;
-  active: boolean;
-  staticLayout: boolean;
-  reducedMotion: boolean;
-}
+const projectStageVariants: Variants = {
+  enter: (direction: number) => ({ opacity: 0, x: direction * 20 }),
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.48, ease: quietEase },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction * -10,
+    transition: { duration: 0.16, ease: quietEase },
+  }),
+};
 
-function RotaryProjectCard({
-  progress,
-  project,
-  index,
-  total,
-  active,
-  staticLayout,
-  reducedMotion,
-}: RotaryProjectCardProps) {
-  const orbitOffset = useTransform(
-    progress,
-    (value) => index - getOrbitPosition(value, total),
-  );
-  const opacity = useTransform(orbitOffset, (offset) => {
-    const distance = Math.abs(offset);
-    if (distance <= 0.65) return 1;
-    return clamp(1 - (distance - 0.65) / 0.75, 0, 1);
-  });
-  const x = useTransform(orbitOffset, (offset) => {
-    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
-    const value = -(1 - Math.cos(angle)) * ORBIT_RADIUS_SVH;
-    return `${value.toFixed(3)}svh`;
-  });
-  const y = useTransform(orbitOffset, (offset) => {
-    const angle = clamp(offset, -1.5, 1.5) * ORBIT_ANGLE;
-    const value = Math.sin(angle) * ORBIT_RADIUS_SVH;
-    return `${value.toFixed(3)}svh`;
-  });
-  const scale = useTransform(orbitOffset, (offset) =>
-    1 - Math.min(Math.abs(offset), 1.4) * 0.035,
-  );
-  const rotaryStyle = {
-    opacity,
-    x,
-    y,
-    scale,
-    rotate: 0,
-    transformOrigin: "center center",
-    willChange: "transform, opacity",
-  } as MotionStyle;
-
-  return (
-    <ProjectCard
-      project={project}
-      index={index}
-      active={active}
-      staticLayout={staticLayout}
-      reducedMotion={reducedMotion}
-      rotaryStyle={staticLayout ? undefined : rotaryStyle}
-    />
-  );
-}
+const projectHashIndex = () => typeof window === "undefined"
+  ? -1
+  : selectedProjects.findIndex((project) => window.location.hash === `#project-${project.id}`);
 
 export default function V3Projects() {
   const reduceMotion = Boolean(useReducedMotion());
   const { language, t } = useV3Language();
   const staticLayout = useStaticProjectLayout(reduceMotion);
-  const rotaryScrollRef = useRef<HTMLDivElement>(null);
-  const rotaryStageRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const { scrollYProgress } = useScroll({
-    target: rotaryScrollRef,
-    offset: ["start start", "end end"],
-  });
+  const [activeIndex, setActiveIndex] = useState(() => Math.max(0, projectHashIndex()));
+  const [direction, setDirection] = useState(1);
+  const directoryRef = useRef<HTMLElement>(null);
   const totalProjects = selectedProjects.length;
-  const activeProject = selectedProjects[activeIndex] ?? selectedProjects[0];
+  const activeProject = selectedProjects[activeIndex];
+  const labels = language === "zh"
+    ? { directory: "选择项目", previous: "上一个项目", next: "下一个项目", all: "完整项目档案", jump: "快速跳转", browse: "选择一个项目，查看它的构建过程。" }
+    : { directory: "Choose a project", previous: "Previous project", next: "Next project", all: "Complete project archive", jump: "Jump to a project", browse: "Choose a project to explore how it was built." };
 
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    if (staticLayout || totalProjects === 0) return;
-
-    const nextIndex = getActiveProjectIndex(progress, totalProjects);
-    setActiveIndex((currentIndex) =>
-      currentIndex === nextIndex ? currentIndex : nextIndex,
-    );
-  });
-
-  useEffect(() => {
-    if (staticLayout) {
-      setActiveIndex(0);
-      return;
-    }
-
-    setActiveIndex(getActiveProjectIndex(scrollYProgress.get(), totalProjects));
-  }, [scrollYProgress, staticLayout, totalProjects]);
+  const selectProject = (index: number) => {
+    if (index < 0 || index >= totalProjects || index === activeIndex) return;
+    setDirection(index > activeIndex ? 1 : -1);
+    setActiveIndex(index);
+    // Keep deep links meaningful without letting a selection move the viewport.
+    window.history.replaceState(window.history.state, "", `#project-${selectedProjects[index].id}`);
+  };
 
   useEffect(() => {
-    if (staticLayout) return;
+    // Keep the selection when moving between the mobile archive and desktop stage.
+    const currentIndex = projectHashIndex();
+    if (currentIndex >= 0) setActiveIndex(currentIndex);
+  }, [staticLayout]);
 
-    const focusedElement = document.activeElement;
-    if (!(focusedElement instanceof HTMLElement)) return;
+  useEffect(() => {
+    const syncProjectHash = () => {
+      const nextIndex = projectHashIndex();
+      if (nextIndex < 0) return;
+      setDirection(nextIndex > activeIndex ? 1 : -1);
+      setActiveIndex(nextIndex);
+      if (staticLayout) return;
+      // The selected case may still be entering; scroll to the always-present stage.
+      document.getElementById("project-stage")?.scrollIntoView({ block: "start", behavior: "auto" });
+    };
+    window.addEventListener("hashchange", syncProjectHash);
+    return () => window.removeEventListener("hashchange", syncProjectHash);
+  }, [staticLayout, activeIndex]);
 
-    const focusedCard = focusedElement.closest<HTMLElement>(
-      ".v3-project-card-wrap",
-    );
-    if (!focusedCard || !rotaryStageRef.current?.contains(focusedCard)) return;
-
-    if (focusedCard.dataset.projectIndex !== String(activeIndex)) {
-      focusedElement.blur();
-    }
-  }, [activeIndex, staticLayout]);
-
-  const rotaryStyle = {
-    "--v3-project-count": totalProjects,
-    "--v3-orbit-scroll-travel": getOrbitScrollTravel(totalProjects),
-    "--v3-project-scroll-height": `calc(100svh + ${getOrbitScrollTravel(totalProjects)}svh)`,
-  } as CSSProperties;
-  const counterLabel = language === "zh"
-    ? `当前项目：第 ${activeIndex + 1} 个，共 ${totalProjects} 个`
-    : `Current project: ${activeIndex + 1} of ${totalProjects}`;
+  const onDirectoryKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex = index;
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") nextIndex = (index + 1) % totalProjects;
+    else if (event.key === "ArrowUp" || event.key === "ArrowLeft") nextIndex = (index - 1 + totalProjects) % totalProjects;
+    else if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = totalProjects - 1;
+    else return;
+    event.preventDefault();
+    selectProject(nextIndex);
+    directoryRef.current?.querySelector<HTMLButtonElement>(`[data-selector-index="${nextIndex}"]`)?.focus();
+  };
 
   return (
     <section
       className="v3-projects"
       id="projects"
       aria-labelledby="projects-title"
-      data-project-layout={staticLayout ? "static" : "rotary"}
+      data-project-layout={staticLayout ? "static" : "stage"}
     >
       <V3ChapterStrike tone="light" />
       <motion.div
@@ -661,75 +573,129 @@ export default function V3Projects() {
         viewport={{ once: true, amount: 0.2 }}
         variants={headingVariants}
       >
-        <motion.p className="v3-section-label" variants={eyebrowVariants}>
-          {t.projects.eyebrow}
+        <div className="v3-project-heading-main">
+          <motion.p className="v3-section-label" variants={eyebrowVariants}>
+            {t.projects.eyebrow}
+          </motion.p>
+          <motion.h2 id="projects-title" variants={headingTitleVariants}>
+            {t.projects.title}
+          </motion.h2>
+        </div>
+        <motion.p className="v3-project-heading-note" variants={eyebrowVariants}>
+          {t.projects.intro}
         </motion.p>
-        <motion.h2 id="projects-title" variants={headingTitleVariants}>
-          {t.projects.title}
-        </motion.h2>
       </motion.div>
       <div className="v3-projects-body">
-        <div
-          className="v3-project-stack"
-          data-layout={staticLayout ? "static" : "rotary"}
-        >
-          <div
-            className="v3-project-rotary-scroll"
-            ref={rotaryScrollRef}
-            style={rotaryStyle}
+        <div className="v3-project-browser">
+          <nav
+            className="v3-project-directory"
+            ref={directoryRef}
+            aria-label={staticLayout ? labels.jump : labels.directory}
           >
-            <div className="v3-project-rotary-sticky">
-              {!staticLayout ? (
-                <aside
-                  className="v3-project-rotary-index"
-                  aria-label={language === "zh" ? "项目轮转进度" : "Project rotation progress"}
-                >
-                  <p
-                    className="v3-project-rotary-counter"
-                    aria-label={counterLabel}
+            <div className="v3-project-directory-heading">
+              <span>{staticLayout ? labels.jump : labels.directory}</span>
+              <span>{String(totalProjects).padStart(2, "0")}</span>
+            </div>
+            <ol>
+              {selectedProjects.map((project, index) => {
+                const title = displayTitle(project);
+                const content = (
+                  <>
+                    <span className="v3-project-selector-number">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="v3-project-selector-copy">
+                      <strong>{title}</strong>
+                      <small>{categoryLabel[project.category][language]}</small>
+                    </span>
+                    <ArrowUpRight aria-hidden="true" />
+                  </>
+                );
+                return (
+                  <li key={project.id}>
+                    {staticLayout ? (
+                      <a href={`#project-${project.id}`} className="v3-project-selector">
+                        {content}
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        className="v3-project-selector"
+                        id={`project-selector-${project.id}`}
+                        data-selector-index={index}
+                        aria-pressed={index === activeIndex}
+                        aria-controls="project-stage"
+                        onClick={() => selectProject(index)}
+                        onKeyDown={(event) => onDirectoryKeyDown(event, index)}
+                      >
+                        {index === activeIndex ? (
+                          <motion.i
+                            className="v3-project-selector-signal"
+                            layoutId="project-selector-signal"
+                            transition={{ duration: 0.4, ease: quietEase }}
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                        {content}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+            {!staticLayout ? (
+              <div className="v3-project-directory-footer">
+                <p>{labels.browse}</p>
+                <div className="v3-project-stage-controls">
+                  <button type="button" onClick={() => selectProject(activeIndex - 1)} disabled={activeIndex === 0} aria-label={labels.previous} aria-controls="project-stage">
+                    <ArrowLeft aria-hidden="true" />
+                  </button>
+                  <span
                     aria-live="polite"
                     aria-atomic="true"
+                    aria-label={language === "zh"
+                      ? `当前项目：第 ${activeIndex + 1} 个，共 ${totalProjects} 个`
+                      : `Current project: ${activeIndex + 1} of ${totalProjects}`}
                   >
-                    <span data-current-index>
-                      {String(activeIndex + 1).padStart(2, "0")}
-                    </span>
+                    <b>{String(activeIndex + 1).padStart(2, "0")}</b>
                     <span aria-hidden="true"> / </span>
-                    <span>{String(totalProjects).padStart(2, "0")}</span>
-                  </p>
-                  <ol className="v3-project-rotary-ticks" aria-hidden="true">
-                    {selectedProjects.map((project, index) => (
-                      <li
-                        key={project.id}
-                        data-project-index={index}
-                        data-active={index === activeIndex || undefined}
-                      >
-                        <span />
-                      </li>
-                    ))}
-                  </ol>
-                </aside>
-              ) : null}
-              <div
-                className="v3-project-rotary-stage"
-                ref={rotaryStageRef}
-                data-current-index={String(activeIndex + 1).padStart(2, "0")}
-                data-current-project={activeProject?.id}
-                aria-label={language === "zh" ? "七个完整项目档案" : "Seven complete project cases"}
-              >
+                    {String(totalProjects).padStart(2, "0")}
+                  </span>
+                  <button type="button" onClick={() => selectProject(activeIndex + 1)} disabled={activeIndex === totalProjects - 1} aria-label={labels.next} aria-controls="project-stage">
+                    <ArrowRight aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </nav>
+          <div className="v3-project-stack" data-layout={staticLayout ? "static" : "stage"}>
+            {staticLayout ? (
+              <div className="v3-project-static-list" aria-label={labels.all}>
                 {selectedProjects.map((project, index) => (
-                  <RotaryProjectCard
-                    key={project.id}
-                    progress={scrollYProgress}
-                    project={project}
-                    index={index}
-                    total={totalProjects}
-                    active={!staticLayout && index === activeIndex}
-                    staticLayout={staticLayout}
-                    reducedMotion={reduceMotion}
-                  />
+                  <ProjectCard key={project.id} project={project} index={index} active={false} staticLayout reducedMotion={reduceMotion} />
                 ))}
               </div>
-            </div>
+            ) : (
+              <div
+                className="v3-project-stage"
+                id="project-stage"
+                role="region"
+                aria-labelledby={`project-selector-${activeProject.id}`}
+                data-current-project={activeProject.id}
+              >
+                <AnimatePresence initial={false} mode="wait" custom={direction}>
+                  <motion.div
+                    className="v3-project-stage-content"
+                    key={activeProject.id}
+                    custom={direction}
+                    variants={projectStageVariants}
+                    initial="enter"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <ProjectCard project={activeProject} index={activeIndex} active staticLayout={false} reducedMotion={reduceMotion} />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
       </div>

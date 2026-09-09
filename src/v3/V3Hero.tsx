@@ -2,13 +2,14 @@ import { ArrowDownRight, ArrowUpRight, Crosshair } from "lucide-react";
 import {
   motion,
   useInView,
+  useMotionValue,
   useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   type Variants,
 } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { profile } from "../data/profile";
 import V3Magnet from "./V3Magnet";
 import { useV3Language } from "./V3Language";
@@ -156,6 +157,11 @@ export default function V3Hero({ ready }: V3HeroProps) {
   const reduceMotion = Boolean(useReducedMotion());
   const compactMotion = useCompactMotion();
   const heroRef = useRef<HTMLElement>(null);
+  const pointerBounds = useRef<DOMRect | null>(null);
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const imageX = useSpring(pointerX, { stiffness: 90, damping: 24, mass: 0.5 });
+  const imageY = useSpring(pointerY, { stiffness: 90, damping: 24, mass: 0.5 });
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroInView = useInView(heroRef, { amount: 0.08 });
   const { scrollYProgress } = useScroll({
@@ -191,6 +197,33 @@ export default function V3Hero({ ready }: V3HeroProps) {
   const { language, t } = useV3Language();
   const initialState = reduceMotion ? false : "hidden";
   const animateState = ready ? "visible" : "hidden";
+
+  const resetDepth = () => {
+    pointerBounds.current = null;
+    pointerX.set(0);
+    pointerY.set(0);
+  };
+  const moveDepth = (event: PointerEvent<HTMLElement>) => {
+    if (!ready || reduceMotion || compactMotion || event.pointerType !== "mouse") return;
+    const bounds = pointerBounds.current ?? event.currentTarget.getBoundingClientRect();
+    pointerBounds.current = bounds;
+    pointerX.set(Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1)) * -7);
+    pointerY.set(Math.max(-1, Math.min(1, (event.clientY - bounds.top) / bounds.height * 2 - 1)) * -4);
+  };
+
+  useEffect(() => {
+    if (reduceMotion || compactMotion) {
+      pointerX.set(0);
+      pointerY.set(0);
+    }
+    const clearBounds = () => { pointerBounds.current = null; };
+    window.addEventListener("scroll", clearBounds, { passive: true });
+    window.addEventListener("resize", clearBounds);
+    return () => {
+      window.removeEventListener("scroll", clearBounds);
+      window.removeEventListener("resize", clearBounds);
+    };
+  }, [compactMotion, reduceMotion, pointerX, pointerY]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -259,6 +292,9 @@ export default function V3Hero({ ready }: V3HeroProps) {
       ref={heroRef}
       aria-labelledby="v3-hero-title"
       data-ready={ready || undefined}
+      onPointerMove={moveDepth}
+      onPointerLeave={resetDepth}
+      onPointerCancel={resetDepth}
     >
       <motion.div
         className="v3-hero-atmosphere"
@@ -306,9 +342,10 @@ export default function V3Hero({ ready }: V3HeroProps) {
         <motion.div className="v3-hero-support" variants={variants.supportGroup}>
           <motion.div className="v3-hero-media-reveal" variants={variants.media}>
             <div className="v3-hero-media-stage">
-              <V3Magnet className="v3-hero-media-magnet" strength={8}>
+              <div className="v3-hero-media-magnet">
                 <div className="v3-hero-media" data-live={mediaVisible || undefined}>
-                  <img
+                  <motion.img
+                    style={reduceMotion || compactMotion ? undefined : { x: imageX, y: imageY, scale: 1.045 }}
                     src="./projects/nonconvex-navigation.webp"
                     alt={reduceMotion ? t.hero.mediaAlt : ""}
                     aria-hidden={reduceMotion ? undefined : true}
@@ -319,7 +356,8 @@ export default function V3Hero({ ready }: V3HeroProps) {
                     draggable={false}
                   />
                   {!reduceMotion && (
-                    <video
+                    <motion.video
+                      style={compactMotion ? undefined : { x: imageX, y: imageY, scale: 1.045 }}
                       ref={videoRef}
                       className={mediaVisible ? "is-visible" : undefined}
                       muted
@@ -346,7 +384,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
                         srcLang={language === "zh" ? "zh" : "en"}
                         label={language === "zh" ? "中文字幕" : "English"}
                       />
-                    </video>
+                    </motion.video>
                   )}
                   <div className="v3-hero-media-chrome">
                     <span><i /> {t.hero.live}</span>
@@ -354,7 +392,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
                   </div>
                   <div className="v3-hero-media-corner" aria-hidden="true" />
                 </div>
-              </V3Magnet>
+              </div>
             </div>
           </motion.div>
         </motion.div>

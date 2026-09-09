@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import {
   AnimatePresence,
   LayoutGroup,
@@ -6,7 +6,7 @@ import {
   useReducedMotion,
   useScroll,
 } from "framer-motion";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import V3BrandLogo from "./V3BrandLogo";
 import V3MusicControl, { type V3MusicControlHandle } from "./V3MusicControl";
 import { useV3Language } from "./V3Language";
@@ -46,6 +46,10 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   );
   const [navFloating, setNavFloating] = useState(false);
   const [mobileCompact, setMobileCompact] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const navMarkRef = useRef<HTMLAnchorElement>(null);
   const activeHref = sectionTargets.find((target) => target.id === activeSection)?.href ?? "#home";
   const links = [
     { label: t.nav.about, href: "#about", index: "01", sections: ["about", "capabilities"] },
@@ -61,6 +65,70 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   const navigationSurface = activeSection === "project-reel" || activeSection === "projects"
     ? "light"
     : "dark";
+
+  const closeMobileMenu = (restoreFocus = false) => {
+    if (mobileMenuRef.current) mobileMenuRef.current.inert = true;
+    setMobileMenuOpen(false);
+    if (restoreFocus) menuToggleRef.current?.focus({ preventScroll: true });
+  };
+
+  const selectMobileSection = (sectionId: SectionId) => {
+    closeMobileMenu();
+    setActiveSection(sectionId);
+    setMobileCompact(false);
+
+    // Move keyboard reading order to the destination without changing anchor scrolling.
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    const hadTabIndex = section.hasAttribute("tabindex");
+    if (!hadTabIndex) {
+      section.tabIndex = -1;
+      section.addEventListener("blur", () => section.removeAttribute("tabindex"), { once: true });
+    }
+    section.focus({ preventScroll: true });
+  };
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    if (mobileMenuRef.current) mobileMenuRef.current.inert = false;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      closeMobileMenu(true);
+    };
+    const handleOutsidePointer = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (mobileMenuRef.current?.contains(target) || menuToggleRef.current?.contains(target)) return;
+      closeMobileMenu();
+    };
+    const handleFocus = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (mobileMenuRef.current?.contains(target) || menuToggleRef.current?.contains(target)) return;
+      closeMobileMenu();
+    };
+    const desktop = window.matchMedia("(min-width: 64rem)");
+    const handleDesktop = () => {
+      if (!desktop.matches) return;
+      const focusWasInMenu = mobileMenuRef.current?.contains(document.activeElement)
+        || document.activeElement === menuToggleRef.current;
+      closeMobileMenu();
+      if (focusWasInMenu) navMarkRef.current?.focus({ preventScroll: true });
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("pointerdown", handleOutsidePointer);
+    document.addEventListener("focusin", handleFocus);
+    desktop.addEventListener("change", handleDesktop);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+      document.removeEventListener("focusin", handleFocus);
+      desktop.removeEventListener("change", handleDesktop);
+    };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const sections = sectionTargets
@@ -167,12 +235,14 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
       data-section={activeSection}
       data-floating={navFloating || undefined}
       data-compact={mobileCompact || undefined}
+      data-mobile-menu-open={mobileMenuOpen || undefined}
       initial={reduceMotion ? false : { opacity: 0, y: -18 }}
       animate={ready || reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -18 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="v3-nav">
         <a
+          ref={navMarkRef}
           className={`v3-nav-mark${activeSection === "home" ? " is-active" : ""}`}
           href="#home"
           aria-label={language === "zh" ? "费浩然，返回顶部" : "Haoran Fei, back to top"}
@@ -180,6 +250,7 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
           onClick={() => {
             setActiveSection("home");
             setMobileCompact(false);
+            closeMobileMenu();
           }}
         >
           <V3BrandLogo className="v3-brand-logo--nav" revealOrigin decorative />
@@ -253,6 +324,20 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
             <span className={language === "en" ? "is-active" : ""}>EN</span>
           </button>
           <V3MusicControl ref={musicControlRef} />
+          <button
+            ref={menuToggleRef}
+            type="button"
+            className="v3-mobile-menu-toggle"
+            aria-expanded={mobileMenuOpen}
+            aria-controls={mobileMenuOpen ? "v3-mobile-menu" : undefined}
+            aria-label={language === "zh"
+              ? (mobileMenuOpen ? "关闭导航菜单" : "打开导航菜单")
+              : (mobileMenuOpen ? "Close navigation menu" : "Open navigation menu")}
+            onClick={() => mobileMenuOpen ? closeMobileMenu() : setMobileMenuOpen(true)}
+          >
+            <span>{language === "zh" ? "菜单" : "Menu"}</span>
+            {mobileMenuOpen ? <X className="v3-mobile-menu-icon" aria-hidden="true" /> : <Menu className="v3-mobile-menu-icon" aria-hidden="true" />}
+          </button>
           <a
             className={`v3-nav-contact${activeSection === "contact" ? " is-active" : ""}`}
             href="#contact"
@@ -268,6 +353,63 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
           </a>
         </div>
       </div>
+      <AnimatePresence initial={false}>
+        {mobileMenuOpen && (
+          <motion.nav
+            ref={mobileMenuRef}
+            id="v3-mobile-menu"
+            className="v3-mobile-menu"
+            aria-label={language === "zh" ? "移动端导航" : "Mobile navigation"}
+            initial={reduceMotion ? false : { opacity: 0, y: -8, clipPath: "inset(0 0 16% 0 round 12px)" }}
+            animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0 round 12px)" }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -5 }}
+            transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="v3-mobile-menu-heading">
+              <span>{language === "zh" ? "页面导航" : "Explore"}</span>
+              <span aria-hidden="true">HAORAN FEI</span>
+            </div>
+            <a
+              href="#home"
+              aria-current={activeSection === "home" ? "location" : undefined}
+              onClick={() => selectMobileSection("home")}
+            >
+              <span><b aria-hidden="true">00</b>{language === "zh" ? "首页" : "Home"}</span>
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                aria-current={link.sections.includes(activeSection) ? "location" : undefined}
+                onClick={() => selectMobileSection(link.href.slice(1) as SectionId)}
+              >
+                <span><b aria-hidden="true">{link.index}</b>{link.label}</span>
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            ))}
+            <div className="v3-mobile-menu-footer">
+              <button
+                type="button"
+                className="v3-mobile-language"
+                onClick={() => setLanguage(language === "zh" ? "en" : "zh")}
+                aria-label={`中 / EN：${t.switchLanguage}`}
+              >
+                <span className={language === "zh" ? "is-active" : ""}>中</span>
+                <i aria-hidden="true">/</i>
+                <span className={language === "en" ? "is-active" : ""}>EN</span>
+              </button>
+              <a
+                href="#contact"
+                aria-current={activeSection === "contact" ? "location" : undefined}
+                onClick={() => selectMobileSection("contact")}
+              >
+                {t.nav.contact}<ArrowUpRight aria-hidden="true" />
+              </a>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
       <div className="v3-nav-progress" aria-hidden="true">
         <span>00</span>
         <span className="v3-nav-progress-track">
