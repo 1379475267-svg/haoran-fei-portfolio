@@ -85,18 +85,21 @@ export default function V3Footer() {
             <p className="journal-eyebrow">05 / {t.footer.question}</p>
             <h2><V3RevealTitle text="LET’S TALK." slow /></h2>
           </motion.div>
-          <motion.a
-            className="v3-footer-primary-link"
-            href={`mailto:${profile.email}`}
-            initial={reduceMotion ? false : "hidden"}
-            whileInView={reduceMotion ? undefined : "visible"}
-            viewport={{ once: true, amount: 0.5 }}
-            variants={contactLinkVariants}
-          >
-            <span>{language === "zh" ? "写封邮件" : "Write an email"}</span>
-            <strong>{profile.email}</strong>
-            <ArrowUpRight aria-hidden="true" />
-          </motion.a>
+          {[profile.email, profile.secondaryEmail].map((email, index) => (
+            <motion.a
+              key={email}
+              className={`v3-footer-primary-link${index > 0 ? " v3-footer-primary-link--additional" : ""}`}
+              href={`mailto:${email}`}
+              initial={reduceMotion ? false : "hidden"}
+              whileInView={reduceMotion ? undefined : "visible"}
+              viewport={{ once: true, amount: 0.5 }}
+              variants={contactLinkVariants}
+            >
+              {index === 0 && <span>{language === "zh" ? "写封邮件" : "Write an email"}</span>}
+              <strong>{email}</strong>
+              <ArrowUpRight aria-hidden="true" />
+            </motion.a>
+          ))}
         </div>
         <motion.div
           className="v3-footer-directory-stage"

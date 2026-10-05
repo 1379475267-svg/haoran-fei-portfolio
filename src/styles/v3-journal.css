@@ -162,7 +162,8 @@
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-contact-rule { display: block; width: clamp(4rem, 9vw, 8rem); height: 2px; transform-origin: left center; background: #c6ad75; }
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-contact-heading h2 { margin: 0; max-width: none; font-size: clamp(3.5rem,13.5vw,12.5rem); font-weight: 500; line-height: 1.05; letter-spacing: -.07em; }
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-footer-primary-link { margin-top: 1.8rem; padding: 1.5rem 0; border-color: #46473f; background: transparent; border-radius: 0; }
-.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-footer-primary-link strong { font-size: clamp(1.1rem,2.5vw,2.4rem); font-weight: 400; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-footer-primary-link strong { font-size: clamp(1.1rem,2.5vw,2.4rem); font-weight: 400; white-space: normal; overflow-wrap: anywhere; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-footer-primary-link--additional { margin-top: 0; border-top: 0; }
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-footer-directory-stage { display: block; margin-top: 2.5rem; }
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-contact-directory { display: grid; grid-template-columns: minmax(0,.6fr) repeat(2,minmax(0,1fr)); gap: 2rem; border: 0; }
 .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .v3-contact-directory > div { display: block; min-width: 0; padding: 1.25rem 0 0; border: 0; border-top: 1px solid #46473f; }

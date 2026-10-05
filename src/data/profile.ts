@@ -83,6 +83,7 @@ export const profile = {
   chineseName: "Haoran Fei",
   role: "Electronic Information Student / Developer",
   email: "1379475267@qq.com",
+  secondaryEmail: "fei1379475267@gmail.com",
   qq: "1379475267",
   wechat: "Congee",
   wechatQr: "./projects/wechat-qr.webp",

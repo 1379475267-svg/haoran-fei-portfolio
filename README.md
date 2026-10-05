@@ -81,4 +81,5 @@ The production build is generated in `dist/`. The personal domain is hosted on A
 
 - [GitHub Profile](https://github.com/1379475267-svg)
 - [Email](mailto:1379475267@qq.com)
+- [Gmail](mailto:fei1379475267@gmail.com)
 - [Bilibili](https://space.bilibili.com/19876581)
