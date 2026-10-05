@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import V3ChapterStrike from "./V3ChapterStrike";
+import V3RevealTitle from "./V3RevealTitle";
 import { useV3Language, type V3Language } from "./V3Language";
 
 type MilestoneTone = "complete" | "active";
@@ -466,10 +467,10 @@ export default function V3Journey() {
           variants={journeyHeadingVariants}
         >
           <motion.p className="v3-section-label" variants={journeyHeadingItemVariants}>
-            {copy.eyebrow}
+            04 / {copy.eyebrow}
           </motion.p>
           <motion.h2 id="journey-title" variants={journeyHeadingItemVariants}>
-            {copy.title}
+            <V3RevealTitle key={language} text={language === "zh" ? "一步一步，" : "One step."} /><br /><V3RevealTitle key={language + "-line"} text={language === "zh" ? "让想法落地。" : "Then the next."} />
           </motion.h2>
           <motion.p className="v3-journey-intro" variants={journeyHeadingItemVariants}>
             {copy.intro}

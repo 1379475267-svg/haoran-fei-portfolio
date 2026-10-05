@@ -1,90 +1,28 @@
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import V3ChapterStrike from "./V3ChapterStrike";
+import { motion, useReducedMotion } from "framer-motion";
 import { useV3Language } from "./V3Language";
-
-const aboutEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
-const aboutSequenceVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { delayChildren: 0.04, staggerChildren: 0.11 },
-  },
-};
-
-const aboutTitleVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.56, ease: aboutEase },
-  },
-};
-
-const aboutCopyVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const aboutCopyItemVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.58, ease: aboutEase },
-  },
-};
-
-const aboutBridgeVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.56, ease: aboutEase },
-  },
-};
-
-const aboutBridgeLineVariants: Variants = {
-  hidden: { opacity: 0, scaleX: 0 },
-  visible: {
-    opacity: 1,
-    scaleX: 1,
-    transition: { duration: 0.52, ease: aboutEase, delay: 0.12 },
-  },
-};
+import V3RevealTitle from "./V3RevealTitle";
 
 export default function V3About() {
-  const { t } = useV3Language();
-  const reduceMotion = Boolean(useReducedMotion());
-
+  const { t, language } = useV3Language();
+  const reduced = Boolean(useReducedMotion());
   return (
-    <section className="v3-about" id="about" aria-labelledby="about-title">
-      <V3ChapterStrike tone="dark" />
-      <div className="v3-about-orbit v3-about-orbit-one" aria-hidden="true"><i /></div>
-      <div className="v3-about-orbit v3-about-orbit-two" aria-hidden="true"><i /></div>
-      <span className="v3-about-cross v3-about-cross-one" aria-hidden="true">+</span>
-      <span className="v3-about-cross v3-about-cross-two" aria-hidden="true">+</span>
-      <motion.div
-        className="v3-about-inner"
-        initial={reduceMotion ? false : "hidden"}
-        whileInView={reduceMotion ? undefined : "visible"}
-        viewport={{ once: true, amount: 0.32 }}
-        variants={aboutSequenceVariants}
-      >
-        <p className="v3-section-label">{t.about.eyebrow}</p>
-        <motion.h2 id="about-title" variants={aboutTitleVariants}>
-          {t.about.title}
-        </motion.h2>
-        <motion.div className="v3-about-copy" variants={aboutCopyVariants}>
-          <motion.p variants={aboutCopyItemVariants}>{t.about.lead}</motion.p>
-          <motion.p variants={aboutCopyItemVariants}>{t.about.priority}</motion.p>
-        </motion.div>
-        <motion.div className="v3-about-bridge" variants={aboutBridgeVariants}>
-          <span>{t.about.bridgeLabel}</span>
-          <p>{t.about.bridge}</p>
-          <motion.i aria-hidden="true" variants={aboutBridgeLineVariants} />
-        </motion.div>
+    <section className="v3-about journal-about nightflight-about" id="about" aria-labelledby="about-title">
+      <div className="journal-section-heading">
+        <p className="journal-eyebrow">02 / {language === "zh" ? "关于我" : "A LITTLE ABOUT ME"}</p>
+        <h2 id="about-title"><V3RevealTitle key={language} text={language === "zh" ? "从兴趣出发，" : "Led by curiosity."} /><br />
+          <V3RevealTitle key={language + "-second"} className="journal-muted-title" text={language === "zh" ? "在真实世界里验证。" : "Grounded in practice."} /></h2>
+      </div>
+      <motion.div className="journal-about-body" initial={reduced ? false : { opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.8 }}>
+        <p>{t.about.lead}</p><p>{t.about.priority}</p>
       </motion.div>
+      <div className="nightflight-desk-note">
+        <span>AT THE WORKBENCH</span>
+        <p>{language === "zh"
+          ? "从吉他与钢琴的练习，到无人机的定位、规划与控制。我喜欢反复试验，让抽象的知识拥有声音、画面和真实的反馈。这里记录完成的作品，也记录仍在推进的实验。"
+          : "From guitar and piano practice to localization, planning and flight control. I like giving abstract ideas a sound, a shape and a real response. This studio holds finished work alongside experiments still unfolding."}</p>
+      </div>
+      <div className="journal-about-note"><span>SENSE / PLAN / FLY</span><p>{t.about.bridge}</p></div>
     </section>
   );
 }

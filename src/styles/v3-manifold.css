@@ -1,0 +1,132 @@
+/* One quiet light connects the opening, the work and the journal. */
+.v3-site[data-soundtrack] {
+  --moon-gold: 216, 182, 85;
+  --moon-energy: 0;
+  --moon-x: 76%;
+}
+
+/* The entrance hands focus to this landmark; it must not outline the whole page. */
+.v3-site[data-soundtrack] #main-content:focus-visible {
+  outline: none;
+}
+
+/* The landed mark keeps its original silhouette, including on narrow screens. */
+.v3-site[data-version="c"][data-soundtrack] .v3-site-content .v3-nav-mark {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.v3-moonlight {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.v3-moonlight[data-ready="true"] { opacity: 1; }
+.v3-moonlight[data-reading="true"] { opacity: 0.36; }
+.v3-moonlight-glow {
+  position: absolute;
+  left: var(--moon-x);
+  top: -28vh;
+  width: min(100vw, 1000px);
+  height: min(110vh, 1100px);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(var(--moon-gold), 0.12), rgba(var(--moon-gold), 0.028) 43%, transparent 68%);
+  opacity: calc(0.42 + var(--moon-energy) * 0.4);
+  transform: translateX(-50%) scale(calc(1 + var(--moon-energy) * 0.07));
+  transition: left 1.1s ease, transform 0.65s ease, opacity 0.8s ease;
+}
+.v3-moonlight-reflection {
+  position: absolute;
+  right: -15vw;
+  bottom: -42vh;
+  width: 75vw;
+  height: 90vh;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(85, 214, 178, 0.035), transparent 65%);
+  opacity: calc(0.3 + var(--moon-energy) * 0.2);
+  transition: opacity 1s ease;
+}
+.v3-moonlight[data-bloom="true"] .v3-moonlight-glow {
+  transform: translateX(-50%) scale(1.24);
+  opacity: 1;
+  transition-duration: 1.8s;
+}
+.v3-moonlight[data-project="true"] .v3-moonlight-glow {
+  opacity: calc(0.58 + var(--moon-energy) * 0.25);
+}
+
+/* The Home trial carries one warm phrase into the hero; body copy stays quiet. */
+.v3-site[data-soundtrack="home-heart"] .v3-moonlight-glow {
+  opacity: calc(0.38 + var(--moon-energy) * 0.15);
+  transform: translateX(-50%) scale(calc(1 + var(--moon-energy) * 0.025));
+}
+.v3-site[data-soundtrack="home-heart"] .v3-moonlight[data-bloom="true"] .v3-moonlight-glow {
+  opacity: 0.8;
+  transform: translateX(-50%) scale(1.14);
+  transition-duration: 1.65s;
+}
+
+.v3-site[data-soundtrack] .v3-reel-tile {
+  transition: border-color 0.35s ease, box-shadow 0.5s ease, transform 0.4s ease;
+}
+.v3-site[data-soundtrack] .v3-reel-tile:not(.is-duplicate):is(:hover, :focus-visible) {
+  border-color: rgba(var(--moon-gold), 0.58);
+  box-shadow: inset 0 1px 0 rgba(var(--moon-gold), 0.42);
+}
+.v3-site[data-soundtrack] .v3-project-card-wrap:focus-within {
+  outline: 1px solid rgba(var(--moon-gold), 0.4);
+  outline-offset: 8px;
+}
+.v3-site[data-soundtrack] .journal-feature-link {
+  transition: box-shadow 0.5s ease;
+}
+.v3-site[data-soundtrack] .journal-feature-link:is(:hover, :focus-visible) {
+  box-shadow: 0 0 0 1px rgba(var(--moon-gold), 0.65), 0 12px 45px rgba(var(--moon-gold), 0.055);
+}
+
+/* Desktop application screenshots keep their complete window in the frame. */
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-desktop .journal-feature-link {
+  aspect-ratio: 1.5;
+  background: linear-gradient(135deg, #353025, #181917 75%);
+  border: 1px solid #b1a17c;
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-desktop .journal-feature-image {
+  inset: clamp(10px, 1.5vw, 24px);
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-desktop .journal-project-media {
+  background: transparent;
+  scale: 1;
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-desktop .journal-project-poster {
+  object-fit: contain;
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-desktop .journal-feature-caption h3 {
+  max-width: none;
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-actions {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.5rem;
+  margin-top: auto;
+}
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .journal-feature-source {
+  color: #575b4c;
+}
+
+@media (max-width: 640px) {
+  .v3-moonlight-glow { width: 150vw; opacity: calc(0.3 + var(--moon-energy) * 0.18); }
+  .v3-moonlight-reflection { display: none; }
+  .v3-site[data-soundtrack="home-heart"] .v3-moonlight-glow { opacity: calc(0.28 + var(--moon-energy) * 0.1); }
+  .v3-site[data-soundtrack="home-heart"] .v3-moonlight[data-bloom="true"] .v3-moonlight-glow { opacity: 0.56; transform: translateX(-50%) scale(1.08); }
+  .v3-site[data-soundtrack] #contact { padding-bottom: 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v3-moonlight-glow { transform: translateX(-50%) !important; }
+  .v3-moonlight *, .v3-moonlight { transition: none !important; }
+}

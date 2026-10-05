@@ -1,0 +1,210 @@
+/* Moonlit entry uses the existing brand mark and hands it to the header. */
+.v3-opening--manifold {
+  --opening-gold: #dac17a;
+  --opening-ink: #eae8e0;
+  --opening-muted: #a4a095;
+  color: var(--opening-ink);
+}
+
+.v3-opening--manifold .v3-opening-veil { background: #07090b; }
+
+/* Keep the destination measurable, but reveal its brand only at handoff. */
+.v3-site[data-soundtrack][data-opening-active="true"] .v3-nav-mark {
+  visibility: hidden;
+}
+
+.v3-opening--manifold .v3-opening-anchor {
+  position: absolute;
+  z-index: 2;
+  top: 42%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.v3-opening--manifold .v3-opening-logo-frame {
+  position: absolute;
+  width: clamp(11rem, 27vmin, 17rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  transform-origin: center;
+  transition: none;
+  will-change: transform, opacity;
+}
+
+.v3-opening--manifold :is(.v3-opening-mark-base, .v3-opening-mark-gather, .v3-opening-light-pass) {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.v3-opening--manifold .v3-brand-logo--opening {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.v3-opening--manifold .v3-brand-logo__moon {
+  opacity: var(--opening-moon-opacity, 1);
+}
+
+.v3-opening--manifold .v3-opening-light-pass {
+  filter: brightness(2.8) sepia(0.3) saturate(0.8);
+  mix-blend-mode: screen;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.v3-opening--manifold .v3-brand-logo--opening .v3-brand-logo__moon-halo {
+  animation: none;
+  opacity: 0.5;
+}
+
+.v3-opening--manifold .v3-opening-mark-base .v3-brand-logo__moon-halo {
+  animation: v3-manifold-entry-breathe 5.4s ease-in-out infinite;
+}
+
+.v3-opening--manifold[data-phase="playing"] .v3-opening-mark-base .v3-brand-logo__moon-halo { animation: none; }
+
+.v3-opening--manifold .v3-opening-copy {
+  position: absolute;
+  z-index: 2;
+  top: calc(42% + clamp(6.5rem, 16vmin, 10rem));
+  left: 50%;
+  display: flex;
+  width: min(28rem, calc(100% - 3rem));
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.v3-opening--manifold :is(.v3-opening-sound-entry, .v3-opening-silent-entry, .v3-opening-skip) {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 450;
+  line-height: 1.4;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.v3-opening--manifold .v3-opening-sound-entry {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  color: var(--opening-muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.v3-opening--manifold .v3-opening-silent-entry {
+  position: absolute;
+  z-index: 4;
+  right: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  background: transparent;
+  color: var(--opening-muted);
+  opacity: 0.4;
+}
+.v3-opening--manifold .v3-opening-silent-entry svg { width: 1rem; height: 1rem; }
+.v3-opening--manifold[data-phase="playing"] .v3-opening-silent-entry { opacity: 0; pointer-events: none; }
+
+.v3-opening--manifold :is(.v3-opening-sound-entry, .v3-opening-silent-entry):disabled { cursor: default; }
+
+.v3-opening--manifold[data-phase="waiting"] .v3-opening-sound-entry { cursor: progress; }
+
+.v3-opening--manifold :is(.v3-opening-sound-entry, .v3-opening-silent-entry, .v3-opening-skip):focus-visible {
+  outline: 2px solid var(--opening-gold);
+  outline-offset: 4px;
+}
+.v3-opening--manifold .v3-opening-sound-entry:focus-visible {
+  outline: none;
+}
+.v3-opening--manifold .v3-opening-sound-entry:focus-visible .v3-opening-copy {
+  color: var(--opening-gold);
+  text-decoration: underline;
+  text-underline-offset: 0.6rem;
+  text-decoration-thickness: 1px;
+}
+
+.v3-opening--manifold .v3-opening-skip {
+  position: absolute;
+  z-index: 4;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  padding: 0.7rem 0.8rem;
+  background: transparent;
+  color: var(--opening-muted);
+  font-size: 0.65rem;
+}
+
+.v3-opening--manifold .v3-opening-aperture {
+  z-index: 1;
+  border-color: rgb(218 193 122 / 0.4);
+  box-shadow: 0 0 1.15rem rgb(218 193 122 / 0.11);
+}
+
+.v3-opening[data-choreography="home-heart"] .v3-opening-aperture {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* The exit stays clear of the navigation as the page opens underneath it. */
+.v3-opening[data-choreography="home-heart"] .v3-opening-skip {
+  top: auto;
+  right: auto;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+}
+
+.v3-opening--manifold .v3-opening-live-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes v3-manifold-entry-breathe {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.55; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .v3-opening--manifold .v3-opening-sound-entry:not(:disabled):hover {
+    color: #f0dfa9;
+  }
+  .v3-opening--manifold :is(.v3-opening-silent-entry, .v3-opening-skip):hover { color: #f0dfa9; opacity: 1; }
+}
+
+@media (max-height: 38rem) {
+  .v3-opening--manifold .v3-opening-anchor { top: 33%; }
+  .v3-opening--manifold .v3-opening-logo-frame { width: clamp(7rem, 24vmin, 11rem); }
+  .v3-opening--manifold .v3-opening-copy { top: calc(33% + clamp(4rem, 13vmin, 6rem)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-opening--manifold .v3-opening-mark-base .v3-brand-logo__moon-halo { animation: none; }
+  .v3-opening--manifold :is(.v3-opening-sound-entry, .v3-opening-silent-entry, .v3-opening-skip) { transition: none; }
+}

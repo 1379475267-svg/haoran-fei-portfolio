@@ -208,7 +208,7 @@ export default function V3Capabilities() {
                     <Icon className="v3-capability-mark-icon" strokeWidth={1.6} />
                   </motion.span>
                 </motion.div>
-                <div>
+                <div className="v3-capability-copy">
                   <h3>{capability.area}</h3>
                   <p>{capability.description}</p>
                 </div>

@@ -1,0 +1,67 @@
+/* Real project footage and a short, traceable field record. */
+.v3-site[data-version="c"] .nf-flight-notes {
+  padding: clamp(4.5rem, 8vw, 8rem) var(--journal-gutter, clamp(1.25rem, 4vw, 4rem));
+  color: var(--v3-ink-on-dark, #f1eee6);
+  background: var(--journal-dark, #11120f);
+  scroll-margin-top: 6rem;
+}
+.nf-flight-inner { width: min(100%, 92rem); margin-inline: auto; }
+.nf-flight-folio { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1.05rem; border-bottom: 1px solid #41443b; color: #b6b8af; font-size: .66rem; letter-spacing: .09em; line-height: 1.5; }
+.nf-flight-folio > :first-child { color: var(--journal-gold, #c6ad75); }
+.nf-flight-title-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr); gap: clamp(2rem, 4.5vw, 5rem); align-items: end; padding-block: 2.6rem 3rem; }
+.nf-flight-title-row h2 { margin: 0; max-width: none; font-size: clamp(2.8rem, 5.4vw, 5.6rem); font-weight: 500; line-height: 1.14; letter-spacing: -.055em; }
+.nf-flight-title-row > p { max-width: 24ch; margin: 0 0 .25rem; color: #b6b8af; font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.8; }
+.nf-flight-study { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr); gap: clamp(2rem, 4.5vw, 5rem); align-items: start; }
+.nf-flight-figure { min-width: 0; margin: 0; }
+.nf-flight-view-controls { display: flex; flex-wrap: wrap; gap: .3rem 1.75rem; border-bottom: 1px solid #41443b; margin-bottom: 1.1rem; }
+.nf-flight-view-controls button { position: relative; display: inline-flex; align-items: center; gap: .6rem; min-height: 44px; padding: .55rem 0 .9rem; border: 0; border-radius: 0; color: #a4a89c; background: none; font: inherit; font-size: .82rem; cursor: pointer; }
+.nf-flight-view-controls button > span { font-size: .6rem; color: #96998d; }
+.nf-flight-view-controls button[aria-pressed="true"] { color: #f1eee6; }
+.nf-flight-view-controls button[aria-pressed="true"]::after { content: ""; position: absolute; inset: auto 0 -1px; height: 2px; background: var(--journal-gold, #c6ad75); }
+.nf-flight-view-controls button:hover { color: #f1eee6; }
+.nf-flight-evidence { display: grid; place-items: center; aspect-ratio: 4 / 3; overflow: hidden; background: #080b0c; }
+.nf-flight-evidence :is(img, video) { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.nf-flight-figure figcaption { display: flex; justify-content: space-between; align-items: start; gap: 1.1rem; margin-top: 1.2rem; }
+.nf-flight-capture-label { display: block; color: var(--journal-gold, #c6ad75); font-size: .6rem; line-height: 1.5; letter-spacing: .045em; }
+.nf-flight-figure figcaption p { max-width: 45ch; margin: .45rem 0 0; color: #a4a89c; font-size: .72rem; line-height: 1.85; }
+.nf-flight-play { display: inline-flex; flex-shrink: 0; align-items: center; gap: .4rem; min-width: 44px; min-height: 44px; padding: .4rem .65rem; margin-top: -.5rem; border: 1px solid #41443b; border-radius: 0; background: none; color: #c9cabe; font: inherit; font-size: .65rem; cursor: pointer; }
+.nf-flight-play svg { width: .85rem; height: .85rem; stroke-width: 1.5; }
+.nf-flight-play:hover { border-color: var(--journal-gold, #c6ad75); color: #f1eee6; }
+.nf-flight-record { min-width: 0; padding-top: .95rem; }
+.nf-flight-project { margin: 0 0 2.3rem; color: var(--journal-gold, #c6ad75); font-size: .75rem; line-height: 1.7; }
+.nf-flight-decisions { margin: 0; }
+.nf-flight-decisions > div + div { margin-top: 1.9rem; }
+.nf-flight-decisions dt { margin: 0 0 .65rem; color: #96998d; font-size: .68rem; line-height: 1.5; }
+.nf-flight-decisions dd { margin: 0; color: #dedfd5; font-size: clamp(.9rem, 1.08vw, 1.05rem); line-height: 1.95; text-wrap: pretty; }
+.nf-flight-attribution { margin: 1.75rem 0 0; color: #96998d; font-size: .68rem; line-height: 1.8; }
+.nf-flight-github { display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 44px; margin-top: 1.3rem; padding-block: .7rem; border-bottom: 1px solid #6b6147; color: var(--journal-gold, #c6ad75); font-size: .85rem; line-height: 1.6; text-decoration: none; }
+.nf-flight-github svg { width: 1rem; height: 1rem; stroke-width: 1.5; }
+.nf-flight-github:hover { color: #f1eee6; }
+.nf-flight-footnote { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr); gap: clamp(2rem, 4.5vw, 5rem); margin-top: 3rem; padding-top: 1.45rem; border-top: 1px solid #41443b; }
+.nf-flight-footnote span { color: #96998d; font-size: .63rem; line-height: 1.5; }
+.nf-flight-footnote p { margin: .55rem 0 0; color: #b6b8af; font-size: .74rem; line-height: 1.9; }
+.nf-flight-stack p { letter-spacing: .01em; }
+.nf-flight-notes :is(button, a):focus-visible { outline: 2px solid var(--journal-gold, #c6ad75); outline-offset: 5px; }
+@media (max-width: 63.999rem) {
+  .nf-flight-title-row { grid-template-columns: 1fr; gap: 1.2rem; padding-block: 2.3rem; }
+  .nf-flight-title-row > p { max-width: none; }
+  .nf-flight-study { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 2rem; }
+  .nf-flight-record { padding-top: .65rem; }
+  .nf-flight-project { margin-bottom: 1.45rem; }
+  .nf-flight-decisions > div + div { margin-top: 1.4rem; }
+  .nf-flight-figure figcaption { flex-wrap: wrap; }
+}
+@media (max-width: 47.999rem) {
+  .nf-flight-study, .nf-flight-footnote { grid-template-columns: 1fr; }
+  .nf-flight-title-row h2 { font-size: clamp(2.75rem, 10vw, 4.5rem); }
+  .nf-flight-evidence { aspect-ratio: 4 / 3; }
+  .nf-flight-record { padding-top: 0; }
+  .nf-flight-project { margin-bottom: 1.7rem; }
+  .nf-flight-decisions { display: grid; gap: 1.6rem; }
+  .nf-flight-decisions > div + div { margin-top: 0; }
+  .nf-flight-decisions dd { max-width: 52ch; font-size: .95rem; }
+  .nf-flight-footnote { gap: 1.5rem; margin-top: 2.4rem; }
+  .nf-flight-figure figcaption { flex-wrap: nowrap; }
+  .nf-flight-play > span { display: none; }
+  .nf-flight-play { justify-content: center; }
+}

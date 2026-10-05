@@ -2,10 +2,14 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import V3About from "./V3About";
 import V3Capabilities from "./V3Capabilities";
 import V3Footer from "./V3Footer";
-import V3Hero from "./V3Hero";
+import V3NightFlightHero from "./V3NightFlightHero";
+import V3FlightNotes from "./V3FlightNotes";
 import V3Journey from "./V3Journey";
 import type { V3MusicControlHandle } from "./V3MusicControl";
+import { V3_BACKGROUND_TRACK } from "./V3MusicTrack";
 import V3Nav from "./V3Nav";
+import V3Moonlight from "./V3Moonlight";
+import V3MobileMotion from "./V3MobileMotion";
 import V3OpeningSequence, {
   type OpeningCompletionReason,
 } from "./V3OpeningSequence";
@@ -37,6 +41,20 @@ function V3PortfolioContent() {
   });
   const musicControlRef = useRef<V3MusicControlHandle>(null);
   const siteContentRef = useRef<HTMLDivElement>(null);
+  const focusAfterOpeningRef = useRef(false);
+
+  useEffect(() => {
+    if (!openingState.openingActive) musicControlRef.current?.settleAfterOpening();
+  }, [openingState.openingActive]);
+
+  useEffect(() => {
+    if (openingState.openingActive || !focusAfterOpeningRef.current) return;
+    focusAfterOpeningRef.current = false;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [openingState.openingActive]);
 
   useLayoutEffect(() => {
     if (!openingState.openingActive) return undefined;
@@ -133,6 +151,7 @@ function V3PortfolioContent() {
   }, [openingState.openingActive]);
 
   const finishOpening = useCallback((_reason: OpeningCompletionReason) => {
+    focusAfterOpeningRef.current = true;
     setOpeningState({ openingActive: false, contentReady: true });
   }, []);
 
@@ -152,7 +171,13 @@ function V3PortfolioContent() {
       lang={language === "zh" ? "zh-CN" : "en"}
       data-language={language}
       data-version="c"
+      data-art-direction="journal"
+      data-soundtrack={V3_BACKGROUND_TRACK.id}
+      data-studio="nightflight"
+      data-opening-active={openingState.openingActive || undefined}
     >
+      <V3Moonlight ready={openingState.contentReady} />
+      <V3MobileMotion ready={!openingState.openingActive} />
       {openingState.openingActive ? (
         <V3OpeningSequence
           onStart={startOpening}
@@ -170,8 +195,9 @@ function V3PortfolioContent() {
         </a>
         <V3Nav ready={openingState.contentReady} musicControlRef={musicControlRef} />
         <main id="main-content" tabIndex={-1}>
-          <V3Hero ready={openingState.contentReady} />
+          <V3NightFlightHero ready={openingState.contentReady} />
           <V3ProjectReel />
+          <V3FlightNotes />
           <V3About />
           <V3Capabilities />
           <V3Projects />

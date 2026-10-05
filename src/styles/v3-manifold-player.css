@@ -1,0 +1,109 @@
+/* Portalled outside the navigation, whose entrance transform would move a fixed child. */
+.v3-manifold-player {
+  --manifold-energy: 0;
+  --manifold-gold: var(--v3-accent-moon-on-dark, #dcc591);
+  --manifold-muted: var(--v3-muted-on-dark, #aaa8a1);
+  position: fixed;
+  right: max(1.5rem, env(safe-area-inset-right));
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  z-index: calc(var(--z-sticky-nav, 50) + 1);
+  box-sizing: border-box;
+  width: 17.75rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.6rem 0.65rem;
+  border: 1px solid rgba(220, 197, 145, 0.25);
+  border-radius: 0.65rem;
+  background: rgba(17, 20, 20, 0.94);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.2);
+  color: #f0eee6;
+  font-family: var(--font-body, sans-serif);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.v3-manifold-player *,
+.v3-manifold-player *::before,
+.v3-manifold-player *::after { box-sizing: border-box; }
+.v3-manifold-player-main { display: flex; align-items: center; gap: 0.55rem; }
+.v3-manifold-track { display: flex; flex: 1; flex-direction: column; gap: 0.18rem; min-width: 0; }
+.v3-manifold-track strong { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; line-height: 1.15; }
+.v3-manifold-track > span { color: var(--manifold-muted); font-size: 0.62rem; line-height: 1.2; }
+
+.v3-manifold-action {
+  display: grid;
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--manifold-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 180ms ease, color 180ms ease;
+}
+.v3-manifold-action svg { width: 1rem; height: 1rem; stroke-width: 1.6; }
+.v3-manifold-play { background: rgba(220, 197, 145, 0.08); color: var(--manifold-gold); }
+.v3-manifold-action:hover,
+.v3-manifold-action[aria-expanded="true"] { background: rgba(220, 197, 145, 0.14); color: #f1ddb2; }
+.v3-manifold-action:focus-visible,
+.v3-manifold-volume input:focus-visible { outline: 2px solid var(--manifold-gold); outline-offset: 3px; }
+
+.v3-manifold-signal {
+  display: flex;
+  flex: 0 0 1.25rem;
+  height: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.16rem;
+  color: var(--manifold-gold);
+  opacity: 0.55;
+}
+.v3-manifold-signal i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: currentColor;
+  transform: scaleY(calc(0.18 + var(--manifold-energy) * 0.6));
+  transition: transform 120ms ease;
+}
+.v3-manifold-signal i:nth-child(2) { transform: scaleY(calc(0.3 + var(--manifold-energy) * 0.7)); }
+.v3-manifold-signal i:nth-child(3) { transform: scaleY(calc(0.22 + var(--manifold-energy) * 0.5)); }
+.v3-manifold-player[data-playing] .v3-manifold-signal { opacity: 1; }
+
+.v3-manifold-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.15rem 0.1rem;
+  border-top: 1px solid rgba(220, 197, 145, 0.15);
+  color: var(--manifold-muted);
+  font-size: 0.66rem;
+}
+.v3-manifold-volume label { flex-shrink: 0; }
+.v3-manifold-volume input { flex: 1; min-width: 0; height: 1.6rem; margin: 0; accent-color: var(--manifold-gold); cursor: pointer; }
+.v3-manifold-volume output { min-width: 2.25rem; text-align: right; font-variant-numeric: tabular-nums; }
+.v3-manifold-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.v3-manifold-player[data-error] { border-color: rgba(235, 169, 148, 0.6); }
+
+@media (max-width: 40rem) {
+  .v3-manifold-player {
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    width: 14.5rem;
+    padding: 0.4rem 0.45rem;
+  }
+  .v3-manifold-player-main { gap: 0.35rem; }
+  .v3-manifold-track strong { font-size: 0.75rem; }
+  .v3-manifold-track > span { font-size: 0.6rem; }
+  .v3-manifold-signal { flex-basis: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-manifold-action,
+  .v3-manifold-signal i { transition: none; }
+  .v3-manifold-signal i { transform: scaleY(0.25); }
+}

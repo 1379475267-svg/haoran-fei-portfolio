@@ -1,0 +1,45 @@
+/* One quiet switch; no card, track label or expanding panel. */
+.nf-music-toggle {
+  position: fixed;
+  right: max(1.5rem, env(safe-area-inset-right));
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  z-index: calc(var(--z-sticky-nav, 50) + 1);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  color: #938979;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.nf-music-toggle[data-enabled] { color: #9b8045; }
+.nf-music-toggle svg { width: 22px; height: 22px; stroke-width: 1.7; }
+.nf-music-toggle:hover { color: #a68a50; }
+.nf-music-toggle:active { transform: scale(.92); }
+.nf-music-toggle:focus-visible { outline: 2px solid #b39a61; outline-offset: 2px; }
+.nf-music-toggle[data-loading] svg { animation: nf-music-wait 900ms linear infinite; }
+
+.nf-footer .v3-footer-line > div { margin-inline-end: 3.5rem; }
+
+@keyframes nf-music-wait { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .nf-music-toggle {
+    right: max(.75rem, env(safe-area-inset-right));
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+  }
+  .nf-footer .v3-footer-line > div { margin-inline-end: 3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-music-toggle { transition: none; }
+  .nf-music-toggle:active { transform: none; }
+  .nf-music-toggle[data-loading] svg { animation: none; }
+}

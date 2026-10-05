@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import {
   AnimatePresence,
   motion,
@@ -18,15 +18,19 @@ import {
   useV3Language,
 } from "./V3Language";
 import V3ChapterStrike from "./V3ChapterStrike";
+import V3RevealTitle from "./V3RevealTitle";
 
 const selectedIds = [
   "nonconvex-alpha",
+  "deadtime",
+  "docpilot",
   "rail-drone-mission-studio",
   "string-blade",
   "chordpilot",
   "interactive-particle-saturn",
   "fretboard-caged-lab",
   "gamememory",
+  "community-issue-resolution-platform",
 ];
 const selectedProjects = selectedIds
   .map((id) => projects.find((project) => project.id === id))
@@ -48,6 +52,30 @@ interface ProjectEvidence {
 }
 
 const projectEvidence: Record<string, Record<V3Language, ProjectEvidence>> = {
+  "deadtime": {
+    "zh": {
+      "problem": "英雄联盟死亡等待期间，切到已有的抖音等娱乐窗口，并在复活时回到游戏。",
+      "decision": "只读取官方文档中的本地 Live Client Data API；连续确认死亡、标准窗口激活与窗口所有权检查共同约束切换。",
+      "outcome": "v0.1 测试版；支持模拟测试，真实对局仍待验证。无畏契约仅识别进程，不检测死亡；未获 Riot 官方授权。"
+    },
+    "en": {
+      "problem": "Switch to an existing entertainment window during a League of Legends death timer, then return for respawn.",
+      "decision": "Read the documented local Live Client Data API, confirm deaths across samples, and combine standard window activation with ownership checks.",
+      "outcome": "v0.1 beta with simulation testing; live-match compatibility remains unverified. VALORANT detects the process only, not deaths. No Riot authorization."
+    }
+  },
+  "docpilot": {
+    "zh": {
+      "problem": "文档名称和目录常常随着项目推进变得零散，手动批量整理又容易改错路径。",
+      "decision": "在本机提取有限文本，用规则生成可编辑建议；执行前逐项预览，并再次检查来源和目标。",
+      "outcome": "Windows v0.1 已发布。默认无需 API Key；扫描型 PDF 暂不提供 OCR。"
+    },
+    "en": {
+      "problem": "Document names and folders drift as projects grow, while bulk changes are easy to get wrong.",
+      "decision": "Extract limited text locally, offer editable suggestions, and preview every target before checking paths again at execution.",
+      "outcome": "Windows v0.1 is available. The default workflow needs no API key; scanned PDFs do not yet support OCR."
+    }
+  },
   "nonconvex-alpha": {
     zh: {
       problem: "在保留厂家基线的同时，安全迭代真实激光雷达无人机的定位、规划与控制链路。",
@@ -238,12 +266,29 @@ function useStaticProjectLayout(reducedMotion: boolean) {
   return reducedMotion || mediaRequiresStaticLayout;
 }
 
+function useCompactArchive() {
+  const [compact, setCompact] = useState(() =>
+    typeof window === "undefined" ? false : window.matchMedia("(max-width: 40rem)").matches,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 40rem)");
+    const update = () => setCompact(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return compact;
+}
+
 interface ProjectCardProps {
   project: Project;
   index: number;
   active: boolean;
   staticLayout: boolean;
   reducedMotion: boolean;
+  compactEntry?: boolean;
 }
 
 function ProjectCard({
@@ -252,10 +297,12 @@ function ProjectCard({
   active,
   staticLayout,
   reducedMotion,
+  compactEntry = false,
 }: ProjectCardProps) {
   const isPresent = useIsPresent();
   const cardRef = useRef<HTMLDivElement>(null);
   const { language, t } = useV3Language();
+  const compactArchive = useCompactArchive();
   const title = displayTitle(project);
   const isDrone = project.id === "nonconvex-alpha";
   const localized = getProjectLanguage(project, language);
@@ -264,9 +311,9 @@ function ProjectCard({
     "fhrzz.me",
     "www.fhrzz.me",
   ].includes(window.location.hostname);
-  const primaryUrl = isChinaSite
+  const primaryUrl = project.downloadPage ?? (isChinaSite
     ? (project.chinaDemo ?? project.globalDemo ?? project.github)
-    : (project.globalDemo ?? project.chinaDemo ?? project.github);
+    : (project.globalDemo ?? project.chinaDemo ?? project.github));
   const visualUrl = primaryUrl;
   const newTabSuffix = language === "zh" ? "（新标签页打开）" : ", opens in a new tab";
   const labels = language === "zh"
@@ -277,6 +324,7 @@ function ProjectCard({
         globalUnavailable: "Global · 暂未部署",
         chinaUnavailable: "中国大陆 · 暂未部署",
         noDemo: "暂无公开体验",
+        download: "下载与说明",
         github: isDrone ? "查看项目档案 · GitHub" : "查看源码 · GitHub",
         openDemo: "打开在线体验",
         problem: "问题",
@@ -290,6 +338,7 @@ function ProjectCard({
         globalUnavailable: "Global · Not deployed",
         chinaUnavailable: "China · Not deployed",
         noDemo: "No public demo",
+        download: "Download & guide",
         github: isDrone ? "Project archive · GitHub" : "View source · GitHub",
         openDemo: "Open live demo",
         problem: "Problem",
@@ -320,6 +369,13 @@ function ProjectCard({
           value,
         }));
   const interactive = isPresent && (staticLayout || active);
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const detailsPanelId = `project-details-${project.id}`;
+  const progressiveDisclosure = staticLayout && compactArchive && !compactEntry;
+  const showDetails = !progressiveDisclosure || detailsExpanded;
+  const detailsLabel = language === "zh"
+    ? (detailsExpanded ? "收起详情" : "查看详情")
+    : (detailsExpanded ? "Hide details" : "View details");
 
   useEffect(() => {
     if (cardRef.current) cardRef.current.inert = !interactive;
@@ -329,7 +385,7 @@ function ProjectCard({
     <motion.div
       ref={cardRef}
       className="v3-project-card-wrap"
-      id={`project-${project.id}`}
+      id={compactEntry ? undefined : `project-${project.id}`}
       data-project-index={index}
       data-project={project.id}
       data-active={active || undefined}
@@ -340,9 +396,9 @@ function ProjectCard({
         data-project={project.id}
         data-active={active || undefined}
         data-archive-motion={staticLayout ? "static" : "stage"}
-        initial={reducedMotion ? false : "hidden"}
-        animate={reducedMotion || !staticLayout ? "visible" : undefined}
-        whileInView={reducedMotion || !staticLayout ? undefined : "visible"}
+        initial={reducedMotion || compactEntry ? false : "hidden"}
+        animate={reducedMotion || compactEntry || !staticLayout ? "visible" : undefined}
+        whileInView={reducedMotion || compactEntry || !staticLayout ? undefined : "visible"}
         viewport={{ once: true, amount: 0.1 }}
         variants={archiveCardVariants}
       >
@@ -362,11 +418,32 @@ function ProjectCard({
           <motion.div variants={archiveItemVariants}>
             <p>{categoryLabel[project.category][language]} / {isDrone ? t.projects.active : t.projects.personal}</p>
             <h3>{title}</h3>
+            {progressiveDisclosure ? (
+              <p className="v3-project-card-summary">{localized.longDescription}</p>
+            ) : null}
+            {progressiveDisclosure ? (
+              <button
+                type="button"
+                className="v3-project-card-details-toggle"
+                aria-expanded={detailsExpanded}
+                aria-controls={detailsPanelId}
+                onClick={() => setDetailsExpanded((expanded) => !expanded)}
+              >
+                <span>{detailsLabel}</span>
+                <ChevronDown aria-hidden="true" />
+              </button>
+            ) : null}
           </motion.div>
           <motion.div className="v3-project-card-links" variants={archiveItemVariants}>
             <div className="v3-project-card-demo-group">
-              <span>{labels.liveDemo}</span>
+              <span>{project.downloadPage ? labels.download : labels.liveDemo}</span>
               <div>
+                {project.downloadPage ? (
+                  <a href={project.downloadPage} tabIndex={interactive ? undefined : -1}
+                    aria-label={`${labels.download}: ${title}`}>
+                    <span>Windows</span><ArrowUpRight aria-hidden="true" />
+                  </a>
+                ) : null}
                 {project.globalDemo ? (
                   <a
                     href={project.globalDemo}
@@ -399,7 +476,8 @@ function ProjectCard({
                     {labels.chinaUnavailable}
                   </span>
                 ) : null}
-                {!project.globalDemo
+                {!project.downloadPage
+                  && !project.globalDemo
                   && !project.globalDemoUnavailable
                   && !project.chinaDemo
                   && !project.chinaDemoUnavailable ? (
@@ -423,32 +501,40 @@ function ProjectCard({
                   <ArrowUpRight aria-hidden="true" />
                 </a>
               ) : null}
-              <a
-                className="v3-project-card-source-link"
-                href={project.github}
-                target="_blank"
-                rel="noreferrer"
-                tabIndex={interactive ? undefined : -1}
-                aria-label={`${t.projects.openAria}：${title}${newTabSuffix}`}
-              >
-                <span>{labels.github}</span>
-                <ArrowUpRight aria-hidden="true" />
-              </a>
+              {project.github ? (
+                <a
+                  className="v3-project-card-source-link"
+                  href={project.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={interactive ? undefined : -1}
+                  aria-label={`${t.projects.openAria}：${title}${newTabSuffix}`}
+                >
+                  <span>{labels.github}</span>
+                  <ArrowUpRight aria-hidden="true" />
+                </a>
+              ) : (
+                <span className="v3-project-card-link-unavailable">
+                  {language === "zh" ? "源码暂未公开" : "Source private"}
+                </span>
+              )}
             </div>
           </motion.div>
         </motion.div>
         <motion.div className="v3-project-card-body" variants={archiveBodyVariants}>
-          <motion.div className="v3-project-card-notes" variants={archiveMetaVariants}>
-            <motion.p variants={archiveItemVariants}>{localized.longDescription}</motion.p>
-            <motion.dl variants={archiveGroupVariants}>
-              {details.map((detail) => (
-                <motion.div key={`${detail.label}-${detail.value}`} variants={archiveItemVariants}>
-                  <dt>{detail.label}</dt>
-                  <dd>{detail.value}</dd>
-                </motion.div>
-              ))}
-            </motion.dl>
-          </motion.div>
+          {showDetails ? (
+            <motion.div className="v3-project-card-notes" id={detailsPanelId} variants={archiveMetaVariants}>
+              <motion.p variants={archiveItemVariants}>{localized.longDescription}</motion.p>
+              <motion.dl variants={archiveGroupVariants}>
+                {details.map((detail) => (
+                  <motion.div key={`${detail.label}-${detail.value}`} variants={archiveItemVariants}>
+                    <dt>{detail.label}</dt>
+                    <dd>{detail.value}</dd>
+                  </motion.div>
+                ))}
+              </motion.dl>
+            </motion.div>
+          ) : null}
           <motion.a
             className="v3-project-card-visual"
             href={visualUrl}
@@ -463,7 +549,7 @@ function ProjectCard({
               ? undefined
               : { scale: 1.008, transition: { duration: 0.2, ease: quietEase } }}
             aria-label={`${
-              project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria
+              project.downloadPage ? labels.download : project.globalDemo || project.chinaDemo ? labels.openDemo : t.projects.openAria
             }: ${title}${newTabSuffix}`}
           >
             <ProjectCover
@@ -484,6 +570,40 @@ function ProjectCard({
         <span>{title}</span>
       </span>
     </motion.div>
+  );
+}
+
+function CompactProjectEntry({ project, index, reducedMotion }: {
+  project: Project;
+  index: number;
+  reducedMotion: boolean;
+}) {
+  const { language } = useV3Language();
+  const [expanded, setExpanded] = useState(() =>
+    typeof window !== "undefined" && window.location.hash === `#project-${project.id}`,
+  );
+  const panelId = `project-entry-${project.id}`;
+
+  return (
+    <li className="nf-archive-item">
+      <details className="nf-archive-entry" id={`project-${project.id}`} open={expanded}
+        onToggle={(event) => setExpanded(event.currentTarget.open)}>
+        <summary aria-controls={panelId}>
+          <span className="nf-archive-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+          <span className="nf-archive-summary-copy">
+            <strong>{displayTitle(project)}</strong>
+            <span>{categoryLabel[project.category][language]}</span>
+          </span>
+          <ChevronDown className="nf-archive-chevron" aria-hidden="true" />
+        </summary>
+        <div className="nf-archive-panel" id={panelId}>
+          {expanded ? (
+            <ProjectCard project={project} index={index} active={false}
+              staticLayout reducedMotion={reducedMotion} compactEntry />
+          ) : null}
+        </div>
+      </details>
+    </li>
   );
 }
 
@@ -546,6 +666,43 @@ export default function V3Projects() {
     return () => window.removeEventListener("hashchange", syncProjectHash);
   }, [staticLayout, activeIndex]);
 
+  useEffect(() => {
+    if (!staticLayout) return;
+    let scrollFrame = 0;
+
+    const openEntry = (hash: string, scroll: boolean) => {
+      const project = selectedProjects.find((entry) => hash === `#project-${entry.id}`);
+      if (!project) return;
+      const entry = document.getElementById(`project-${project.id}`);
+      if (!(entry instanceof HTMLDetailsElement)) return;
+      // Open synchronously so the browser's normal fragment jump sees the entry.
+      entry.open = true;
+      if (scroll) {
+        cancelAnimationFrame(scrollFrame);
+        scrollFrame = requestAnimationFrame(() => entry.scrollIntoView({ block: "start", behavior: "auto" }));
+      }
+    };
+
+    const onHashChange = () => openEntry(window.location.hash, true);
+    const openBeforeFragmentJump = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+      if (!target || target.target === "_blank") return;
+      const url = new URL(target.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname !== window.location.pathname || url.search !== window.location.search) return;
+      openEntry(url.hash, true);
+    };
+
+    openEntry(window.location.hash, true);
+    window.addEventListener("hashchange", onHashChange);
+    document.addEventListener("click", openBeforeFragmentJump, true);
+    return () => {
+      cancelAnimationFrame(scrollFrame);
+      window.removeEventListener("hashchange", onHashChange);
+      document.removeEventListener("click", openBeforeFragmentJump, true);
+    };
+  }, [staticLayout]);
+
   const onDirectoryKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     let nextIndex = index;
     if (event.key === "ArrowDown" || event.key === "ArrowRight") nextIndex = (index + 1) % totalProjects;
@@ -575,10 +732,10 @@ export default function V3Projects() {
       >
         <div className="v3-project-heading-main">
           <motion.p className="v3-section-label" variants={eyebrowVariants}>
-            {t.projects.eyebrow}
+            03 / {language === "zh" ? "项目档案" : "PROJECT ARCHIVE"}
           </motion.p>
           <motion.h2 id="projects-title" variants={headingTitleVariants}>
-            {t.projects.title}
+            <V3RevealTitle key={language} text={language === "zh" ? "持续构建之中。" : "Always in progress."} />
           </motion.h2>
         </div>
         <motion.p className="v3-project-heading-note" variants={eyebrowVariants}>
@@ -587,7 +744,7 @@ export default function V3Projects() {
       </motion.div>
       <div className="v3-projects-body">
         <div className="v3-project-browser">
-          <nav
+          {!staticLayout ? (<nav
             className="v3-project-directory"
             ref={directoryRef}
             aria-label={staticLayout ? labels.jump : labels.directory}
@@ -665,14 +822,14 @@ export default function V3Projects() {
                 </div>
               </div>
             ) : null}
-          </nav>
+          </nav>) : null}
           <div className="v3-project-stack" data-layout={staticLayout ? "static" : "stage"}>
             {staticLayout ? (
-              <div className="v3-project-static-list" aria-label={labels.all}>
+              <ol className="v3-project-static-list nf-archive-list" aria-label={labels.all}>
                 {selectedProjects.map((project, index) => (
-                  <ProjectCard key={project.id} project={project} index={index} active={false} staticLayout reducedMotion={reduceMotion} />
+                  <CompactProjectEntry key={project.id} project={project} index={index} reducedMotion={reduceMotion} />
                 ))}
-              </div>
+              </ol>
             ) : (
               <div
                 className="v3-project-stage"

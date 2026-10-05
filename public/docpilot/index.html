@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11120f">
+  <meta name="color-scheme" content="dark">
+  <title>DocPilot — 让文件自己知道自己应该叫什么。</title>
+  <meta name="description" content="DocPilot 是一款 Windows 本地文档整理工具。扫描 DOCX、PDF、PPTX 和 TXT，生成可编辑的命名建议；先预览，再确认整理。">
+  <link rel="canonical" href="https://fhrzz.me/docpilot/">
+  <meta property="og:title" content="DocPilot — 文档整理，从容有序。">
+  <meta property="og:description" content="Windows 本地文档整理工具 · v0.1 · 扫描、分析、预览、整理。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fhrzz.me/docpilot/">
+  <link rel="icon" href="/brand/haoran-fei-brand-mark.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="masthead wrap">
+    <a class="signature" href="/" aria-label="费浩然的个人网站">FEI<span>/</span>HR<span class="project-label">PROJECT ARCHIVE</span></a>
+    <a class="back" href="/">返回作品集 <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-top"><span class="eyebrow">A QUIETER WAY TO ORGANIZE.</span><span class="release">v0.1 / WINDOWS</span></div>
+      <h1 id="title">Doc<span>Pilot</span><span class="title-dot">.</span></h1>
+      <div class="hero-bottom">
+        <div>
+          <h2>让文件自己知道自己应该叫什么。</h2>
+          <p class="intro">读懂文档，提出名称与目录建议。<br class="desktop-break">你逐项核对，预览每一步，再决定何时整理。</p>
+          <div class="actions">
+            <a class="button primary" href="https://fhrzz.me/docpilot/DocPilot_0.1.0_x64-setup.exe" download>下载 Windows 安装版 <span class="button-size">x64</span></a>
+            <a class="text-link" href="#start">快速上手 <span aria-hidden="true">↓</span></a>
+            <a class="text-link" href="#compat-title">了解兼容性 <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="download-note">Windows 10 / 11 · x64 · 本地处理 · 下载前可在页面底部核对 SHA-256</p>
+        </div>
+        <div class="hero-aside"><span class="eyebrow">YOUR FILES. YOUR CALL.</span><p>先看清建议。<br><span>再动手整理。</span></p><span class="aside-note">可编辑 · 可预览 · 可撤销</span></div>
+      </div>
+    </section>
+
+    <figure class="preview">
+      <div class="preview-bar"><span><i aria-hidden="true"></i> THE DESKTOP APP</span><span>DocPilot · Windows 桌面界面</span></div>
+      <a href="./docpilot-preview.png" aria-label="查看 DocPilot 完整界面截图"><img src="./docpilot-preview.png" width="2182" height="1406" alt="DocPilot 暖黑金色桌面界面，初次打开时可新建工作区或创建演示工作区。" fetchpriority="high"></a>
+      <figcaption><span>01 / FILE WORKSPACE</span><span>初次打开，创建工作区开始整理。</span></figcaption>
+    </figure>
+
+    <section class="start section" id="start" aria-labelledby="start-title">
+      <div class="section-heading"><span class="eyebrow">GET STARTED / 快速上手</span><h2 id="start-title">三步，整理有序。</h2><p>可以先创建演示工作区，了解整个流程。</p></div>
+      <ol class="steps">
+        <li><span class="step-number">01</span><h3>关联文件夹</h3><p>新建工作区，选择本地文件夹。支持 <strong>DOCX、文本型 PDF、PPTX、TXT</strong>。</p></li>
+        <li><span class="step-number">02</span><h3>扫描并核对</h3><p>扫描文件，运行本机规则分析；在右侧查看依据，修改建议名称与目录。</p></li>
+        <li><span class="step-number">03</span><h3>预览后确认</h3><p>勾选文件，查看目标路径和冲突。只有明确点击应用，才会改动文件。</p></li>
+      </ol>
+      <p class="start-tip"><span>TIP</span> 不需要 OpenAI API Key。默认的本机启发式分析可直接使用；云端模型是可选项。</p>
+    </section>
+
+    <section class="behavior section" aria-labelledby="behavior-title">
+      <div class="section-heading"><span class="eyebrow">HOW IT WORKS / 工作方式</span><h2 id="behavior-title">把决定权，留在手里。</h2><p>DocPilot 提供建议，也让每次文件操作清晰可见。</p></div>
+      <dl class="behavior-list">
+        <div><dt><span>01 /</span> 内容辅助命名</dt><dd>从文档内容与文件名推测项目、用途和版本，生成可编辑建议。</dd></div>
+        <div><dt><span>02 /</span> 重复文件提示</dt><dd>用 SHA-256 标记完全相同的文件，不会自动删除。</dd></div>
+        <div><dt><span>03 /</span> 安全预览与撤销</dt><dd>执行前列出原路径与目标路径，遇到冲突会阻止操作；最后一次整理可尝试撤销。</dd></div>
+      </dl>
+    </section>
+
+    <section class="section" aria-labelledby="compat-title">
+      <div class="section-heading"><span class="eyebrow">DETAILS / 兼容与边界</span><h2 id="compat-title">适合你的工作流吗？</h2></div>
+      <div class="compat-grid">
+        <div><span class="status">SUPPORTED</span><h3>Windows 本地运行</h3><p>桌面程序读取你选择的目录。默认分析过程在本机完成，原始文件不会因为扫描而改动。</p></div>
+        <div><span class="status muted">CURRENT LIMIT</span><h3>文本型文档</h3><p>PDF 只提取已有文本，不提供扫描件 OCR。版本和文档类型只是建议，需要人工核对。</p></div>
+      </div>
+      <details><summary>需要接入 OpenAI API 吗？<span aria-hidden="true">+</span></summary><p>不需要。默认分析使用本机规则，无需联网或 API Key。如果你主动在设置中选择 OpenAI 兼容接口，有限长度的文件名与提取文本片段可能发送给所选模型；原始文件仍保留在本机。</p></details>
+      <details><summary>整理会覆盖或删除我的文件吗？<span aria-hidden="true">+</span></summary><p>不会自动删除重复文件。应用整理前会再次检查源文件和目标路径；目标已有文件时会报告冲突，不覆盖。</p></details>
+      <details><summary>可以撤销整理吗？<span aria-hidden="true">+</span></summary><p>可以尝试撤销上一次整理。如果文件内容已改变、路径被占用或权限不足，程序会报告冲突，不强行覆盖。</p></details>
+    </section>
+
+    <section class="download section" id="download" aria-labelledby="download-title">
+      <div><span class="eyebrow">DOWNLOAD / 开始使用</span><h2 id="download-title">把杂乱的文件，<span>整理成清晰的线索。</span></h2><p>DocPilot v0.1 · Windows x64。安装包未进行代码签名。</p></div>
+      <a class="button primary" href="https://fhrzz.me/docpilot/DocPilot_0.1.0_x64-setup.exe" download>下载 Windows 安装版</a>
+      <details class="integrity"><summary>其他版本与文件校验 <span aria-hidden="true">+</span></summary><div class="file-links"><a href="https://fhrzz.me/docpilot/DocPilot_0.1.0_x64_en-US.msi" download>MSI 安装包</a><a href="https://fhrzz.me/docpilot/DocPilot.exe" download>独立 EXE</a><a href="https://fhrzz.me/docpilot/SHA256SUMS.txt" download>SHA-256 校验文件</a></div><p class="policy">请从本站下载后核对校验值。首次启动时 Windows 可能提示“未知发布者”。</p></details>
+    </section>
+  </main>
+  <footer class="wrap"><span>© 2026 HAORAN FEI <span class="footer-note">BUILT WITH CARE, KEPT LOCAL.</span></span><a href="/">返回 fhrzz.me ↗</a></footer>
+</body>
+</html>

@@ -28,6 +28,7 @@ export interface Project {
   featured: boolean;
   github: string;
   demo: string;
+  downloadPage?: string;
   recognition?: {
     name: string;
     url: string;
@@ -106,7 +107,7 @@ export const navItems: NavItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "9", label: "Projects" },
+  { value: "12", label: "Projects" },
   { value: "2012", label: "Music Started" },
   { value: "ROS / PX4", label: "Learning" },
   { value: "AI", label: "Coding Workflow" },
@@ -128,6 +129,54 @@ export const ribbonItems = [
 ];
 
 export const projects: Project[] = [
+  {
+    "id": "deadtime",
+    "title": "DeadTime",
+    "category": "Tool",
+    "tagline": "A Windows desktop companion for the time between defeat and respawn.",
+    "description": "Read your League of Legends life state, switch to an existing entertainment window after death, and return for respawn.",
+    "longDescription": "DeadTime v0.1 is a Windows desktop beta that reads the local player's life state through League of Legends' documented Live Client Data API. After confirming a death, it can switch to an existing entertainment window and return around respawn. Window ownership tracking cancels the return if you switch elsewhere. VALORANT currently supports process detection only; live-match compatibility still needs testing. This is an independent project without Riot authorization.",
+    "tech": [
+      "Python",
+      "PySide6",
+      "Windows API",
+      "pytest"
+    ],
+    "coverType": "game",
+    "featured": false,
+    "github": "https://github.com/1379475267-svg/DeadTime",
+    "demo": "/deadtime/",
+    "downloadPage": "/deadtime/",
+    "coverPoster": "./media/deadtime-preview.png",
+    "coverLabel": "WINDOWS DESKTOP / v0.1 BETA",
+    "demoLabel": "Windows download",
+    "period": "PERSONAL TOOL · SEP 2026",
+    "status": "v0.1 BETA · WINDOWS"
+  },
+  {
+    "id": "docpilot",
+    "title": "DocPilot",
+    "category": "Tool",
+    "tagline": "A calmer way to name and organize local documents.",
+    "description": "Review editable filename and folder suggestions before changing your files.",
+    "longDescription": "DocPilot is a Windows desktop tool that scans DOCX, text-based PDF, PPTX, and TXT files. Local rules suggest project names, document types, versions, filenames, and folders. Every change is previewed and explicitly confirmed; the latest organization can be undone when paths remain available.",
+    "tech": [
+      "Tauri",
+      "Rust",
+      "Vue 3",
+      "SQLite"
+    ],
+    "coverType": "game",
+    "featured": false,
+    "demo": "/docpilot/",
+    "downloadPage": "/docpilot/",
+    "coverPoster": "/docpilot/docpilot-preview.png",
+    "coverLabel": "WINDOWS DESKTOP / v0.1",
+    "demoLabel": "Windows download",
+    "period": "PERSONAL TOOL · SEP 2026",
+    "status": "v0.1 · WINDOWS",
+    "github": ""
+  },
   {
     id: "nonconvex-alpha",
     title: "Nonconvex α / Drone Lab",
@@ -303,6 +352,31 @@ export const projects: Project[] = [
     github: "https://github.com/1379475267-svg/smart-fishing-alert",
     demo: "https://github.com/1379475267-svg/smart-fishing-alert",
     demoLabel: "View Repository",
+  },
+  {
+    id: "community-issue-resolution-platform",
+    title: "Community Issue Resolution Platform",
+    category: "Web",
+    tagline: "A lightweight civic workflow for turning local public issues into traceable resolutions.",
+    description: "A Vue and FastAPI prototype connecting resident reports with map-based triage, management workspaces, and follow-up feedback.",
+    longDescription:
+      "Community Issue Resolution Platform is a competition project for rural and community settings. It connects resident reporting, map location, management intake, assignment, on-site handling, closure feedback, resident evaluation, and operational review into one traceable event chain. The current public site is an early prototype using demonstration data; source code is private while the project is being prepared for competition review.",
+    tech: ["Vue 3 / TypeScript", "FastAPI", "SQLite", "Docker / Nginx", "Gaode JS API"],
+    coverType: "ai",
+    featured: false,
+    github: "",
+    demo: "https://fhrzz.me/projects/governance/login",
+    chinaDemo: "https://fhrzz.me/projects/governance/login",
+    coverPoster: "./media/governance-platform.png",
+    coverLabel: "CIVIC WORKFLOW / PROTOTYPE",
+    demoLabel: "Open Prototype",
+    period: "COMPETITION PROJECT · 2026",
+    status: "PRIVATE SOURCE · PROTOTYPE",
+    highlights: [
+      { label: "Frontend", value: "Vue 3 + TypeScript" },
+      { label: "Backend", value: "FastAPI" },
+      { label: "Storage", value: "SQLite · prototype stage" },
+    ],
   },
 ];
 

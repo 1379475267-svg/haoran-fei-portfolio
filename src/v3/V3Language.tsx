@@ -55,9 +55,9 @@ const copy = {
     },
     capabilities: { eyebrow: "能力框架 / 工程实践", title: "我能做什么" },
     projects: {
-      eyebrow: "精选项目 / GitHub",
+      eyebrow: "精选项目 / 工程档案",
       title: "项目档案",
-      intro: "七个项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
+      intro: "这些项目，记录我如何在真实系统、实用工具、音乐与视觉实验之间推进想法。",
       active: "团队研发中",
       personal: "个人项目",
       open: "在 GitHub 查看",
@@ -125,9 +125,9 @@ const copy = {
     },
     capabilities: { eyebrow: "Capability map / engineering practice", title: "What I can build" },
     projects: {
-      eyebrow: "Selected projects / GitHub",
+      eyebrow: "Selected projects / Engineering archive",
       title: "Project",
-      intro: "Seven projects that show how I move between physical systems, practical tools, music, and visual experiments.",
+      intro: "Projects that show how I move between physical systems, practical tools, music, and visual experiments.",
       active: "Active team R&D",
       personal: "Personal project",
       open: "Open on GitHub",
@@ -155,6 +155,14 @@ const copy = {
 } as const;
 
 const chineseProjectCopy: Record<string, { longDescription: string; coverLabel: string }> = {
+  "deadtime": {
+    "longDescription": "DeadTime v0.1 是一款 Windows 桌面测试版工具，通过英雄联盟官方文档中的 Live Client Data API 读取本机玩家存活状态。确认死亡后切换到已打开的娱乐窗口，在复活前后返回游戏；如果你主动切到其他窗口，会取消自动返回。无畏契约目前仅支持进程识别，真实对局兼容性仍待验证。本项目未获 Riot 官方授权。",
+    "coverLabel": "WINDOWS 桌面工具 / v0.1 测试版"
+  },
+  "docpilot": {
+    "longDescription": "DocPilot 是一款 Windows 本地文档整理工具，可扫描 DOCX、文本型 PDF、PPTX 和 TXT。它依据文件名和提取内容建议项目、类型、版本、名称与目录。每项变更都要先预览，再由你明确确认；若路径仍可用，还可以撤销上一次整理。",
+    "coverLabel": "WINDOWS 桌面工具 / v0.1"
+  },
   "nonconvex-alpha": {
     longDescription:
       "这是学生团队用于保存出厂基线、逐步扩展真实科研无人机的工程工作区。目前系统以 Jetson Orin NX 为计算平台，结合 Livox Mid-360、Faster-LIO 定位建图、Diff-Planner 局部轨迹规划与 PX4 飞控。",
@@ -195,6 +203,11 @@ const chineseProjectCopy: Record<string, { longDescription: string; coverLabel: 
       "一个由响应式粒子场构成的浏览器艺术作品，结合 Three.js、MediaPipe 手势追踪、GLSL、拖拽交互与实时状态切换，让稳定轨道逐渐进入湍动。",
     coverLabel: "土星 / 项目",
   },
+  "community-issue-resolution-platform": {
+    longDescription:
+      "基层公共问题闭环治理平台是一套面向乡村与城乡社区的轻量化 Web 原型，聚焦排水积水、环境卫生、公共设施损坏和安全隐患等高频问题。平台将居民上报、地图定位、管理受理、任务分派、现场处置、办结反馈与居民评价串成可追溯的事件链。当前公开页面使用演示数据，项目源码因比赛准备暂未公开。",
+    coverLabel: "基层治理 / 原型项目",
+  },
   "smart-fishing-alert": {
     longDescription:
       "一个基于 STM32 的钓鱼咬钩检测原型，将传感器输入、信号判断与硬件反馈组合成可实际验证的提醒系统。",
@@ -217,8 +230,12 @@ export const highlightLabel: Record<string, string> = {
   Compute: "算力",
   Sensing: "感知",
   Control: "控制",
+  Frontend: "前端",
+  Backend: "后端",
+  Storage: "数据存储",
+  Runtime: "运行保障",
+  Mapping: "地图能力",
 };
-
 export function getProjectLanguage(project: {
   id: string;
   longDescription: string;

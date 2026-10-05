@@ -1,0 +1,89 @@
+/* A quiet music dock: one continuous audio engine, controls only when needed. */
+.nf-music-player.v3-manifold-player {
+  width: 13.5rem;
+  padding: .2rem .35rem .2rem .75rem;
+  border-radius: 999px;
+  border-color: rgba(198, 173, 117, .24);
+  background: rgba(17, 18, 15, .96);
+  box-shadow: 0 6px 24px #0000001c;
+  transition: border-radius 180ms ease, background 180ms ease;
+}
+
+.nf-music-player[data-expanded] {
+  width: 18rem;
+  padding: .6rem .65rem .65rem .85rem;
+  border-radius: .75rem;
+}
+
+.nf-music-main.v3-manifold-player-main { gap: .3rem; }
+.nf-music-track.v3-manifold-track strong {
+  font-size: .72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nf-music-track.v3-manifold-track > span { font-size: .61rem; }
+.nf-music-player .v3-manifold-action { border-radius: 50%; }
+.nf-music-player .v3-manifold-play { background: transparent; }
+.nf-music-player .v3-manifold-signal { flex-basis: 1rem; }
+.nf-music-player[data-expanded] .v3-manifold-track { gap: .3rem; }
+.nf-music-player[data-expanded] .nf-music-track.v3-manifold-track strong {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+.nf-music-player[data-expanded] .v3-manifold-play { background: #c6ad7514; }
+.nf-music-volume.v3-manifold-volume { gap: .5rem; margin-top: .55rem; }
+.nf-music-volume label { display: flex; align-items: center; gap: .4rem; }
+.nf-music-volume label svg { width: .9rem; height: .9rem; stroke-width: 1.6; }
+.nf-music-player :is(button,input):focus-visible { outline: 2px solid #dcc591; outline-offset: 3px; }
+
+/* Contact codes stay visible; their reveal motion is owned by the footer. */
+.nf-footer p.nf-contact-name {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  margin: 0;
+  color: #efeee8;
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+
+.nf-footer .nf-contact-code-panel { width: fit-content; max-width: 100%; margin: 0; padding-top: .9rem; }
+.nf-footer .nf-contact-code {
+  display: block;
+  box-sizing: border-box;
+  width: 11rem;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  padding: .55rem;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.nf-footer .nf-contact-code-panel figcaption { max-width: 11rem; margin: .65rem 0 0; color: #b6b8af; font-size: .65rem; line-height: 1.7; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nf-footer .nf-contact-value { margin-top: .35rem; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nf-footer .nf-contact-directory dt { font-size: .7rem; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nf-footer .nf-contact-directory dd { font-size: .9rem; }
+.nf-footer .v3-footer-line { grid-template-columns: minmax(0, 1fr) auto; }
+.nf-footer .v3-footer-line > div { justify-self: end; }
+
+@media (max-width: 40rem) {
+  .nf-music-player.v3-manifold-player {
+    right: max(.75rem, env(safe-area-inset-right));
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    width: 12.8rem;
+    max-width: calc(100vw - 1.5rem);
+  }
+  .nf-music-player.v3-manifold-player[data-expanded] { width: 17.5rem; }
+  .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nf-footer { padding-bottom: 7rem; }
+  .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nf-footer .nf-contact-directory { gap: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-music-player.v3-manifold-player { transition: none; }
+}

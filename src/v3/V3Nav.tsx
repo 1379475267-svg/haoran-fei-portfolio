@@ -14,6 +14,10 @@ import { useV3Language } from "./V3Language";
 const sectionTargets = [
   { id: "home", href: "#home" },
   { id: "project-reel", href: "#project-reel" },
+  { id: "nightflight-sense", href: "#nightflight-sense" },
+  { id: "nightflight-play", href: "#nightflight-play" },
+  { id: "nightflight-build", href: "#nightflight-build" },
+  { id: "flight-notes", href: "#flight-notes" },
   { id: "about", href: "#about" },
   { id: "capabilities", href: "#capabilities" },
   { id: "projects", href: "#projects" },
@@ -53,7 +57,7 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
   const activeHref = sectionTargets.find((target) => target.id === activeSection)?.href ?? "#home";
   const links = [
     { label: t.nav.about, href: "#about", index: "01", sections: ["about", "capabilities"] },
-    { label: t.nav.projects, href: "#projects", index: "02", sections: ["project-reel", "projects"] },
+    { label: t.nav.projects, href: "#project-reel", index: "02", sections: ["project-reel", "nightflight-sense", "nightflight-play", "nightflight-build", "flight-notes", "projects"] },
     { label: t.nav.journey, href: "#journey", index: "03", sections: ["journey"] },
   ];
   const activeLabel = activeHref === "#home"
@@ -62,7 +66,7 @@ export default function V3Nav({ ready, musicControlRef }: V3NavProps) {
         ? t.nav.contact
         : links.find((link) => link.sections.includes(activeSection))?.label ?? t.nav.projects;
 
-  const navigationSurface = activeSection === "project-reel" || activeSection === "projects"
+  const navigationSurface = ["project-reel", "nightflight-sense", "nightflight-build", "projects"].includes(activeSection)
     ? "light"
     : "dark";
 

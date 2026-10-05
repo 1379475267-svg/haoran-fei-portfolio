@@ -1,0 +1,72 @@
+@media (max-width: 640px) {
+  .v3-site[data-studio="nightflight"][data-mobile-motion="true"] [data-mobile-state="pending"] {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+
+  .v3-site[data-studio="nightflight"] [data-mobile-state="entering"] {
+    animation: nf-mobile-lift 620ms cubic-bezier(.22, 1, .36, 1) both;
+    will-change: transform, opacity;
+  }
+
+  .v3-site[data-studio="nightflight"] [data-mobile-kind="media"][data-mobile-state="entering"] {
+    animation-name: nf-mobile-media;
+    animation-duration: 720ms;
+  }
+
+  .v3-site[data-studio="nightflight"] [data-mobile-state="done"] {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .v3-site[data-studio="nightflight"] .nightflight-chapter-index > a,
+  .v3-site[data-studio="nightflight"] .nf-index-entry,
+  .v3-site[data-studio="nightflight"] .nf-text-link,
+  .v3-site[data-studio="nightflight"] .nf-flight-view-controls button,
+  .nf-music-player.v3-manifold-player button {
+    -webkit-tap-highlight-color: transparent;
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+
+  .v3-site[data-studio="nightflight"] .nightflight-chapter-index > a:active,
+  .v3-site[data-studio="nightflight"] .nf-index-entry:active,
+  .v3-site[data-studio="nightflight"] .nf-flight-view-controls button:active,
+  .nf-music-player.v3-manifold-player button:active {
+    background-color: rgba(198, 174, 113, .14);
+  }
+
+  .v3-site[data-studio="nightflight"] .nf-text-link:active {
+    color: #e8d08c;
+  }
+
+  /* A solid fixed player avoids repeatedly blurring the scrolling page. */
+  .nf-music-player.v3-manifold-player {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #11120f;
+  }
+
+  .v3-site[data-studio="nightflight"] .nf-build-steps > li > span {
+    color: #b6a16b;
+  }
+}
+
+@keyframes nf-mobile-lift {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes nf-mobile-media {
+  from { opacity: 0; transform: translate3d(0, 24px, 0) scale(.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-site[data-studio="nightflight"][data-mobile-motion="true"] [data-mobile-state] {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    will-change: auto;
+  }
+}

@@ -56,6 +56,7 @@ interface V3BrandLogoProps {
   animated?: boolean;
   animationMode?: "static" | "draw" | "erase";
   eraseTimeline?: MotionValue<number>;
+  drawTimeline?: MotionValue<number>;
   openingMoon?: boolean;
   revealOrigin?: boolean;
   className?: string;
@@ -67,6 +68,7 @@ export default function V3BrandLogo({
   animated = false,
   animationMode,
   eraseTimeline,
+  drawTimeline,
   openingMoon = false,
   revealOrigin = false,
   className,
@@ -80,6 +82,21 @@ export default function V3BrandLogo({
   const fallbackTimeline = useMotionValue(0);
   const timeline = eraseTimeline ?? fallbackTimeline;
   const clockDrivenErase = isErasing && Boolean(eraseTimeline) && !reduceMotion;
+  const clockDrivenDraw = resolvedAnimationMode === "draw" && Boolean(drawTimeline) && !reduceMotion;
+  const drawClock = drawTimeline ?? fallbackTimeline;
+  const drawRing = useTransform(drawClock, [0, 0.48], [0, 1]);
+  const drawRingScale = useTransform(drawClock, [0, 0.48], [0.965, 1]);
+  const drawLeft = useTransform(drawClock, [0.32, 0.60], [0, 1]);
+  const drawLeftX = useTransform(drawClock, [0.32, 0.60], [-18, 0]);
+  const drawStem = useTransform(drawClock, [0.50, 0.80], [0, 1]);
+  const drawStemY = useTransform(drawClock, [0.50, 0.80], [-22, 0]);
+  const drawBowl = useTransform(drawClock, [0.70, 1], [0, 1]);
+  const drawBowlX = useTransform(drawClock, [0.70, 1], [20, 0]);
+  const drawLeg = useTransform(drawClock, [0.90, 1.20], [0, 1]);
+  const drawLegY = useTransform(drawClock, [0.90, 1.20], [-16, 0]);
+  const drawNode = useTransform(drawClock, [1.18, 1.42], [0, 1]);
+  const drawNodeScale = useTransform(drawClock, [1.18, 1.42], [0.35, 1]);
+  const drawBase = useTransform(drawClock, [1.38, 1.54], [0, 1]);
   const ringOpacity = useTransform(timeline, [2.86, 3.08], [1, 0]);
   const leftOpacity = useTransform(timeline, [2.22, 2.44], [1, 0]);
   const stemOpacity = useTransform(timeline, [1.875, 2.125], [1, 0]);
@@ -160,7 +177,6 @@ export default function V3BrandLogo({
         </filter>
       </defs>
       {shouldAnimate ? (
-        <>
           <defs>
           <clipPath id={`${clipId}-ring`}>
             <path
@@ -213,6 +229,36 @@ export default function V3BrandLogo({
               <circle cx="737" cy="315" r="42" />
             </clipPath>
           </defs>
+      ) : null}
+      {clockDrivenDraw ? (
+        <>
+          <motion.g clipPath={openingMoon ? undefined : `url(#${clipId}-ring)`}
+            mask={openingMoon ? `url(#${clipId}-ring-without-node)` : undefined}
+            initial={false} style={{ opacity: drawRing, scale: drawRingScale, transformOrigin: "512px 480px" }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>
+          <motion.g clipPath={`url(#${clipId}-left)`} initial={false} style={{ opacity: drawLeft, x: drawLeftX }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>
+          <motion.g clipPath={`url(#${clipId}-stem)`} initial={false} style={{ opacity: drawStem, y: drawStemY }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>
+          <motion.g clipPath={`url(#${clipId}-bowl)`} initial={false} style={{ opacity: drawBowl, x: drawBowlX }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>
+          <motion.g clipPath={`url(#${clipId}-leg)`} initial={false} style={{ opacity: drawLeg, y: drawLegY }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>
+          {openingMoon ? null : <motion.g clipPath={`url(#${clipId}-node)`} initial={false}
+            style={{ opacity: drawNode, scale: drawNodeScale, transformOrigin: "737px 315px" }}>
+            <image href={LOGO_SOURCE} width="1024" height="1024" />
+          </motion.g>}
+          <motion.image href={LOGO_SOURCE} width="1024" height="1024"
+            mask={openingMoon ? `url(#${clipId}-logo-without-node)` : undefined}
+            initial={false} style={{ opacity: drawBase }} />
+        </>
+      ) : shouldAnimate ? (
+        <>
           <motion.g
             clipPath={openingMoon ? undefined : `url(#${clipId}-ring)`}
             mask={openingMoon ? `url(#${clipId}-ring-without-node)` : undefined}

@@ -1,0 +1,69 @@
+/* Night Flight Studio uses the journal's existing type, paper and gold. */
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-hero { padding: 8.25rem var(--journal-gutter) 0; }
+.nightflight-hero-inner { max-width: 92rem; margin-inline: auto; }
+.nightflight-hero-kicker { display: flex; justify-content: flex-end; gap: 1rem; color: #b6b8af; font-size: .66rem; letter-spacing: .12em; }
+.nightflight-hero-kicker i { font-style: normal; margin-left: 1.7rem; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-hero h1.journal-masthead { margin: 1.7rem 0 2.8rem; font-weight: 600; }
+.nightflight-hero-stage { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: clamp(3rem, 7vw, 8rem); align-items: center; }
+.nightflight-hero-film { margin: 0; min-width: 0; max-width: 48rem; }
+.nightflight-film-window { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #1c201c; }
+.nightflight-film-window > :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
+.nightflight-film-window > video { opacity: 0; transition: opacity .6s ease; }
+.nightflight-film-window > video.is-playing { opacity: 1; }
+.nightflight-film-toggle { position: absolute; right: 1rem; bottom: 1rem; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border: 1px solid #ffffff50; border-radius: 50%; background: #11120fd9; color: #f1eee6; cursor: pointer; }
+.nightflight-film-toggle svg { width: .85rem; height: .85rem; }
+.nightflight-hero-film figcaption { display: flex; justify-content: space-between; gap: .8rem; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid #3a3d33; font-size: .6rem; letter-spacing: .08em; color: #aaa99f; }
+.nightflight-hero-film figcaption b { margin-right: 1rem; color: var(--journal-gold); font-weight: 400; }
+.nightflight-hero-editorial { padding-block: .75rem; }
+.nightflight-margin-label { color: var(--journal-gold); font-size: .62rem; letter-spacing: .15em; margin: 0 0 2rem; }
+.nightflight-hero-statement { font-size: clamp(2.4rem, 4.65vw, 4.5rem); line-height: 1.25; letter-spacing: -.055em; margin: 0; font-weight: 400; }
+.nightflight-hero-description { margin: 2rem 0; color: #b6b8af; max-width: 25ch; font-size: .94rem; line-height: 1.95; }
+.nightflight-field-link { display: flex; width: fit-content; align-items: center; gap: 1.5rem; color: var(--journal-gold); border-bottom: 1px solid #c6ad7555; padding-bottom: .75rem; font-size: .85rem; }
+.nightflight-field-link svg { width: 1.1rem; height: 1.1rem; }
+.nightflight-scroll-link { display: flex; align-items: center; gap: .75rem; width: fit-content; color: #9ca18e; font-size: .61rem; letter-spacing: .08em; margin-top: 3rem; }
+.nightflight-scroll-link svg { width: .8rem; height: .8rem; }
+.nightflight-chapter-index { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 3.5rem; border-top: 1px solid #3a3d33; }
+.nightflight-chapter-index a { display: flex; align-items: center; gap: 1.5rem; min-width: 0; padding: 1.5rem 0; font-size: .8rem; letter-spacing: .07em; color: #e8e6dd; transition: color .2s; }
+.nightflight-chapter-index a:not(:first-child) { padding-left: 2rem; border-left: 1px solid #3a3d33; }
+.nightflight-chapter-index a svg { width: .9rem; height: .9rem; margin-left: auto; margin-right: 1.5rem; color: var(--journal-gold); }
+.nightflight-chapter-index small { display: block; margin-top: .4rem; color: #9ca18e; font-size: .65rem; letter-spacing: 0; }
+.nightflight-index-number { color: var(--journal-gold); font-size: .62rem; }
+.nightflight-chapter-index a:hover { color: var(--journal-gold); }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-about .journal-about-body { margin-bottom: 2rem; }
+.nightflight-desk-note { display: grid; grid-template-columns: .31fr 1fr; gap: 2rem; border-top: 1px solid #36392f; padding-block: 1.5rem; max-width: 92rem; margin-inline: auto; }
+.nightflight-desk-note > span { font-size: .63rem; color: var(--journal-gold); letter-spacing: .1em; }
+.nightflight-desk-note p { margin: 0; max-width: 60ch; font-size: .86rem; line-height: 1.9; color: #b6b8af; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content :is(.nightflight-hero, .nightflight-reel, .nf-flight-section) :is(a, button):focus-visible { outline: 2px solid var(--journal-gold); outline-offset: 5px; }
+@media (min-width: 1600px) { .nightflight-hero-stage { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); } }
+@media (max-width: 1023px) {
+  .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-hero { padding-top: 7.5rem; }
+  .nightflight-hero-stage { gap: 2.5rem; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .nightflight-hero-statement { font-size: 3rem; }
+  .nightflight-margin-label { margin-bottom: 1.3rem; }
+  .nightflight-hero-description { font-size: .85rem; margin-block: 1.4rem; }
+  .nightflight-scroll-link { margin-top: 2rem; }
+}
+@media (max-width: 640px) {
+  .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-hero { padding-top: 6.6rem; }
+  .nightflight-hero-kicker { font-size: .55rem; letter-spacing: .07em; }
+  .nightflight-hero-kicker > span:last-child { font-size: .5rem; }
+  .nightflight-hero-kicker i { display: none; }
+  .v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-hero h1.journal-masthead { margin: 1.3rem 0 1.8rem; }
+  .nightflight-hero-stage { display: flex; flex-direction: column; align-items: stretch; gap: 2rem; }
+  .nightflight-hero-film { width: 100%; }
+  .nightflight-film-window { aspect-ratio: 408 / 320; }
+  .nightflight-hero-film figcaption { font-size: .5rem; }
+  .nightflight-margin-label { margin-bottom: .8rem; font-size: .55rem; }
+  .nightflight-hero-statement { font-size: 2.5rem; }
+  .nightflight-hero-statement br { display: none; }
+  .nightflight-hero-description { max-width: 32ch; font-size: .86rem; margin: 1rem 0 1.4rem; }
+  .nightflight-scroll-link { display: none; }
+  .nightflight-chapter-index { margin-top: 2.2rem; }
+  .nightflight-chapter-index a { gap: .5rem; padding: 1rem 0; font-size: .7rem; }
+  .nightflight-chapter-index a:not(:first-child) { padding-left: .75rem; }
+  .nightflight-chapter-index a svg { display: none; }
+  .nightflight-chapter-index small { font-size: .55rem; }
+  .nightflight-index-number { font-size: .5rem; }
+  .nightflight-desk-note { grid-template-columns: 1fr; gap: .75rem; }
+}
+@media (prefers-reduced-motion: reduce) { .nightflight-film-window > video { transition: none; } }

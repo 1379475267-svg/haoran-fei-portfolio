@@ -1,7 +1,7 @@
 import { ArrowUpRight, Github } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { profile } from "../data/profile";
-import V3ContactKinetics from "./V3ContactKinetics";
+import V3RevealTitle from "./V3RevealTitle";
 import { useV3Language } from "./V3Language";
 
 const footerEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -22,25 +22,76 @@ const footerDirectoryVariants: Variants = {
   },
 };
 
+const contactHeadingVariants: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.68, ease: footerEase },
+  },
+};
+
+const contactRuleVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.95, ease: footerEase, delay: 0.18 },
+  },
+};
+
+const contactLinkVariants: Variants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: footerEase, delay: 0.55 },
+  },
+};
+
+const contactCodeVariants: Variants = {
+  hidden: { opacity: 0, y: 24, scale: 0.94 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 160,
+      damping: 22,
+      mass: 0.9,
+      delay,
+      opacity: { duration: 0.4, ease: footerEase, delay },
+    },
+  }),
+};
+
 export default function V3Footer() {
   const { language, t } = useV3Language();
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
-    <footer className="v3-footer" id="contact">
+    <footer className="v3-footer nf-footer" id="contact">
       <div className="v3-footer-cta">
         <div className="v3-footer-primary-stage">
-          <V3ContactKinetics
-            contactTitle={t.footer.title}
-            question={t.footer.question}
-          />
+          <motion.div
+            className="journal-contact-heading"
+            initial={reduceMotion ? false : "hidden"}
+            whileInView={reduceMotion ? undefined : "visible"}
+            viewport={{ once: true, amount: 0.45 }}
+            variants={contactHeadingVariants}
+          >
+            <motion.span className="journal-contact-rule" aria-hidden="true" variants={contactRuleVariants} />
+            <p className="journal-eyebrow">05 / {t.footer.question}</p>
+            <h2><V3RevealTitle text="LET’S TALK." slow /></h2>
+          </motion.div>
           <motion.a
             className="v3-footer-primary-link"
             href={`mailto:${profile.email}`}
             initial={reduceMotion ? false : "hidden"}
             whileInView={reduceMotion ? undefined : "visible"}
             viewport={{ once: true, amount: 0.5 }}
-            variants={footerItemVariants}
+            variants={contactLinkVariants}
           >
             <span>{language === "zh" ? "写封邮件" : "Write an email"}</span>
             <strong>{profile.email}</strong>
@@ -53,50 +104,68 @@ export default function V3Footer() {
           whileInView={reduceMotion ? undefined : "visible"}
           viewport={{ once: true, amount: 0.24 }}
           variants={footerDirectoryVariants}
+          onViewportEnter={() => window.dispatchEvent(new Event("fhr-contact-code-open"))}
         >
-          <motion.dl className="v3-contact-directory" variants={footerDirectoryVariants}>
+          <motion.dl className="v3-contact-directory nf-contact-directory" variants={footerDirectoryVariants}>
             <motion.div variants={footerItemVariants}>
               <dt>QQ</dt>
               <dd>{profile.qq}</dd>
             </motion.div>
             <motion.div variants={footerItemVariants}>
               <dt>{language === "zh" ? "微信" : "WeChat"}</dt>
-              <dd>{profile.wechat}<small>{t.footer.scan}</small></dd>
+              <dd className="nf-contact-value">
+                <p className="nf-contact-name">{profile.wechat}</p>
+                <motion.figure
+                  className="nf-contact-code-panel"
+                  aria-label={language === "zh" ? "微信二维码" : "WeChat QR code"}
+                  initial={reduceMotion ? false : "hidden"}
+                  whileInView={reduceMotion ? undefined : "visible"}
+                  viewport={{ once: true, amount: 0.2 }}
+                  variants={contactCodeVariants}
+                  custom={0.1}
+                >
+                    <img
+                      className="nf-contact-code"
+                      src={profile.wechatQr}
+                      alt={`${t.footer.qrAlt}：${profile.wechat}`}
+                      width={640}
+                      height={640}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                </motion.figure>
+              </dd>
             </motion.div>
             <motion.div variants={footerItemVariants}>
               <dt>{t.footer.whatsapp}</dt>
-              <dd>{profile.whatsapp}<small>{t.footer.scan}</small></dd>
+              <dd className="nf-contact-value">
+                <p className="nf-contact-name">{profile.whatsapp}</p>
+                <motion.figure
+                  className="nf-contact-code-panel"
+                  aria-label={language === "zh" ? "WhatsApp 二维码" : "WhatsApp QR code"}
+                  initial={reduceMotion ? false : "hidden"}
+                  whileInView={reduceMotion ? undefined : "visible"}
+                  viewport={{ once: true, amount: 0.2 }}
+                  variants={contactCodeVariants}
+                  custom={0.22}
+                >
+                    <img
+                      className="nf-contact-code"
+                      src={profile.whatsappQr}
+                      alt={`${t.footer.whatsappQrAlt}：${profile.whatsapp}`}
+                      width={560}
+                      height={560}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                </motion.figure>
+              </dd>
             </motion.div>
           </motion.dl>
-          <motion.div className="v3-contact-qr-grid" variants={footerItemVariants}>
-            <figure className="v3-wechat-qr">
-              <img
-                src={profile.wechatQr}
-                alt={`${t.footer.qrAlt}：${profile.wechat}`}
-                width={640}
-                height={640}
-                loading="lazy"
-                decoding="async"
-              />
-              <figcaption>{t.footer.qrCaption}</figcaption>
-            </figure>
-            <figure className="v3-whatsapp-qr">
-              <img
-                src={profile.whatsappQr}
-                alt={`${t.footer.whatsappQrAlt}：${profile.whatsapp}`}
-                width={560}
-                height={560}
-                loading="lazy"
-                decoding="async"
-              />
-              <figcaption>{t.footer.whatsappQrCaption}</figcaption>
-            </figure>
-          </motion.div>
         </motion.div>
       </div>
       <div className="v3-footer-line">
         <span>© 2026 {profile.name}</span>
-        <span>{language === "zh" ? "C 版" : "VERSION C"}</span>
         <div>
           <a
             href={profile.github}

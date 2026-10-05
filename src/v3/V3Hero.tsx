@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight, Crosshair } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import {
   motion,
   useInView,
@@ -10,12 +10,11 @@ import {
   type Variants,
 } from "framer-motion";
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { profile } from "../data/profile";
-import V3Magnet from "./V3Magnet";
+import V3RevealTitle from "./V3RevealTitle";
 import { useV3Language } from "./V3Language";
 
 const ENTER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const COMPACT_MOTION_QUERY = "(max-width: 40rem)";
+const COMPACT_MOTION_QUERY = "(max-width: 40rem), (pointer: coarse)";
 const HERO_VIDEO_POSTER_TIME = 2.3;
 
 const domainVariants: Variants = {
@@ -176,17 +175,12 @@ export default function V3Hero({ ready }: V3HeroProps) {
   const handoffY = useTransform(
     smoothedScrollProgress,
     [0, 0.58, 1],
-    [0, 0, compactMotion ? -18 : -56],
-  );
-  const handoffOpacity = useTransform(
-    smoothedScrollProgress,
-    [0, 0.62, 1],
-    [1, 1, 0.18],
+    [0, 0, -24],
   );
   const handoffScale = useTransform(
     smoothedScrollProgress,
     [0, 0.62, 1],
-    [1, 1, compactMotion ? 0.995 : 0.982],
+    [1, 1, 0.985],
   );
   const [mediaReady, setMediaReady] = useState(false);
   const [mediaVisible, setMediaVisible] = useState(false);
@@ -267,7 +261,7 @@ export default function V3Hero({ ready }: V3HeroProps) {
       document.removeEventListener("visibilitychange", syncPlayback);
       video.pause();
     };
-  }, [heroInView, mediaReady, ready, reduceMotion]);
+  }, [compactMotion, heroInView, mediaReady, ready, reduceMotion]);
 
   const prepareVideoPosterFrame = () => {
     const video = videoRef.current;
@@ -286,162 +280,69 @@ export default function V3Hero({ ready }: V3HeroProps) {
   };
 
   return (
-    <section
-      className="v3-hero"
-      id="home"
-      ref={heroRef}
-      aria-labelledby="v3-hero-title"
-      data-ready={ready || undefined}
-      onPointerMove={moveDepth}
-      onPointerLeave={resetDepth}
-      onPointerCancel={resetDepth}
-    >
-      <motion.div
-        className="v3-hero-atmosphere"
-        aria-hidden="true"
-        variants={variants.atmosphere}
-        initial={initialState}
-        animate={animateState}
-      >
-        <div className="v3-hero-grid" />
-      </motion.div>
-
-      <motion.div
-        className="v3-hero-scroll-frame"
-        style={reduceMotion ? undefined : {
-          y: handoffY,
-          opacity: handoffOpacity,
-          scale: handoffScale,
-        }}
-      >
-        <motion.div
-          className="v3-hero-inner"
-          variants={variants.sequence}
-          initial={initialState}
-          animate={animateState}
-        >
-        <motion.div className="v3-hero-kicker" variants={variants.supportItem}>
-          <span>{t.hero.kicker}</span>
-          <span>{t.hero.location} / 31.2304° N</span>
+    <section className="v3-hero journal-hero" id="home" ref={heroRef}
+      aria-labelledby="v3-hero-title" data-ready={ready || undefined}
+      onPointerMove={moveDepth} onPointerLeave={resetDepth} onPointerCancel={resetDepth}>
+      <motion.div className="journal-hero-handoff"
+        style={{
+          y: reduceMotion || compactMotion ? 0 : handoffY,
+          scale: reduceMotion || compactMotion ? 1 : handoffScale,
+          opacity: 1,
+          transformOrigin: "50% 0%",
+        }}>
+      <motion.div className="journal-hero-inner" initial={initialState} animate={animateState} variants={variants.sequence}>
+        <motion.div className="journal-hero-eyebrow" variants={variants.supportItem}>
+          <span>{t.hero.greeting}</span><span>{t.hero.kicker} / 2026</span>
         </motion.div>
-
-        <motion.div className="v3-hero-title-wrap" variants={variants.titleGroup}>
-          <h1 id="v3-hero-title">
-            <motion.span className="v3-hero-greeting" variants={variants.titleLine}>
-              {t.hero.greeting}
-            </motion.span>
-            <motion.strong className="v3-hero-name-filled" variants={variants.titleLine}>
-              Haoran
-            </motion.strong>
-            <motion.strong className="v3-hero-name-outline" variants={variants.titleLine}>
-              Fei
-            </motion.strong>
-          </h1>
-        </motion.div>
-
-        <motion.div className="v3-hero-support" variants={variants.supportGroup}>
-          <motion.div className="v3-hero-media-reveal" variants={variants.media}>
-            <div className="v3-hero-media-stage">
-              <div className="v3-hero-media-magnet">
-                <div className="v3-hero-media" data-live={mediaVisible || undefined}>
-                  <motion.img
-                    style={reduceMotion || compactMotion ? undefined : { x: imageX, y: imageY, scale: 1.045 }}
-                    src="./projects/nonconvex-navigation.webp"
-                    alt={reduceMotion ? t.hero.mediaAlt : ""}
-                    aria-hidden={reduceMotion ? undefined : true}
-                    width={568}
-                    height={320}
-                    loading="eager"
-                    decoding="async"
-                    draggable={false}
-                  />
-                  {!reduceMotion && (
-                    <motion.video
-                      style={compactMotion ? undefined : { x: imageX, y: imageY, scale: 1.045 }}
-                      ref={videoRef}
-                      className={mediaVisible ? "is-visible" : undefined}
-                      muted
-                      loop
-                      playsInline
-                      preload="auto"
-                      poster="./projects/nonconvex-navigation.webp"
-                      aria-label={t.hero.mediaAria}
-                      width={568}
-                      height={320}
-                      onLoadedMetadata={prepareVideoPosterFrame}
-                      onCanPlay={confirmVideoPosterFrame}
-                      onSeeked={confirmVideoPosterFrame}
-                      onError={() => {
-                        setMediaReady(false);
-                        setMediaVisible(false);
-                      }}
-                    >
-                      <source src="./projects/nonconvex-navigation.webm" type="video/webm" />
-                      <source src="./projects/nonconvex-navigation.mp4" type="video/mp4" />
-                      <track
-                        kind="captions"
-                        src="./projects/nonconvex-navigation.vtt"
-                        srcLang={language === "zh" ? "zh" : "en"}
-                        label={language === "zh" ? "中文字幕" : "English"}
-                      />
-                    </motion.video>
-                  )}
-                  <div className="v3-hero-media-chrome">
-                    <span><i /> {t.hero.live}</span>
-                    <span>Nonconvex α</span>
-                  </div>
-                  <div className="v3-hero-media-corner" aria-hidden="true" />
-                </div>
+        <h1 id="v3-hero-title" className="journal-masthead">
+          <V3RevealTitle text="HAORAN" ready={ready} />
+          <V3RevealTitle text="FEI" ready={ready} className="journal-name-gold" />
+        </h1>
+        <div className="journal-hero-body">
+          <motion.figure className="journal-hero-figure" variants={variants.media}>
+            <motion.div className="journal-hero-media-mask"
+              initial={reduceMotion ? false : { clipPath: "inset(0 0 100% 0)" }}
+              animate={ready ? { clipPath: "inset(0 0 0% 0)" } : undefined}
+              transition={{ duration: 1.15, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}>
+              <div className="journal-hero-media">
+                <motion.img style={reduceMotion || compactMotion ? undefined : { x: imageX, y: imageY, scale: 1.045 }}
+                  src="./projects/nonconvex-navigation.webp" alt={t.hero.mediaAlt}
+                  width={568} height={320} loading="eager" decoding="async" draggable={false} />
+                {!reduceMotion && <motion.video ref={videoRef}
+                  className={mediaVisible ? "is-visible" : undefined}
+                  style={reduceMotion ? undefined : { x: imageX, y: imageY, scale: compactMotion ? 1.02 : 1.045 }}
+                  muted loop playsInline preload={compactMotion ? "metadata" : "auto"} poster="./projects/nonconvex-navigation.webp"
+                  aria-label={t.hero.mediaAria} width={568} height={320}
+                  onLoadedMetadata={prepareVideoPosterFrame} onCanPlay={confirmVideoPosterFrame}
+                  onSeeked={confirmVideoPosterFrame}
+                  onError={() => { setMediaReady(false); setMediaVisible(false); }}>
+                  <source src="./projects/nonconvex-navigation.webm" type="video/webm" />
+                  <source src="./projects/nonconvex-navigation.mp4" type="video/mp4" />
+                  <track kind="captions" src="./projects/nonconvex-navigation.vtt"
+                    srcLang={language === "zh" ? "zh" : "en"} label={language === "zh" ? "中文字幕" : "English"} />
+                </motion.video>}
               </div>
-            </div>
+            </motion.div>
+            <figcaption><span><b>01</b> NONCONVEX α <i>/</i> AUTONOMOUS SYSTEMS</span>
+              <span>{language === "zh" ? "感知 / 规划 / 飞行" : "SENSE / PLAN / FLY"}</span></figcaption>
+          </motion.figure>
+          <motion.div className="journal-hero-note" variants={variants.supportGroup}>
+            <motion.p className="journal-hero-statement" variants={variants.supportItem}>
+              {language === "zh" ? <>把热爱，<br />做成真实系统。</> : <>Build what <br />moves you.</>}
+            </motion.p>
+            <motion.p className="journal-hero-description" variants={variants.supportItem}>{t.hero.body}</motion.p>
+            <motion.div variants={variants.action}>
+              <a className="journal-hero-action" href="#project-reel">
+                <span className="journal-action-circle"><ArrowUpRight aria-hidden="true" /></span>
+                <span>{language === "zh" ? "探索项目" : "Explore the work"}</span>
+              </a>
+            </motion.div>
+            <motion.a className="journal-hero-featured-link" href="#project-nonconvex-alpha" variants={variants.finalItem}>
+              {t.hero.viewProject}<ArrowUpRight aria-hidden="true" />
+            </motion.a>
           </motion.div>
-        </motion.div>
-
-        <motion.div className="v3-hero-copy-block" variants={variants.body}>
-          <p className="v3-hero-intro">{t.hero.body}</p>
-          <motion.div
-            className="v3-hero-domain"
-            aria-label="Sense, plan, fly"
-            variants={domainVariants}
-          >
-            <motion.span variants={domainItemVariants}><Crosshair aria-hidden="true" /> Sense</motion.span>
-            <motion.span variants={domainItemVariants}>Plan</motion.span>
-            <motion.span variants={domainItemVariants}>Fly</motion.span>
-          </motion.div>
-        </motion.div>
-
-        <motion.div className="v3-hero-cta-reveal" variants={variants.action}>
-          <V3Magnet className="v3-hero-cta-magnet" strength={5}>
-            <a
-              className="v3-action"
-              href="#projects"
-            >
-              {t.hero.viewProject} <ArrowUpRight aria-hidden="true" />
-            </a>
-          </V3Magnet>
-        </motion.div>
-
-        <motion.div className="v3-hero-final-details" variants={variants.finalGroup}>
-          <motion.span
-            className="v3-hero-version"
-            aria-hidden="true"
-            variants={variants.versionItem}
-          >
-            V03 / {profile.name.toUpperCase()}
-          </motion.span>
-          <motion.a
-            className="v3-scroll-cue"
-            href="#project-reel"
-            aria-label={t.hero.exploreAria}
-            variants={variants.finalItem}
-          >
-            {t.hero.explore}
-            <span className="v3-scroll-cue-icon" aria-hidden="true">
-              <ArrowDownRight />
-            </span>
-          </motion.a>
-        </motion.div>
-        </motion.div>
+        </div>
+      </motion.div>
       </motion.div>
     </section>
   );

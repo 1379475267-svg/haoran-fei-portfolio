@@ -1,0 +1,141 @@
+/* Curated chapters: one project leads, related work stays in a quiet index. */
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-reel {
+  --nf-paper: #eae7df;
+  --nf-dark: #11120f;
+  --nf-gold: #c6ad75;
+  --nf-ink: #23261e;
+  --nf-muted: #64675c;
+  --nf-rule: #b9bbb0;
+  margin: 0;
+  padding: 0;
+  color: var(--nf-ink);
+  background: var(--nf-paper);
+  overflow: clip;
+}
+.nightflight-reel .nf-inner { width: min(100%, 92rem); margin-inline: auto; padding-inline: var(--journal-gutter, clamp(1.25rem, 4vw, 4rem)); box-sizing: border-box; }
+.nightflight-reel :is(h2,h3,h4,p,figure,ol) { margin: 0; }
+.nightflight-reel :is(a,button) { -webkit-tap-highlight-color: transparent; }
+.nightflight-reel :is(a,button):focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+.nightflight-reel .nf-reel-intro { padding-block: clamp(4rem,7vw,7rem) 3.7rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; }
+.nightflight-reel .nf-reel-intro > p { grid-column: 1 / -1; padding-bottom: 1.1rem; border-bottom: 1px solid var(--nf-rule); font-size: .7rem; letter-spacing: .09em; }
+.nightflight-reel .nf-reel-intro h2 { font-size: clamp(1.75rem,3.4vw,3.25rem); line-height: 1.3; font-weight: 500; letter-spacing: -.05em; }
+.nightflight-reel .nf-reel-intro h2 span { color: var(--nf-muted); }
+.nightflight-reel .nf-reel-intro nav { display: flex; align-items: flex-end; gap: 1.35rem; }
+.nightflight-reel .nf-reel-intro nav a { padding-block: .5rem; font-size: .68rem; letter-spacing: .08em; border-bottom: 1px solid transparent; }
+.nightflight-reel .nf-reel-intro nav a:hover { border-color: currentColor; }
+.nightflight-reel .nf-chapter { padding-block: 2rem 5rem; scroll-margin-top: 6.5rem; }
+.nightflight-reel .nf-chapter-label { display: flex; align-items: baseline; gap: 1.6rem; padding-block: 1.15rem; border-block: 1px solid var(--nf-rule); font-size: .67rem; letter-spacing: .08em; }
+.nightflight-reel .nf-chapter-label > :last-child { margin-left: auto; color: var(--nf-muted); }
+.nightflight-reel .nf-chapter h3 { font-family: "Geist", Arial, sans-serif; font-size: clamp(5rem,13vw,12rem); font-weight: 560; line-height: .95; letter-spacing: -.085em; }
+.nightflight-reel .nf-chapter h3 > span { color: #9e854f; }
+.nightflight-reel .nf-sense-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-block: 2.1rem 3rem; }
+.nightflight-reel .nf-sense-heading > p { max-width: 24ch; padding-bottom: .35rem; font-size: clamp(1rem,1.8vw,1.55rem); line-height: 1.6; }
+.nightflight-reel .nf-project-media { position: relative; display: block; overflow: hidden; min-width: 0; aspect-ratio: 16 / 9; background: var(--nf-dark); }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-reel .nf-project-media .journal-project-media { width: 100%; height: 100%; }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-reel .nf-project-media :is(.journal-project-poster,.journal-project-video) { object-fit: contain; }
+.nightflight-reel .nf-media-open { position: absolute; inset: auto 1.1rem 1.1rem auto; display: grid; place-items: center; width: 3rem; height: 3rem; border: 1px solid #c6ad7580; border-radius: 50%; background: #11120fea; color: var(--nf-gold); transition: transform 250ms ease, background 250ms ease; }
+.nightflight-reel .nf-media-open svg { width: 1.2rem; height: 1.2rem; }
+.nightflight-reel .nf-project-media:hover .nf-media-open { background: #23261e; transform: translate(2px,-2px); }
+.nightflight-reel .nf-sense-figure figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .7rem 2rem; padding-block: 1.05rem; border-bottom: 1px solid var(--nf-rule); font-size: .67rem; line-height: 1.7; letter-spacing: .04em; }
+.nightflight-reel .nf-sense-figure figcaption > :last-child { color: var(--nf-muted); }
+.nightflight-reel .nf-sense-caption { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,.7fr); gap: clamp(2rem,6vw,7rem); padding-block: 2.4rem 3rem; }
+.nightflight-reel h4 { font-size: clamp(2rem,3.6vw,3.7rem); font-weight: 500; line-height: 1.1; letter-spacing: -.045em; }
+.nightflight-reel .nf-sense-caption > div > p { max-width: 48ch; margin-top: 1rem; font-size: .92rem; color: var(--nf-muted); line-height: 1.9; }
+.nightflight-reel .nf-project-foot { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; }
+.nightflight-reel .nf-sense-caption .nf-project-foot > p { margin-top: 0; font-size: .63rem; letter-spacing: .075em; line-height: 1.8; }
+.nightflight-reel .nf-text-link { display: inline-flex; align-items: center; gap: 1.5rem; min-height: 44px; padding-block: .7rem; border-bottom: 1px solid currentColor; color: #79602d; font-size: .86rem; line-height: 1.5; }
+.nightflight-reel .nf-text-link svg { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; transition: transform 250ms ease; }
+.nightflight-reel .nf-text-link:hover svg { transform: translate(2px,-2px); }
+.nightflight-reel .nf-supporting-index { border-top: 1px solid var(--nf-rule); }
+.nightflight-reel .nf-index-label { padding-block: 1.2rem .6rem; color: var(--nf-muted); font-size: .63rem; letter-spacing: .06em; }
+.nightflight-reel .nf-index-entry { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.4fr) 1.2rem; align-items: baseline; gap: 1.5rem; padding-block: 1.2rem; border-bottom: 1px solid var(--nf-rule); }
+.nightflight-reel .nf-index-title { font-size: 1.05rem; line-height: 1.4; letter-spacing: -.025em; }
+.nightflight-reel .nf-index-description { font-size: .78rem; color: var(--nf-muted); line-height: 1.7; }
+.nightflight-reel .nf-index-entry svg { align-self: center; width: 1.1rem; height: 1.1rem; transition: transform 250ms ease; }
+.nightflight-reel .nf-index-entry:hover svg { transform: translate(2px,-2px); }
+.nightflight-reel .nf-chapter--play { --nf-muted: #abaea2; --nf-rule: #3a3c32; background: var(--nf-dark); color: #f1eee6; padding-block: 4.4rem 5rem; }
+.nightflight-reel .nf-chapter--play h3 > span { color: var(--nf-gold); }
+.nightflight-reel .nf-play-layout { display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1.3fr); gap: clamp(2rem,5vw,6rem); margin-block: 3rem 4rem; }
+.nightflight-reel .nf-play-copy h3 { font-size: clamp(5rem,10.5vw,9.5rem); margin-bottom: 2.8rem; }
+.nightflight-reel .nf-play-copy h4 { font-size: clamp(2rem,3vw,3rem); }
+.nightflight-reel .nf-play-copy > p, .nightflight-reel .nf-build-copy > p { max-width: 40ch; margin-top: 1.2rem; color: var(--nf-muted); font-size: .9rem; line-height: 1.9; }
+.nightflight-reel .nf-play-copy > .nf-project-lead { color: #f1eee6; font-size: 1.12rem; }
+.nightflight-reel .nf-play-copy > .nf-text-link { margin-top: 2rem; color: var(--nf-gold); }
+.nightflight-reel .nf-recognition { display: flex; align-items: center; gap: .5rem; margin-top: 1.2rem; font-size: .62rem; color: var(--nf-muted); line-height: 1.8; }
+.nightflight-reel .nf-recognition svg { width: .85rem; height: .85rem; }
+.nightflight-reel .nf-play-stage { min-width: 0; padding-top: .35rem; }
+.nightflight-reel .nf-play-stage .nf-project-media { border: 1px solid var(--nf-rule); }
+.nightflight-reel .nf-image-credit { padding-block: .75rem; color: var(--nf-muted); font-size: .58rem; letter-spacing: .045em; line-height: 1.6; }
+.nightflight-reel .nf-chord-study { margin-top: 2rem; padding-top: 1.15rem; border-top: 1px solid var(--nf-rule); }
+.nightflight-reel .nf-study-label { display: flex; align-items: center; gap: .65rem; color: var(--nf-gold); font-size: .63rem; line-height: 1.5; letter-spacing: .06em; }
+.nightflight-reel .nf-study-label svg { width: .9rem; height: .9rem; }
+.nightflight-reel .nf-study-label > :last-child { margin-left: auto; color: var(--nf-muted); }
+.nightflight-reel .nf-chord-controls { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .65rem; margin-top: 1.1rem; }
+.nightflight-reel .nf-chord-controls button { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; padding: 1rem; min-height: 82px; border: 1px solid var(--nf-rule); border-radius: 0; color: #f1eee6; background: transparent; cursor: pointer; text-align: left; transition: border-color 200ms ease, background 200ms ease; }
+.nightflight-reel .nf-chord-controls button > :first-child { font-size: 1.4rem; font-weight: 450; line-height: 1; }
+.nightflight-reel .nf-chord-controls button > :last-child { font-size: .61rem; color: var(--nf-muted); white-space: nowrap; }
+.nightflight-reel .nf-chord-controls button:is(:hover,[aria-pressed="true"]) { border-color: var(--nf-gold); background: #c6ad750b; }
+.nightflight-reel .nf-chord-controls button[aria-pressed="true"] > :first-child { color: var(--nf-gold); }
+.nightflight-reel .nf-study-status { min-height: 1.5em; margin-top: .8rem; color: #c2c5b9; font-size: .71rem; line-height: 1.7; }
+.nightflight-reel .nf-study-note { margin-top: .4rem; color: var(--nf-muted); font-size: .62rem; line-height: 1.8; }
+.nightflight-reel .nf-chapter--build { padding-block: 4.4rem 4rem; }
+.nightflight-reel .nf-build-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 3rem; padding-block: 2.2rem 3rem; }
+.nightflight-reel .nf-build-heading > p { max-width: 25ch; padding-bottom: .3rem; font-size: clamp(1rem,1.7vw,1.4rem); line-height: 1.6; }
+.nightflight-reel .nf-build-layout { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,.8fr); align-items: center; gap: clamp(2rem,5vw,5rem); margin-bottom: 3.5rem; }
+.nightflight-reel .nf-build-media { min-width: 0; }
+.nightflight-reel .nf-build-media .nf-project-media { aspect-ratio: 1.42; border: 1px solid var(--nf-rule); }
+.v3-site[data-version="c"][data-art-direction="journal"] .v3-site-content .nightflight-reel .nf-project-media--interface .journal-project-media { background: #f5f2eb; }
+.nightflight-reel .nf-build-copy > .nf-project-lead { color: var(--nf-ink); font-size: 1.08rem; }
+.nightflight-reel .nf-build-steps { list-style: none; padding: 0; margin-block: 1.8rem 1.5rem; }
+.nightflight-reel .nf-build-steps li { display: flex; gap: 1.5rem; padding-block: .8rem; border-top: 1px solid var(--nf-rule); font-size: .78rem; line-height: 1.6; }
+.nightflight-reel .nf-build-steps li span { color: #79602d; font-size: .64rem; }
+.nightflight-reel .nf-archive-link { display: flex; justify-content: space-between; align-items: center; gap: 2rem; margin-top: 3rem; padding-block: 1.45rem; border-block: 1px solid var(--nf-rule); font-size: .86rem; }
+.nightflight-reel .nf-archive-link > :last-child { display: flex; align-items: center; gap: 2rem; white-space: nowrap; font-size: .64rem; letter-spacing: .04em; }
+.nightflight-reel .nf-archive-link svg { width: 1.25rem; height: 1.25rem; }
+@media (max-width: 63.999rem) {
+  .nightflight-reel .nf-reel-intro { grid-template-columns: minmax(0,1fr); gap: 1.7rem; }
+  .nightflight-reel .nf-reel-intro nav { align-items: flex-start; }
+  .nightflight-reel .nf-sense-caption { gap: 2rem; }
+  .nightflight-reel .nf-play-layout { grid-template-columns: minmax(0,.9fr) minmax(0,1.15fr); gap: 2rem; }
+  .nightflight-reel .nf-play-copy h3 { margin-bottom: 2rem; }
+  .nightflight-reel .nf-chord-controls { gap: .4rem; }
+  .nightflight-reel .nf-chord-controls button { padding: .8rem .65rem; }
+  .nightflight-reel .nf-build-layout { grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: 2rem; }
+}
+@media (max-width: 47.999rem) {
+  .nightflight-reel .nf-reel-intro { padding-block: 3.2rem 2rem; }
+  .nightflight-reel .nf-reel-intro h2 { font-size: clamp(1.65rem,6.5vw,2.5rem); }
+  .nightflight-reel .nf-reel-intro nav { gap: 1.2rem; flex-wrap: wrap; }
+  .nightflight-reel .nf-chapter { padding-block: 1.2rem 3rem; scroll-margin-top: 5.5rem; }
+  .nightflight-reel .nf-chapter--play, .nightflight-reel .nf-chapter--build { padding-top: 2.5rem; }
+  .nightflight-reel .nf-chapter-label { gap: 1rem; font-size: .59rem; }
+  .nightflight-reel .nf-chapter h3 { font-size: clamp(4.7rem,20vw,8rem); }
+  .nightflight-reel .nf-sense-heading, .nightflight-reel .nf-build-heading { display: block; padding-block: 1.8rem; }
+  .nightflight-reel .nf-sense-heading > p, .nightflight-reel .nf-build-heading > p { margin-top: 1.3rem; max-width: 30ch; font-size: .95rem; }
+  .nightflight-reel .nf-sense-heading > p br { display: none; }
+  .nightflight-reel .nf-media-open { inset: auto .65rem .65rem auto; width: 2.5rem; height: 2.5rem; }
+  .nightflight-reel .nf-sense-figure figcaption { font-size: .59rem; gap: .35rem; }
+  .nightflight-reel .nf-sense-caption, .nightflight-reel .nf-play-layout, .nightflight-reel .nf-build-layout { grid-template-columns: minmax(0,1fr); gap: 1.8rem; }
+  .nightflight-reel .nf-sense-caption { padding-block: 1.8rem 2.5rem; }
+  .nightflight-reel .nf-project-foot { gap: .9rem; }
+  .nightflight-reel .nf-sense-caption > div > p { font-size: .84rem; }
+  .nightflight-reel .nf-play-layout { margin-block: 1.8rem 2.5rem; }
+  .nightflight-reel .nf-play-copy h3 { margin-bottom: 1.8rem; }
+  .nightflight-reel .nf-play-copy > p, .nightflight-reel .nf-build-copy > p { max-width: 48ch; font-size: .84rem; }
+  .nightflight-reel .nf-play-copy > .nf-text-link { margin-top: 1.2rem; }
+  .nightflight-reel .nf-recognition { margin-top: .9rem; }
+  .nightflight-reel .nf-play-stage { padding-top: 0; }
+  .nightflight-reel .nf-chord-study { margin-top: 1.2rem; }
+  .nightflight-reel .nf-chord-controls button { padding: .9rem; }
+  .nightflight-reel .nf-index-entry { grid-template-columns: minmax(0,1fr) 1.2rem; gap: .45rem 1rem; padding-block: 1.05rem; }
+  .nightflight-reel .nf-index-title { font-size: .96rem; }
+  .nightflight-reel .nf-index-description { grid-column: 1; grid-row: 2; font-size: .7rem; }
+  .nightflight-reel .nf-index-entry svg { grid-column: 2; grid-row: 1 / span 2; }
+  .nightflight-reel .nf-build-layout { margin-bottom: 2rem; }
+  .nightflight-reel .nf-build-steps { margin-block: 1.4rem 1rem; }
+  .nightflight-reel .nf-archive-link { gap: 1rem; margin-top: 2rem; font-size: .77rem; }
+  .nightflight-reel .nf-archive-link > :last-child { gap: .8rem; font-size: .55rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nightflight-reel :is(.nf-media-open,.nf-text-link svg,.nf-index-entry svg,.nf-chord-controls button) { transition: none; }
+}
